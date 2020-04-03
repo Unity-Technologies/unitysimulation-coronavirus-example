@@ -17,4 +17,28 @@ public class WaypointNode : MonoBehaviour
     {
 
     }
+
+    public WaypointNode GetRandomNeighbor()
+    {
+        // TODO handle no edges
+        return Edges[Random.Range(0, Edges.Count)];
+    }
+
+    void OnDrawGizmos()
+    {
+        DrawEdges();
+    }
+
+    void DrawEdges()
+    {
+        foreach (var neighbor in Edges)
+        {
+            var drawColor = Color.cyan;
+            drawColor.a = .5f;
+            Gizmos.color = drawColor;
+            Gizmos.DrawLine(transform.position, neighbor.transform.position);
+        }
+    }
 }
+
+
