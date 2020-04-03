@@ -18,10 +18,20 @@ public class WaypointNode : MonoBehaviour
 
     }
 
-    public WaypointNode GetRandomNeighbor()
+    public WaypointNode GetRandomNeighbor(WaypointNode exclude = null)
     {
         // TODO handle no edges
-        return Edges[Random.Range(0, Edges.Count)];
+        var index = Random.Range(0, Edges.Count);
+        if (Edges[index] == exclude)
+        {
+            // Picked the one we were trying to avoid
+            // Add a random offset (mod the length) to
+            // get a new node with uniform distribution
+            var offset = Random.Range(1, Edges.Count);
+            index = (index + offset) % Edges.Count;
+        }
+
+        return Edges[index];
     }
 
     void OnDrawGizmos()
@@ -33,6 +43,10 @@ public class WaypointNode : MonoBehaviour
     {
         foreach (var neighbor in Edges)
         {
+            if (neighbor == null)
+            {
+                continue;
+            }
             var drawColor = Color.cyan;
             drawColor.a = .5f;
             Gizmos.color = drawColor;

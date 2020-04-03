@@ -12,7 +12,7 @@ public class Shopper : MonoBehaviour
         Infected
     }
 
-    public float Speed = 10.0f;
+    public float Speed = 15.0f;
     public Material HealthyMaterial;
     public Material ContagiousMaterial;
     public Material InfectedMaterial;
@@ -43,8 +43,10 @@ public class Shopper : MonoBehaviour
         var reachedEnd = UpdateInterpolation();
         if (reachedEnd)
         {
+            var oldPrevious = previousNode;
             previousNode = nextNode;
-            nextNode = previousNode.GetRandomNeighbor();
+            // Make sure we don't backtrack
+            nextNode = previousNode.GetRandomNeighbor(oldPrevious);
         }
     }
 
