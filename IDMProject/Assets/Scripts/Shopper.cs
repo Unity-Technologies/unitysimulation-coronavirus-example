@@ -54,7 +54,7 @@ public class Shopper : MonoBehaviour
             if (nextNode.IsExit() || nextNode.Edges.Count == 0)
             {
                 // Need a respawn
-                simulation.Respawn(this);
+                simulation.Despawn(this);
                 return;
             }
             else

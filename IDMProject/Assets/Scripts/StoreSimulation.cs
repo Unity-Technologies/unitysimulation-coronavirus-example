@@ -7,36 +7,49 @@ public class StoreSimulation : MonoBehaviour
 {
     static double s_TicksToSeconds = 1e-7; // 100 ns per tick
 
+    public int NumShoppers = 10;
+    public GameObject ShopperPrefab;
+
     WaypointNode[] waypoints;
     List<WaypointNode> entrances;
     List<WaypointNode> exits;
-    Shopper shopper;
+    List<Shopper> allShoppers;
+    //Shopper shopper;
 
     void Awake()
     {
         InitWaypoints();
-        shopper = GetComponentInChildren<Shopper>();
-        shopper.simulation = this;
-
-        // Pick a random waypoint for the start position
-        var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count - 1)];
-        shopper.SetWaypoint(startWp);
+        allShoppers = new List<Shopper>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (allShoppers.Count < NumShoppers)
+        {
+            var newShopperGameObject = Instantiate(ShopperPrefab);
+            var newShopper = newShopperGameObject.GetComponent<Shopper>();
+            Spawn(newShopper);
+            allShoppers.Add(newShopper);
+        }
     }
 
     /// <summary>
     /// Called by the shopper when it reaches the exit.
     /// </summary>
     /// <param name="s"></param>
-    public void Respawn(Shopper s)
+    public void Spawn(Shopper s)
     {
+        s.simulation = this;
+        // Pick a random entrance for the start position
         var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count - 1)];
         s.SetWaypoint(startWp);
+    }
+
+    public void Despawn(Shopper s)
+    {
+        allShoppers.Remove(s);
+        Destroy(s.gameObject);
     }
 
     void InitWaypoints()
