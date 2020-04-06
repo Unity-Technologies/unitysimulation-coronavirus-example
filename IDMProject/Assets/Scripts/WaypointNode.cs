@@ -1,10 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class WaypointNode : MonoBehaviour
 {
+    public enum WaypointType
+    {
+        Default = 0,
+        Entrance = 1,
+        Exit = 2,
+    }
+
+    public WaypointType waypointType = WaypointType.Default;
     public List<WaypointNode> Edges = new List<WaypointNode>();
+    StoreSimulation m_Simulation;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -52,6 +65,22 @@ public class WaypointNode : MonoBehaviour
             Gizmos.color = drawColor;
             Gizmos.DrawLine(transform.position, neighbor.transform.position);
         }
+    }
+
+    public bool IsExit()
+    {
+        return waypointType == WaypointType.Exit;
+    }
+
+    public bool IsEntrance()
+    {
+        return waypointType == WaypointType.Entrance;
+    }
+
+    public StoreSimulation simulation
+    {
+        get => m_Simulation;
+        set => m_Simulation = value;
     }
 }
 

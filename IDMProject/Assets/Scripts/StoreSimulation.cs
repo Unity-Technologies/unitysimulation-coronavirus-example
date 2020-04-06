@@ -8,15 +8,18 @@ public class StoreSimulation : MonoBehaviour
     static double s_TicksToSeconds = 1e-7; // 100 ns per tick
 
     WaypointNode[] waypoints;
+    List<WaypointNode> entrances;
+    List<WaypointNode> exits;
     Shopper shopper;
 
     void Awake()
     {
         InitWaypoints();
         shopper = GetComponentInChildren<Shopper>();
+        shopper.simulation = this;
 
         // Pick a random waypoint for the start position
-        var startWp = waypoints[UnityEngine.Random.Range(0, waypoints.Length - 1)];
+        var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count - 1)];
         shopper.SetWaypoint(startWp);
     }
 
@@ -26,31 +29,62 @@ public class StoreSimulation : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Called by the shopper when it reaches the exit.
+    /// </summary>
+    /// <param name="s"></param>
+    public void Respawn(Shopper s)
+    {
+        var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count - 1)];
+        s.SetWaypoint(startWp);
+    }
+
     void InitWaypoints()
     {
         waypoints = GetComponentsInChildren<WaypointNode>();
+        entrances = new List<WaypointNode>();
+        exits = new List<WaypointNode>();
         Debug.Log($"Found {waypoints.Length} waypoints");
 
         // Clear any existing edges
-        for (var i = 0; i < waypoints.Length; i++)
+        foreach (var wp in waypoints)
         {
-            waypoints[i].Edges.Clear();
+            wp.simulation = this;
+            wp.Edges.Clear();
+            if (wp.waypointType == WaypointNode.WaypointType.Entrance)
+            {
+                entrances.Add(wp);
+            }
+            else if (wp.waypointType == WaypointNode.WaypointType.Exit)
+            {
+                exits.Add(wp);
+            }
         }
 
         // TODO only cast in cardinal directions and 45 degrees?
         var startTicks = DateTime.Now.Ticks;
         for (var i = 0; i < waypoints.Length; i++)
         {
+
             for (var j = i + 1; j < waypoints.Length; j++)
             {
-                var rayStart = waypoints[i].transform.position;
-                var rayEnd = waypoints[j].transform.position;
+                var wp1 = waypoints[i];
+                var wp2 = waypoints[j];
+                var rayStart = wp1.transform.position;
+                var rayEnd = wp2.transform.position;
                 RaycastHit hitInfo;
                 var didHit = Physics.Raycast(rayStart, rayEnd - rayStart, out hitInfo);
-                if (didHit && hitInfo.collider?.gameObject == waypoints[j].gameObject)
+                if (didHit && hitInfo.collider?.gameObject == wp2.gameObject)
                 {
-                    waypoints[i].Edges.Add(waypoints[j]);
-                    waypoints[j].Edges.Add(waypoints[i]);
+                    // Don't add incoming edges to Entrances, or outgoing edges from Exits.
+                    if (!wp2.IsEntrance() && !wp1.IsExit())
+                    {
+                        wp1.Edges.Add(wp2);
+                    }
+                    if(!wp1.IsEntrance() && !wp2.IsExit())
+                    {
+                        wp2.Edges.Add(wp1);
+                    }
                 }
             }
         }

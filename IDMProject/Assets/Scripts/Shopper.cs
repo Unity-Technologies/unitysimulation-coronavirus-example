@@ -20,6 +20,14 @@ public class Shopper : MonoBehaviour
     WaypointNode previousNode;
     WaypointNode nextNode;
 
+    StoreSimulation m_Simulation;
+
+    public StoreSimulation simulation
+    {
+        get => m_Simulation;
+        set => m_Simulation = value;
+    }
+
     public void SetWaypoint(WaypointNode node)
     {
         Debug.Log("Setting waypoint");
@@ -43,10 +51,19 @@ public class Shopper : MonoBehaviour
         var reachedEnd = UpdateInterpolation();
         if (reachedEnd)
         {
-            var oldPrevious = previousNode;
-            previousNode = nextNode;
-            // Make sure we don't backtrack
-            nextNode = previousNode.GetRandomNeighbor(oldPrevious);
+            if (nextNode.IsExit() || nextNode.Edges.Count == 0)
+            {
+                // Need a respawn
+                simulation.Respawn(this);
+                return;
+            }
+            else
+            {
+                var oldPrevious = previousNode;
+                previousNode = nextNode;
+                // Make sure we don't backtrack
+                nextNode = previousNode.GetRandomNeighbor(oldPrevious);
+            }
         }
     }
 
