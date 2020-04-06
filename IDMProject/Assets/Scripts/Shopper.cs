@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -9,20 +10,70 @@ public class Shopper : MonoBehaviour
     {
         Healthy,
         Contagious,
-        Infected
+        Exposed
     }
 
     public float Speed = 15.0f;
     public Material HealthyMaterial;
     public Material ContagiousMaterial;
-    public Material InfectedMaterial;
+    public Material ExposedMaterial;
+    Status m_InfectionStatus;
 
     WaypointNode previousNode;
     WaypointNode nextNode;
 
+    StoreSimulation m_Simulation;
+
+    public StoreSimulation simulation
+    {
+        get => m_Simulation;
+        set => m_Simulation = value;
+    }
+
+    public Status InfectionStatus
+    {
+        get => m_InfectionStatus;
+        set { SetStatus(value); }
+    }
+
+    void SetStatus(Status s)
+    {
+        Material m = null;
+        switch (s)
+        {
+            case Status.Healthy:
+                m = HealthyMaterial;
+                break;
+            case Status.Contagious:
+                m = ContagiousMaterial;
+                break;
+            case Status.Exposed:
+                m = ExposedMaterial;
+                break;
+        }
+
+        m_InfectionStatus = s;
+        var renderer = GetComponent<Renderer>();
+        renderer.material = m;
+    }
+
+    public bool IsHealthy()
+    {
+        return m_InfectionStatus == Status.Healthy;
+    }
+
+    public bool IsContagious()
+    {
+        return m_InfectionStatus == Status.Contagious;
+    }
+
+    public bool IsExposed()
+    {
+        return m_InfectionStatus == Status.Exposed;
+    }
+
     public void SetWaypoint(WaypointNode node)
     {
-        Debug.Log("Setting waypoint");
         previousNode = node;
         // Pick the next node randomly
         nextNode = node.GetRandomNeighbor();
@@ -40,13 +91,24 @@ public class Shopper : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateInfection();
+
         var reachedEnd = UpdateInterpolation();
         if (reachedEnd)
         {
-            var oldPrevious = previousNode;
-            previousNode = nextNode;
-            // Make sure we don't backtrack
-            nextNode = previousNode.GetRandomNeighbor(oldPrevious);
+            if (nextNode.IsExit() || nextNode.Edges.Count == 0)
+            {
+                // Need a respawn
+                simulation.Despawn(this);
+                return;
+            }
+            else
+            {
+                var previousPos = previousNode.transform.position;
+                var currentPos = nextNode.transform.position;
+                previousNode = nextNode;
+                nextNode = nextNode.GetRandomNeighborInDirection(previousPos, currentPos);
+            }
         }
     }
 
@@ -80,5 +142,27 @@ public class Shopper : MonoBehaviour
         transform.position = newPostion;
 
         return atEnd;
+    }
+
+    void UpdateInfection()
+    {
+        if (!IsContagious())
+        {
+            return;
+        }
+
+        // Find nearby shoppers
+        // TODO optimize - use filter layer and non-allocating methods
+        // TODO consider the "swept" positions of this Shopper and others - more robust at high framerates
+        var radius = 2.0f; // roughly 6 feet
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
+        foreach (var coll in hitColliders)
+        {
+            var otherShopper = coll.GetComponent<Shopper>();
+            if (otherShopper != null && otherShopper != this && otherShopper.IsHealthy())
+            {
+                otherShopper.InfectionStatus = Status.Exposed;
+            }
+        }
     }
 }
