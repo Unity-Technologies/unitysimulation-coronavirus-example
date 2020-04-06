@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class StoreSimulation : MonoBehaviour
 {
     static double s_TicksToSeconds = 1e-7; // 100 ns per tick
 
-    public int NumShoppers = 10;
+    [FormerlySerializedAs("NumShoppers")]
+    public int DesiredNumShoppers = 10;
+    public int DesiredNumContagious = 1;
     public float SpawnCooldown= 1.0f;
     public GameObject ShopperPrefab;
 
@@ -16,6 +19,7 @@ public class StoreSimulation : MonoBehaviour
     List<WaypointNode> exits;
     List<Shopper> allShoppers;
     float spawnCooldownCounter;
+    int numContagious;
 
     void Awake()
     {
@@ -29,7 +33,7 @@ public class StoreSimulation : MonoBehaviour
         // Cooldown on respawns - can only respawn when the counter is 0 (or negative).
         // The counter resets to SpawnCooldown when a customer is spawned.
         spawnCooldownCounter -= Time.deltaTime;
-        if (spawnCooldownCounter <= 0 && allShoppers.Count < NumShoppers)
+        if (spawnCooldownCounter <= 0 && allShoppers.Count < DesiredNumShoppers)
         {
             var newShopperGameObject = Instantiate(ShopperPrefab);
             var newShopper = newShopperGameObject.GetComponent<Shopper>();
@@ -47,12 +51,26 @@ public class StoreSimulation : MonoBehaviour
     {
         s.simulation = this;
         // Pick a random entrance for the start position
-        var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count - 1)];
+        var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count)];
+
+        // Randomize the movement speed between [.75, 1.25] of the default speed
+        var speedMult = UnityEngine.Random.Range(.75f, 1.25f);
+        s.Speed *= speedMult;
+
         s.SetWaypoint(startWp);
+        if (numContagious < DesiredNumContagious)
+        {
+            s.InfectionStatus = Shopper.Status.Contagious;
+            numContagious++;
+        }
     }
 
     public void Despawn(Shopper s)
     {
+        if (s.InfectionStatus == Shopper.Status.Contagious)
+        {
+            numContagious--;
+        }
         allShoppers.Remove(s);
         Destroy(s.gameObject);
     }

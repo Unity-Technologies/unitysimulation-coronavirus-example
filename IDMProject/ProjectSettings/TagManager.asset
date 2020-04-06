@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Waypoint
+  - Shopper
   layers:
   - Default
   - TransparentFX
