@@ -30,7 +30,6 @@ public class Shopper : MonoBehaviour
 
     public void SetWaypoint(WaypointNode node)
     {
-        Debug.Log("Setting waypoint");
         previousNode = node;
         // Pick the next node randomly
         nextNode = node.GetRandomNeighbor();
@@ -59,10 +58,10 @@ public class Shopper : MonoBehaviour
             }
             else
             {
-                var oldPrevious = previousNode;
+                var previousPos = previousNode.transform.position;
+                var currentPos = nextNode.transform.position;
                 previousNode = nextNode;
-                // Make sure we don't backtrack
-                nextNode = previousNode.GetRandomNeighbor(oldPrevious);
+                nextNode = nextNode.GetRandomNeighborInDirection(previousPos, currentPos);
             }
         }
     }

@@ -8,13 +8,14 @@ public class StoreSimulation : MonoBehaviour
     static double s_TicksToSeconds = 1e-7; // 100 ns per tick
 
     public int NumShoppers = 10;
+    public float SpawnCooldown= 1.0f;
     public GameObject ShopperPrefab;
 
     WaypointNode[] waypoints;
     List<WaypointNode> entrances;
     List<WaypointNode> exits;
     List<Shopper> allShoppers;
-    //Shopper shopper;
+    float spawnCooldownCounter;
 
     void Awake()
     {
@@ -25,12 +26,16 @@ public class StoreSimulation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (allShoppers.Count < NumShoppers)
+        // Cooldown on respawns - can only respawn when the counter is 0 (or negative).
+        // The counter resets to SpawnCooldown when a customer is spawned.
+        spawnCooldownCounter -= Time.deltaTime;
+        if (spawnCooldownCounter <= 0 && allShoppers.Count < NumShoppers)
         {
             var newShopperGameObject = Instantiate(ShopperPrefab);
             var newShopper = newShopperGameObject.GetComponent<Shopper>();
             Spawn(newShopper);
             allShoppers.Add(newShopper);
+            spawnCooldownCounter = SpawnCooldown;
         }
     }
 

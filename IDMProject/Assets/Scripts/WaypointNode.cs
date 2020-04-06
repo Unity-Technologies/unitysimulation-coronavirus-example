@@ -47,6 +47,48 @@ public class WaypointNode : MonoBehaviour
         return Edges[index];
     }
 
+    /// <summary>
+    /// Select a random edge from the list, biased towards edges that going in the same direction.
+    /// Edges that travel backwards are still possible but less likely.
+    /// </summary>
+    /// <param name="dir"></param>
+    /// <returns></returns>
+    public WaypointNode GetRandomNeighborInDirection(Vector3 previous, Vector3 current)
+    {
+        if (Edges.Count == 1)
+        {
+            return Edges[0];
+        }
+
+        Vector3 dir = (current - previous).normalized;
+
+        // Compute the probability of selecting an edge.
+        // The probability is proportional to 1 + dot(dir, (position - current).normalized)
+        // This means that edges in the same direction have weight 2
+        // Left and right turns have weight 1
+        // Turning around has weight 0
+
+        // TODO reuse allocation
+        var cumulativeSum = new float[Edges.Count];
+        var sumWeights = 0.0f;
+        for (var i = 0; i < Edges.Count; i++)
+        {
+            var outgoingDir = (Edges[i].transform.position - current).normalized;
+            var weight = 1.0f + Vector3.Dot(dir, outgoingDir);
+            sumWeights += weight;
+            cumulativeSum[i] = sumWeights;
+        }
+
+        var p = Random.Range(0.0f, sumWeights);
+        var edgeIndex = 0;
+        while (cumulativeSum[edgeIndex] < p)
+        {
+            ++edgeIndex;
+        }
+
+        return Edges[edgeIndex];
+    }
+
     void OnDrawGizmos()
     {
         DrawEdges();
