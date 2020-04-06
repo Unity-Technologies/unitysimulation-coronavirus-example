@@ -12,6 +12,7 @@ public class StoreSimulation : MonoBehaviour
     public int DesiredNumShoppers = 10;
     public int DesiredNumContagious = 1;
     public float SpawnCooldown= 1.0f;
+    public bool OneWayAisles = true;
     public GameObject ShopperPrefab;
 
     WaypointNode[] waypoints;
@@ -150,8 +151,8 @@ public class StoreSimulation : MonoBehaviour
                             continue;
                         }
 
-                        var dir = waypoints[j].transform.position - wp.transform.position;
-                        wp.CheckRaycastConnection(dir);
+                        var dir = (waypoints[j].transform.position - wp.transform.position).normalized;
+                        wp.CheckRaycastConnection(OneWayAisles, dir);
                     }
                 }
                 else
@@ -159,7 +160,7 @@ public class StoreSimulation : MonoBehaviour
                     // For other waypoints, just check preset directions
                     foreach (var dir in directions)
                     {
-                        wp.CheckRaycastConnection(dir);
+                        wp.CheckRaycastConnection(OneWayAisles, dir);
                     }
                 }
             }
