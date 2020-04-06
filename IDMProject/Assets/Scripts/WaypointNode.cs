@@ -124,6 +124,41 @@ public class WaypointNode : MonoBehaviour
         get => m_Simulation;
         set => m_Simulation = value;
     }
+
+    public void CheckRaycastConnection(Vector3 direction)
+    {
+        var rayStart = transform.position;
+        RaycastHit hitInfo;
+        var didHit = Physics.Raycast(rayStart, direction, out hitInfo);
+        if (!didHit)
+        {
+            return;
+        }
+
+        // See if we hit another waypoint
+        var otherWaypoint = hitInfo.collider?.GetComponent<WaypointNode>();
+        if (otherWaypoint == null)
+        {
+            return;
+        }
+
+        if (Edges.Contains(otherWaypoint))
+        {
+            // This waypoint already hit us
+            return;
+        }
+
+        // Don't add incoming edges to Entrances, or outgoing edges from Exits.
+        if (!otherWaypoint.IsEntrance() && !IsExit())
+        {
+            Edges.Add(otherWaypoint);
+        }
+        if(!IsEntrance() && !otherWaypoint.IsExit())
+        {
+            otherWaypoint.Edges.Add(this);
+        }
+
+    }
 }
 
 
