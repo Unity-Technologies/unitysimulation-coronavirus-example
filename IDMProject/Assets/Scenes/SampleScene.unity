@@ -169,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &74898429
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -263,6 +264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &85294731
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -330,13 +332,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 85294729}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 15, y: 3, z: -40.8}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &181386681
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,6 +480,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 1
   Edges: []
+  SupportsOneWay: 0
 --- !u!65 &220513855
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -586,6 +589,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &296151635
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -694,6 +698,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &308392468
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -781,13 +786,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 312274639}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -25, y: 3, z: 31.3}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &312274641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -802,6 +807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &312274642
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -889,13 +895,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 408817746}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -5.2, y: 3, z: 31.3}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &408817748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -910,6 +916,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &408817749
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1004,6 +1011,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &477088512
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1071,13 +1079,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 477088510}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -45, y: 3, z: -40.8}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &602412189
 GameObject:
   m_ObjectHideFlags: 0
@@ -1105,13 +1113,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 602412189}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -5, y: 3, z: -40.8}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &602412191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,6 +1134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &602412192
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1234,6 +1243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &622606362
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1342,6 +1352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &626141706
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1450,6 +1461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 2
   Edges: []
+  SupportsOneWay: 0
 --- !u!65 &698654234
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1650,6 +1662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 2
   Edges: []
+  SupportsOneWay: 0
 --- !u!65 &776911848
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1758,6 +1771,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &864426399
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1845,13 +1859,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919045276}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -45, y: 3, z: 31.3}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &919045278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1866,6 +1880,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &919045279
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2007,13 +2022,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 959081355}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 35, y: 3, z: -40.8}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &959081357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2028,6 +2043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &959081358
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2312,6 +2328,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &1344512299
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2497,6 +2514,7 @@ MonoBehaviour:
   DesiredNumShoppers: 20
   DesiredNumContagious: 2
   SpawnCooldown: 0.75
+  OneWayAisles: 1
   ShopperPrefab: {fileID: 1093406097863196325, guid: 9d4463172376846758133dcae19a097d,
     type: 3}
 --- !u!4 &1381905398
@@ -2542,13 +2560,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1392212892}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 15, y: 3, z: 31.3}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &1392212894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2563,6 +2581,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &1392212895
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2657,6 +2676,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &1443640140
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2863,6 +2883,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &1555894344
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2930,13 +2951,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1555894342}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -25, y: 3, z: -40.8}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1559547280
 GameObject:
   m_ObjectHideFlags: 0
@@ -2985,6 +3006,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &1559547283
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3093,6 +3115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 1
   Edges: []
+  SupportsOneWay: 0
 --- !u!65 &1621727567
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3273,13 +3296,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1977527622}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 35, y: 3, z: 31.3}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}
   m_RootOrder: 17
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &1977527624
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3294,6 +3317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &1977527625
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3495,6 +3519,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   Edges: []
+  SupportsOneWay: 1
 --- !u!65 &2133423253
 BoxCollider:
   m_ObjectHideFlags: 0

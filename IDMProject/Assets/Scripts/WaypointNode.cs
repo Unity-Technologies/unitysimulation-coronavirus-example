@@ -15,9 +15,14 @@ public class WaypointNode : MonoBehaviour
 
     public WaypointType waypointType = WaypointType.Default;
     public List<WaypointNode> Edges = new List<WaypointNode>();
+    public bool SupportsOneWay = true;
     StoreSimulation m_Simulation;
 
-
+    // Threshold for determining when to accept edges when in one-way mode.
+    // The dot product between the desired and proposed directions are computed, and rejected if it's
+    // less than the threshold.
+    // This allows edges from the left and right, but not reverse the intended direction.
+    const float oneWayDotProductThreshold = -0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -105,7 +110,24 @@ public class WaypointNode : MonoBehaviour
             var drawColor = Color.cyan;
             drawColor.a = .5f;
             Gizmos.color = drawColor;
-            Gizmos.DrawLine(transform.position, neighbor.transform.position);
+            // Offset slightly to one side, so that one-way edges are clearer
+            Vector3 start = transform.position;
+            Vector3 end = neighbor.transform.position;
+            Vector3 dir = (end - start).normalized;
+            Vector3 side = Vector3.Cross(transform.up, dir);
+
+            var drawMagnitude = .5f;
+            start += drawMagnitude * side;
+            end += drawMagnitude * side;
+
+            Gizmos.DrawLine(start, end);
+
+            // Draw an arrow head part-way along the line too (slightly closer to the end)
+            var arrowStart = .6f * end + .4f * start;
+            var arrowSide1 = arrowStart - drawMagnitude * dir + drawMagnitude * side;
+            var arrowSide2 = arrowStart - drawMagnitude * dir - drawMagnitude * side;
+            Gizmos.DrawLine(arrowStart, arrowSide1);
+            Gizmos.DrawLine(arrowStart, arrowSide2);
         }
     }
 

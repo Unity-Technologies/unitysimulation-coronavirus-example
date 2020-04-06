@@ -12,6 +12,7 @@ public class StoreSimulation : MonoBehaviour
     public int DesiredNumShoppers = 10;
     public int DesiredNumContagious = 1;
     public float SpawnCooldown= 1.0f;
+    public bool OneWayAisles = true;
     public GameObject ShopperPrefab;
 
     WaypointNode[] waypoints;
