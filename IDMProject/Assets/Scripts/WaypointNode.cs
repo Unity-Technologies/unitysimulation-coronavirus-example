@@ -15,6 +15,9 @@ public class WaypointNode : MonoBehaviour
 
     public WaypointType waypointType = WaypointType.Default;
     public List<WaypointNode> Edges = new List<WaypointNode>();
+
+    // Whether this node supports one-way connections, or always two-way.
+    // If true and an incoming edge is not in the forward direction or left/right, it is rejected.
     public bool SupportsOneWay = true;
     StoreSimulation m_Simulation;
 
@@ -22,7 +25,7 @@ public class WaypointNode : MonoBehaviour
     // The dot product between the desired and proposed directions are computed, and rejected if it's
     // less than the threshold.
     // This allows edges from the left and right, but not reverse the intended direction.
-    const float oneWayDotProductThreshold = -0.1f;
+    const float k_OneWayDotProductThreshold = -0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -147,7 +150,7 @@ public class WaypointNode : MonoBehaviour
         set => m_Simulation = value;
     }
 
-    public void CheckRaycastConnection(Vector3 direction)
+    public void CheckRaycastConnection(bool simulationIsOneWay, Vector3 direction)
     {
         var rayStart = transform.position;
         RaycastHit hitInfo;
@@ -170,14 +173,21 @@ public class WaypointNode : MonoBehaviour
             return;
         }
 
+        // If we hit a one-way node, and we're enforcing one-way aisles in the simulation,
+        // then filter on the direction.
+        if (simulationIsOneWay && otherWaypoint.SupportsOneWay)
+        {
+            var dot = Vector3.Dot(direction, otherWaypoint.transform.forward);
+            if (dot < k_OneWayDotProductThreshold)
+            {
+                return;
+            }
+        }
+
         // Don't add incoming edges to Entrances, or outgoing edges from Exits.
         if (!otherWaypoint.IsEntrance() && !IsExit())
         {
             Edges.Add(otherWaypoint);
-        }
-        if(!IsEntrance() && !otherWaypoint.IsExit())
-        {
-            otherWaypoint.Edges.Add(this);
         }
 
     }
