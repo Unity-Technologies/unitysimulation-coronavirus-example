@@ -5,12 +5,15 @@ Contact information: See #ai-idm-covid19-simulation in slack.
 
 ## Waypoints
 Waypoints are nodes on graph. The edges are determined at the start of the simulation. Entrance waypoints will make an outgoing edge to any waypoint that they have line of sight to.
+
 Other waypoints will only check for edges in the cardinal directions. This is a heuristic that we can adjust later.
 
 ## Shoppers
 Shoppers spawn randomly from one of the entrance waypoints. The total number of shoppers and number of contagious shoppers are controllable from the StoreSimulation script.
+
 Shoppers follow the path between two nodes at a constant speed. The default speed is set in the Shopper prefab and is modulated for each shopper when they're spawned. When the shopper
 reaches its target waypoint, it picks a new one randomly, biased towards nodes that are in the direction it's currently moving. Left and right turns are less likely, and U-turns are very unlikely.
+
 When a shopper reaches an exit waypoint, they are respawned at a random entrance.
 
 ## Infection
