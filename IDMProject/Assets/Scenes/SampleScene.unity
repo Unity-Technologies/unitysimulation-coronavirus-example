@@ -2517,6 +2517,9 @@ MonoBehaviour:
   OneWayAisles: 1
   ShopperPrefab: {fileID: 1093406097863196325, guid: 9d4463172376846758133dcae19a097d,
     type: 3}
+  ExposureProbabilityAtZeroDistance: 0.85
+  ExposureProbabilityAtMaxDistance: 0.25
+  ExposureDistanceMeters: 1.8288
 --- !u!4 &1381905398
 Transform:
   m_ObjectHideFlags: 0

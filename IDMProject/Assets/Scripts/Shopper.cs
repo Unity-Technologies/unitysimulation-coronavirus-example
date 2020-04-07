@@ -146,23 +146,23 @@ public class Shopper : MonoBehaviour
 
     void UpdateInfection()
     {
-        if (!IsContagious())
-        {
-            return;
-        }
-
-        // Find nearby shoppers
-        // TODO optimize - use filter layer and non-allocating methods
-        // TODO consider the "swept" positions of this Shopper and others - more robust at high framerates
-        var radius = 2.0f; // roughly 6 feet
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
-        foreach (var coll in hitColliders)
-        {
-            var otherShopper = coll.GetComponent<Shopper>();
-            if (otherShopper != null && otherShopper != this && otherShopper.IsHealthy())
-            {
-                otherShopper.InfectionStatus = Status.Exposed;
-            }
-        }
+//        if (!IsContagious())
+//        {
+//            return;
+//        }
+//
+//        // Find nearby shoppers
+//        // TODO optimize - use filter layer and non-allocating methods
+//        // TODO consider the "swept" positions of this Shopper and others - more robust at high framerates
+//        var radius = 2.0f; // roughly 6 feet
+//        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
+//        foreach (var coll in hitColliders)
+//        {
+//            var otherShopper = coll.GetComponent<Shopper>();
+//            if (otherShopper != null && otherShopper != this && otherShopper.IsHealthy())
+//            {
+//                otherShopper.InfectionStatus = Status.Exposed;
+//            }
+//        }
     }
 }

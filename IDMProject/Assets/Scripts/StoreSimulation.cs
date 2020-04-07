@@ -15,6 +15,14 @@ public class StoreSimulation : MonoBehaviour
     public bool OneWayAisles = true;
     public GameObject ShopperPrefab;
 
+    // Exposure probability parameters.
+    // These are given as the probability of a healthy person converting to exposed over the course of one second.
+    // During simulation, these probability are linearly interpolated based on distance to the contagious person
+    // and modified to account for the timestep.
+    public float ExposureProbabilityAtZeroDistance = 0.5f;
+    public float ExposureProbabilityAtMaxDistance = 0.0f;
+    public float ExposureDistanceMeters = 1.8288f; // Six feet in meters
+
     WaypointNode[] waypoints;
     List<WaypointNode> entrances;
     List<WaypointNode> exits;
@@ -46,6 +54,8 @@ public class StoreSimulation : MonoBehaviour
             allShoppers.Add(newShopper);
             spawnCooldownCounter = SpawnCooldown;
         }
+
+        UpdateExposure();
     }
 
     void OnDisable()
@@ -205,5 +215,60 @@ public class StoreSimulation : MonoBehaviour
 
         var endTicks = DateTime.Now.Ticks;
         Debug.Log($"Raycasting between waypoints took {(endTicks-startTicks)*s_TicksToSeconds} seconds");
+    }
+
+    void UpdateExposure()
+    {
+        foreach (var shopper in allShoppers)
+        {
+            if (!shopper.IsContagious())
+            {
+                return;
+            }
+
+            // Find nearby shoppers
+            // TODO optimize - use filter layer and non-allocating methods
+            // TODO consider the "swept" positions of this Shopper and others - more robust at high framerates
+            var radius = 2.0f; // roughly 6 feet
+            Collider[] hitColliders = Physics.OverlapSphere(shopper.transform.position, radius);
+            foreach (var coll in hitColliders)
+            {
+                var otherShopper = coll.GetComponent<Shopper>();
+                if (otherShopper != null && otherShopper.IsHealthy())
+                {
+                    if (ShouldExposeHealthy(otherShopper, shopper))
+                    {
+                        otherShopper.InfectionStatus = Shopper.Status.Exposed;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Determine whether the healthy shopper should get exposed by the contagious one.
+    /// </summary>
+    /// <param name="healthy"></param>
+    /// <param name="contagious"></param>
+    /// <returns></returns>
+    bool ShouldExposeHealthy(Shopper healthy, Shopper contagious)
+    {
+        var distance = Vector3.Distance(healthy.transform.position, contagious.transform.position);
+        if (distance > ExposureDistanceMeters)
+        {
+            // Too far away
+            return false;
+        }
+
+        // Interpolate the probability parameters based on the distance
+        var t = distance / ExposureDistanceMeters;
+        var prob = ExposureProbabilityAtZeroDistance * (1.0f - t) + ExposureProbabilityAtMaxDistance * t;
+
+        // The probability is given per second; since we might apply the random choice over multiple steps of deltaTime
+        // length, we need to adjust the probability.
+        //   prob = 1 - (1-probPerFrame)^(1/deltaTime)
+        // so
+        var probPerFrame = 1.0f - Mathf.Pow(1.0f - prob, Time.deltaTime);
+        return UnityEngine.Random.value < probPerFrame;
     }
 }
