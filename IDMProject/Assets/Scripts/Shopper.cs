@@ -23,6 +23,7 @@ public class Shopper : MonoBehaviour
     WaypointNode nextNode;
 
     StoreSimulation m_Simulation;
+    Vector3 m_PreviousPosition;
 
     public StoreSimulation simulation
     {
@@ -35,6 +36,8 @@ public class Shopper : MonoBehaviour
         get => m_InfectionStatus;
         set { SetStatus(value); }
     }
+
+    public Vector3 previousPosition => m_PreviousPosition;
 
     void SetStatus(Status s)
     {
@@ -85,13 +88,13 @@ public class Shopper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        m_PreviousPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateInfection();
+        m_PreviousPosition = transform.position;
 
         var reachedEnd = UpdateInterpolation();
         if (reachedEnd)
@@ -142,27 +145,5 @@ public class Shopper : MonoBehaviour
         transform.position = newPostion;
 
         return atEnd;
-    }
-
-    void UpdateInfection()
-    {
-//        if (!IsContagious())
-//        {
-//            return;
-//        }
-//
-//        // Find nearby shoppers
-//        // TODO optimize - use filter layer and non-allocating methods
-//        // TODO consider the "swept" positions of this Shopper and others - more robust at high framerates
-//        var radius = 2.0f; // roughly 6 feet
-//        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
-//        foreach (var coll in hitColliders)
-//        {
-//            var otherShopper = coll.GetComponent<Shopper>();
-//            if (otherShopper != null && otherShopper != this && otherShopper.IsHealthy())
-//            {
-//                otherShopper.InfectionStatus = Status.Exposed;
-//            }
-//        }
     }
 }

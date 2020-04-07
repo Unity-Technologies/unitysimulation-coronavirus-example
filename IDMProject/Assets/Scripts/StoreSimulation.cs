@@ -9,19 +9,24 @@ public class StoreSimulation : MonoBehaviour
     static double s_TicksToSeconds = 1e-7; // 100 ns per tick
 
     [FormerlySerializedAs("NumShoppers")]
+    [Header("Store Parameters")]
     public int DesiredNumShoppers = 10;
     public int DesiredNumContagious = 1;
     public float SpawnCooldown= 1.0f;
     public bool OneWayAisles = true;
-    public GameObject ShopperPrefab;
 
     // Exposure probability parameters.
     // These are given as the probability of a healthy person converting to exposed over the course of one second.
     // During simulation, these probability are linearly interpolated based on distance to the contagious person
     // and modified to account for the timestep.
+    [Header("Exposure Parameters")]
     public float ExposureProbabilityAtZeroDistance = 0.5f;
     public float ExposureProbabilityAtMaxDistance = 0.0f;
     public float ExposureDistanceMeters = 1.8288f; // Six feet in meters
+
+
+    [Header("Graphics Parameters")]
+    public GameObject ShopperPrefab;
 
     WaypointNode[] waypoints;
     List<WaypointNode> entrances;
@@ -253,7 +258,14 @@ public class StoreSimulation : MonoBehaviour
     /// <returns></returns>
     bool ShouldExposeHealthy(Shopper healthy, Shopper contagious)
     {
-        var distance = Vector3.Distance(healthy.transform.position, contagious.transform.position);
+        // Account for motion over the last frame by taking the min distance of the "swept" positions
+        // TODO - compute actual min distance between the 2 segments
+        // Cheap approximation for now
+        var distance = Mathf.Min(
+            Vector3.Distance(healthy.transform.position, contagious.transform.position),
+            Vector3.Distance(healthy.transform.position, contagious.previousPosition),
+            Vector3.Distance(healthy.previousPosition, contagious.transform.position)
+        );
         if (distance > ExposureDistanceMeters)
         {
             // Too far away
