@@ -1,0 +1,12 @@
+{
+	"name": "com.unity.simulation.games",
+	"displayName":"Unity Game Simulation",
+	"version": "0.4.0-preview",
+	"unity": "2018.3",
+  	"description": "Unity Game Simulation is a tool that helps you spend less time testing and balancing and more time innovating new in-game experiences for your players. The package will allow developers to implement parameters and metrics to be used in the Unity Game Simulation service.",
+  	"dependencies": {
+  		"com.unity.remote-config" : "1.2.0-preview.2",
+  		"com.unity.simulation.core" : "0.0.10-preview.8"
+  	},
+  	"keywords":["simulation", "game sim", "gamesim", "sim"]
+}
