@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Unity.Simulation.Games;
 
 public class StoreSimulation : MonoBehaviour
 {
@@ -22,15 +23,37 @@ public class StoreSimulation : MonoBehaviour
     float spawnCooldownCounter;
     int numContagious;
 
+    bool simulationInited = false;
+
     void Awake()
+    {
+        GameSimManager.Instance.FetchConfig(OnConfigFetched);
+    }
+
+    void OnConfigFetched(GameSimConfigResponse configResponse)
+    {
+        DesiredNumShoppers = configResponse.GetInt("DesiredNumShoppers", DesiredNumShoppers);
+        DesiredNumContagious = configResponse.GetInt("DesiredNumContagious", DesiredNumContagious);
+        SpawnCooldown = configResponse.GetFloat("SpawnCooldown", SpawnCooldown);
+        OneWayAisles = configResponse.GetBool("OneWayAisles", OneWayAisles);
+
+        InitSimulation();
+    }
+
+    void InitSimulation()
     {
         InitWaypoints();
         allShoppers = new List<Shopper>();
+        simulationInited = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!simulationInited)
+        {
+            return;
+        }
         // Cooldown on respawns - can only respawn when the counter is 0 (or negative).
         // The counter resets to SpawnCooldown when a customer is spawned.
         spawnCooldownCounter -= Time.deltaTime;
