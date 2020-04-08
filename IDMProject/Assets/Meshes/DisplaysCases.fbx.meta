@@ -1,9 +1,39 @@
 fileFormatVersion: 2
-guid: 393c28ba5309bf4449770068f76811a2
+guid: e8a0f152b2d47864980619b30cc2f416
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Displays_rep_BlackMatte
+    second: {fileID: 2100000, guid: c6244f766e9b58847b38f1f043124b16, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Displays_rep_BlackShiny
+    second: {fileID: 2100000, guid: 07a70bf5cac98b84ca387cd1c3731178, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Displays_rep_Glass
+    second: {fileID: 2100000, guid: 6ce7654c479971d4da3c3542a826b506, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Displays_rep_WhiteMatte
+    second: {fileID: 2100000, guid: f14ba76b31cf2c6428283edfe4dff5ef, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Displays_rep_Wood
+    second: {fileID: 2100000, guid: 7cfb1a604d980b04bae12e35ce3e2718, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert1
+    second: {fileID: 2100000, guid: 203c45a022a2239408674b2c3acfeec9, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

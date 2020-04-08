@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 97659fa96dfdd2643869114e0d5d4150
+guid: a814296764f858f45a10962f17e5b953
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
@@ -17,8 +17,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: f_rep_ConcreteWall
+    second: {fileID: 2100000, guid: 5638137fd67d47e4f9942b15dce0841f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: f_rep_GrayPaint
     second: {fileID: 2100000, guid: f14ba76b31cf2c6428283edfe4dff5ef, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: f_rep_LightFixture
+    second: {fileID: 2100000, guid: 7a146fbeaf1f4744eadde9b771b2574e, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
