@@ -15,6 +15,7 @@ public class StoreSimulation : MonoBehaviour
     public float SpawnCooldown= 1.0f;
     public bool OneWayAisles = true;
     public GameObject ShopperPrefab;
+	public float SimulationTimeInSeconds = 60f;
 
     WaypointNode[] waypoints;
     List<WaypointNode> entrances;
@@ -24,9 +25,10 @@ public class StoreSimulation : MonoBehaviour
     int numContagious;
 
     bool simulationInited = false;
+	float simulationSecondsRunTime;
 
-    // Results
-    int finalHealthy;
+	// Results
+	int finalHealthy;
     int finalExposed;
 
     void Awake()
@@ -40,6 +42,7 @@ public class StoreSimulation : MonoBehaviour
         DesiredNumContagious = configResponse.GetInt("DesiredNumContagious", DesiredNumContagious);
         SpawnCooldown = configResponse.GetFloat("SpawnCooldown", SpawnCooldown);
         OneWayAisles = configResponse.GetBool("OneWayAisles", OneWayAisles);
+		SimulationTimeInSeconds = configResponse.GetFloat("SimulationTimeInSeconds", SimulationTimeInSeconds);
 
         InitSimulation();
     }
@@ -48,6 +51,7 @@ public class StoreSimulation : MonoBehaviour
     {
         InitWaypoints();
         simulationInited = true;
+		simulationSecondsRunTime = SimulationTimeInSeconds;
         allShoppers = new HashSet<Shopper>();
     }
 
@@ -58,10 +62,16 @@ public class StoreSimulation : MonoBehaviour
         {
             return;
         }
-        // Cooldown on respawns - can only respawn when the counter is 0 (or negative).
-        // The counter resets to SpawnCooldown when a customer is spawned.
-        spawnCooldownCounter -= Time.deltaTime;
-        if (spawnCooldownCounter <= 0 && allShoppers.Count < DesiredNumShoppers)
+		simulationSecondsRunTime -= Time.deltaTime;
+        if(simulationSecondsRunTime <= 0)
+		{
+			OnSimulationFinished();
+			return;
+		}
+		// Cooldown on respawns - can only respawn when the counter is 0 (or negative).
+		// The counter resets to SpawnCooldown when a customer is spawned.
+		spawnCooldownCounter -= Time.deltaTime;
+		if (spawnCooldownCounter <= 0 && allShoppers.Count < DesiredNumShoppers)
         {
             var newShopperGameObject = Instantiate(ShopperPrefab);
             var newShopper = newShopperGameObject.GetComponent<Shopper>();
@@ -73,26 +83,30 @@ public class StoreSimulation : MonoBehaviour
 
     void OnDisable()
     {
-        // Update the final counts.
-        foreach (var s in allShoppers)
-        {
-            if (s.IsHealthy())
-            {
-                finalHealthy++;
-            }
-
-            if (s.IsExposed())
-            {
-                finalExposed++;
-            }
-        }
-
-        var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
-        Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {exposureRate}%");
-
-        SetCounters();
-
+		OnSimulationFinished();
     }
+
+    void OnSimulationFinished()
+	{
+		// Update the final counts.
+		foreach (var s in allShoppers)
+		{
+			if (s.IsHealthy())
+			{
+				finalHealthy++;
+			}
+
+			if (s.IsExposed())
+			{
+				finalExposed++;
+			}
+		}
+
+		var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
+		Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {exposureRate}%");
+
+		SetCounters();
+	}
 
     void SetCounters()
     {
