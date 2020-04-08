@@ -15,9 +15,17 @@ public class WaypointNode : MonoBehaviour
 
     public WaypointType waypointType = WaypointType.Default;
     public List<WaypointNode> Edges = new List<WaypointNode>();
+
+    // Whether this node supports one-way connections, or always two-way.
+    // If true and an incoming edge is not in the forward direction or left/right, it is rejected.
+    public bool SupportsOneWay = true;
     StoreSimulation m_Simulation;
 
-
+    // Threshold for determining when to accept edges when in one-way mode.
+    // The dot product between the desired and proposed directions are computed, and rejected if it's
+    // less than the threshold.
+    // This allows edges from the left and right, but not reverse the intended direction.
+    const float k_OneWayDotProductThreshold = -0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -105,7 +113,24 @@ public class WaypointNode : MonoBehaviour
             var drawColor = Color.cyan;
             drawColor.a = .5f;
             Gizmos.color = drawColor;
-            Gizmos.DrawLine(transform.position, neighbor.transform.position);
+            // Offset slightly to one side, so that one-way edges are clearer
+            Vector3 start = transform.position;
+            Vector3 end = neighbor.transform.position;
+            Vector3 dir = (end - start).normalized;
+            Vector3 side = Vector3.Cross(transform.up, dir);
+
+            var drawMagnitude = .5f;
+            start += drawMagnitude * side;
+            end += drawMagnitude * side;
+
+            Gizmos.DrawLine(start, end);
+
+            // Draw an arrow head part-way along the line too (slightly closer to the end)
+            var arrowStart = .6f * end + .4f * start;
+            var arrowSide1 = arrowStart - drawMagnitude * dir + drawMagnitude * side;
+            var arrowSide2 = arrowStart - drawMagnitude * dir - drawMagnitude * side;
+            Gizmos.DrawLine(arrowStart, arrowSide1);
+            Gizmos.DrawLine(arrowStart, arrowSide2);
         }
     }
 
@@ -125,7 +150,7 @@ public class WaypointNode : MonoBehaviour
         set => m_Simulation = value;
     }
 
-    public void CheckRaycastConnection(Vector3 direction)
+    public void CheckRaycastConnection(bool simulationIsOneWay, Vector3 direction)
     {
         var rayStart = transform.position;
         RaycastHit hitInfo;
@@ -148,14 +173,21 @@ public class WaypointNode : MonoBehaviour
             return;
         }
 
+        // If we hit a one-way node, and we're enforcing one-way aisles in the simulation,
+        // then filter on the direction.
+        if (simulationIsOneWay && otherWaypoint.SupportsOneWay)
+        {
+            var dot = Vector3.Dot(direction, otherWaypoint.transform.forward);
+            if (dot < k_OneWayDotProductThreshold)
+            {
+                return;
+            }
+        }
+
         // Don't add incoming edges to Entrances, or outgoing edges from Exits.
         if (!otherWaypoint.IsEntrance() && !IsExit())
         {
             Edges.Add(otherWaypoint);
-        }
-        if(!IsEntrance() && !otherWaypoint.IsExit())
-        {
-            otherWaypoint.Edges.Add(this);
         }
 
     }

@@ -12,19 +12,24 @@ public class StoreSimulation : MonoBehaviour
     public int DesiredNumShoppers = 10;
     public int DesiredNumContagious = 1;
     public float SpawnCooldown= 1.0f;
+    public bool OneWayAisles = true;
     public GameObject ShopperPrefab;
 
     WaypointNode[] waypoints;
     List<WaypointNode> entrances;
     List<WaypointNode> exits;
-    List<Shopper> allShoppers;
+    HashSet<Shopper> allShoppers;
     float spawnCooldownCounter;
     int numContagious;
+
+    // Results
+    int finalHealthy;
+    int finalExposed;
 
     void Awake()
     {
         InitWaypoints();
-        allShoppers = new List<Shopper>();
+        allShoppers = new HashSet<Shopper>();
     }
 
     // Update is called once per frame
@@ -41,6 +46,27 @@ public class StoreSimulation : MonoBehaviour
             allShoppers.Add(newShopper);
             spawnCooldownCounter = SpawnCooldown;
         }
+    }
+
+    void OnDisable()
+    {
+        // Update the final counts.
+        foreach (var s in allShoppers)
+        {
+            if (s.IsHealthy())
+            {
+                finalHealthy++;
+            }
+
+            if (s.IsExposed())
+            {
+                finalExposed++;
+            }
+        }
+
+        var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
+        Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {exposureRate}%");
+
     }
 
     /// <summary>
@@ -67,10 +93,22 @@ public class StoreSimulation : MonoBehaviour
 
     public void Despawn(Shopper s)
     {
-        if (s.InfectionStatus == Shopper.Status.Contagious)
+        if (s.IsContagious())
         {
             numContagious--;
         }
+
+        // Update running totals of healthy and exposed.
+        if (s.IsHealthy())
+        {
+            finalHealthy++;
+        }
+
+        if (s.IsExposed())
+        {
+            finalExposed++;
+        }
+
         allShoppers.Remove(s);
         Destroy(s.gameObject);
     }
@@ -150,8 +188,8 @@ public class StoreSimulation : MonoBehaviour
                             continue;
                         }
 
-                        var dir = waypoints[j].transform.position - wp.transform.position;
-                        wp.CheckRaycastConnection(dir);
+                        var dir = (waypoints[j].transform.position - wp.transform.position).normalized;
+                        wp.CheckRaycastConnection(OneWayAisles, dir);
                     }
                 }
                 else
@@ -159,7 +197,7 @@ public class StoreSimulation : MonoBehaviour
                     // For other waypoints, just check preset directions
                     foreach (var dir in directions)
                     {
-                        wp.CheckRaycastConnection(dir);
+                        wp.CheckRaycastConnection(OneWayAisles, dir);
                     }
                 }
             }
