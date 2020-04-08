@@ -2514,7 +2514,7 @@ MonoBehaviour:
   DesiredNumShoppers: 20
   DesiredNumContagious: 2
   SpawnCooldown: 0.75
-  OneWayAisles: 1
+  OneWayAisles: 0
   ShopperPrefab: {fileID: 1093406097863196325, guid: 9d4463172376846758133dcae19a097d,
     type: 3}
 --- !u!4 &1381905398
@@ -2801,7 +2801,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 1e8f17efd89344265a124a56c265d0c7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3499,7 +3499,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2133423250}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 45, y: 3, z: -40.8}
+  m_LocalPosition: {x: 43.9, y: 3, z: -40.8}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 957411804}

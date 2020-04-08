@@ -16,16 +16,7 @@ public class WaypointNode : MonoBehaviour
     public WaypointType waypointType = WaypointType.Default;
     public List<WaypointNode> Edges = new List<WaypointNode>();
 
-    // Whether this node supports one-way connections, or always two-way.
-    // If true and an incoming edge is not in the forward direction or left/right, it is rejected.
-    public bool SupportsOneWay = true;
     StoreSimulation m_Simulation;
-
-    // Threshold for determining when to accept edges when in one-way mode.
-    // The dot product between the desired and proposed directions are computed, and rejected if it's
-    // less than the threshold.
-    // This allows edges from the left and right, but not reverse the intended direction.
-    const float k_OneWayDotProductThreshold = -0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -97,41 +88,30 @@ public class WaypointNode : MonoBehaviour
         return Edges[edgeIndex];
     }
 
-    void OnDrawGizmos()
+
+    public void DrawEdge(WaypointNode neighbor)
     {
-        DrawEdges();
-    }
+        var drawColor = Color.cyan;
+        drawColor.a = .5f;
+        Gizmos.color = drawColor;
+        // Offset slightly to one side, so that one-way edges are clearer
+        Vector3 start = transform.position;
+        Vector3 end = neighbor.transform.position;
+        Vector3 dir = (end - start).normalized;
+        Vector3 side = Vector3.Cross(transform.up, dir);
 
-    void DrawEdges()
-    {
-        foreach (var neighbor in Edges)
-        {
-            if (neighbor == null)
-            {
-                continue;
-            }
-            var drawColor = Color.cyan;
-            drawColor.a = .5f;
-            Gizmos.color = drawColor;
-            // Offset slightly to one side, so that one-way edges are clearer
-            Vector3 start = transform.position;
-            Vector3 end = neighbor.transform.position;
-            Vector3 dir = (end - start).normalized;
-            Vector3 side = Vector3.Cross(transform.up, dir);
+        var drawMagnitude = .5f;
+        start += drawMagnitude * side;
+        end += drawMagnitude * side;
 
-            var drawMagnitude = .5f;
-            start += drawMagnitude * side;
-            end += drawMagnitude * side;
+        Gizmos.DrawLine(start, end);
 
-            Gizmos.DrawLine(start, end);
-
-            // Draw an arrow head part-way along the line too (slightly closer to the end)
-            var arrowStart = .6f * end + .4f * start;
-            var arrowSide1 = arrowStart - drawMagnitude * dir + drawMagnitude * side;
-            var arrowSide2 = arrowStart - drawMagnitude * dir - drawMagnitude * side;
-            Gizmos.DrawLine(arrowStart, arrowSide1);
-            Gizmos.DrawLine(arrowStart, arrowSide2);
-        }
+        // Draw an arrow head part-way along the line too (slightly closer to the end)
+        var arrowStart = .6f * end + .4f * start;
+        var arrowSide1 = arrowStart - drawMagnitude * dir + drawMagnitude * side;
+        var arrowSide2 = arrowStart - drawMagnitude * dir - drawMagnitude * side;
+        Gizmos.DrawLine(arrowStart, arrowSide1);
+        Gizmos.DrawLine(arrowStart, arrowSide2);
     }
 
     public bool IsExit()
@@ -150,46 +130,64 @@ public class WaypointNode : MonoBehaviour
         set => m_Simulation = value;
     }
 
-    public void CheckRaycastConnection(bool simulationIsOneWay, Vector3 direction)
+    /// <summary>
+    /// Whether or not this waypoint can make a connection with the other one.
+    /// * Outgoing edges from exits, and incoming edges to entrances, are never allowed.
+    /// * Angle check: the other waypoint must be within an angle threshold of the cardinal directions
+    ///     (forward, left, right, backwards) relative to the transform of this waypoint.
+    ///     If simulationIsOneWay is true, then backwards is excluded.
+    /// * Raycast check - the raycast from this waypoint to the other must hit the other.
+    /// </summary>
+    /// <param name="simulationIsOneWay"></param>
+    /// <param name="otherWaypoint"></param>
+    /// <returns></returns>
+    public bool ShouldConnect(bool simulationIsOneWay, WaypointNode otherWaypoint)
     {
-        var rayStart = transform.position;
-        RaycastHit hitInfo;
-        var didHit = Physics.Raycast(rayStart, direction, out hitInfo);
-        if (!didHit)
+        if (IsExit() || otherWaypoint.IsEntrance())
         {
-            return;
+            return false;
         }
 
-        // See if we hit another waypoint
-        var otherWaypoint = hitInfo.collider?.GetComponent<WaypointNode>();
-        if (otherWaypoint == null)
+        var directions = new Vector3[]
         {
-            return;
-        }
+            transform.forward,
+            -transform.right,
+            transform.right,
+            -transform.forward,
+        };
 
-        if (Edges.Contains(otherWaypoint))
-        {
-            // This waypoint already hit us
-            return;
-        }
+        // TODO Convert from degrees to cos(radians) only when the angle threshold is set.
+        var angleThreshold = IsEntrance() ? 180.0f : 2.5f;
+        var cosThetaThreshold = Mathf.Cos(Mathf.Deg2Rad * angleThreshold);
 
-        // If we hit a one-way node, and we're enforcing one-way aisles in the simulation,
-        // then filter on the direction.
-        if (simulationIsOneWay && otherWaypoint.SupportsOneWay)
+        var dirToWaypoint = (otherWaypoint.transform.position - transform.position).normalized;
+
+        // Don't consider backwards edges
+        var numDirections = (simulationIsOneWay) ? 3 : 4;
+        for (var dirIndex = 0; dirIndex < numDirections; dirIndex++)
         {
-            var dot = Vector3.Dot(direction, otherWaypoint.transform.forward);
-            if (dot < k_OneWayDotProductThreshold)
+            var dotProd = Vector3.Dot(directions[dirIndex], dirToWaypoint);
+            if(dotProd < cosThetaThreshold)
             {
-                return;
+                continue;
+            }
+
+            // Raycast check
+            RaycastHit hitInfo;
+            var didHit = Physics.Raycast(transform.position, dirToWaypoint, out hitInfo);
+            if (!didHit)
+            {
+                continue;
+            }
+
+            var hitWaypoint = hitInfo.collider?.GetComponent<WaypointNode>();
+            if (hitWaypoint == otherWaypoint)
+            {
+                return true;
             }
         }
 
-        // Don't add incoming edges to Entrances, or outgoing edges from Exits.
-        if (!otherWaypoint.IsEntrance() && !IsExit())
-        {
-            Edges.Add(otherWaypoint);
-        }
-
+        return false;
     }
 }
 
