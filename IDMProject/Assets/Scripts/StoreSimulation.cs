@@ -28,7 +28,8 @@ public class StoreSimulation : MonoBehaviour
     [Header("Graphics Parameters")]
     public GameObject ShopperPrefab;
 
-    WaypointNode[] waypoints;
+    [HideInInspector]
+    public WaypointNode[] waypoints;
     List<WaypointNode> entrances;
     List<WaypointNode> exits;
     HashSet<Shopper> allShoppers;

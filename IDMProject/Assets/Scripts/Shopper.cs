@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Random = System.Random;
 
 public class Shopper : MonoBehaviour
 {
@@ -18,6 +19,11 @@ public class Shopper : MonoBehaviour
     public Material ContagiousMaterial;
     public Material ExposedMaterial;
     Status m_InfectionStatus;
+    HashSet<WaypointNode> m_VisistedNodes = new HashSet<WaypointNode>();
+    private int m_MaxNumberOfUniqueNodes = 0;
+    private bool m_WantsToExit = false;
+    
+    
 
     WaypointNode previousNode;
     WaypointNode nextNode;
@@ -77,9 +83,21 @@ public class Shopper : MonoBehaviour
 
     public void SetWaypoint(WaypointNode node)
     {
+        if (m_VisistedNodes.Count != m_MaxNumberOfUniqueNodes)
+            m_WantsToExit = true;
+        
         previousNode = node;
-        // Pick the next node randomly
-        nextNode = node.GetRandomNeighbor();
+
+        if (m_WantsToExit && m_VisistedNodes.Contains(nextNode))
+        {
+            // Pick the next node randomly
+            nextNode = node.GetRandomNeighbor(previousNode);
+        }
+        else
+        {
+            nextNode = node.GetRandomNeighbor();
+            m_VisistedNodes.Add(nextNode);
+        }
 
         var worldPos = previousNode.transform.position;
         transform.position = worldPos;
@@ -89,6 +107,7 @@ public class Shopper : MonoBehaviour
     void Start()
     {
         m_PreviousPosition = transform.position;
+        m_MaxNumberOfUniqueNodes = UnityEngine.Random.Range(3, m_Simulation.waypoints.Length);
     }
 
     // Update is called once per frame
