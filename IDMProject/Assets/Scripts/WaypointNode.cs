@@ -14,6 +14,8 @@ public class WaypointNode : MonoBehaviour
     }
 
     public WaypointType waypointType = WaypointType.Default;
+    [Range(0, 180)]
+    public float EdgeAngleThresholdDegrees = 2.5f;
     public List<WaypointNode> Edges = new List<WaypointNode>();
 
     StoreSimulation m_Simulation;
@@ -157,7 +159,7 @@ public class WaypointNode : MonoBehaviour
         };
 
         // TODO Convert from degrees to cos(radians) only when the angle threshold is set.
-        var angleThreshold = IsEntrance() ? 180.0f : 2.5f;
+        var angleThreshold = EdgeAngleThresholdDegrees;
         var cosThetaThreshold = Mathf.Cos(Mathf.Deg2Rad * angleThreshold);
 
         var dirToWaypoint = (otherWaypoint.transform.position - transform.position).normalized;

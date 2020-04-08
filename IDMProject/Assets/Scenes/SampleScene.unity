@@ -168,8 +168,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &74898429
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -263,8 +263,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &85294731
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -479,8 +479,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 1
+  EdgeAngleThresholdDegrees: 35
   Edges: []
-  SupportsOneWay: 0
 --- !u!65 &220513855
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -588,8 +588,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &296151635
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -697,8 +697,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &308392468
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -806,8 +806,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &312274642
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -915,8 +915,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &408817749
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1010,8 +1010,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &477088512
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1133,8 +1133,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &602412192
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1242,8 +1242,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &622606362
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1351,8 +1351,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &626141706
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1460,8 +1460,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 2
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 0
 --- !u!65 &698654234
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1661,8 +1661,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 2
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 0
 --- !u!65 &776911848
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1770,8 +1770,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &864426399
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1879,8 +1879,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &919045279
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2042,8 +2042,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &959081358
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2327,8 +2327,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &1344512299
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2580,8 +2580,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &1392212895
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2675,8 +2675,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &1443640140
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2882,8 +2882,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &1555894344
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3005,8 +3005,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &1559547283
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3114,8 +3114,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 1
+  EdgeAngleThresholdDegrees: 45
   Edges: []
-  SupportsOneWay: 0
 --- !u!65 &1621727567
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3316,8 +3316,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &1977527625
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3518,8 +3518,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
+  EdgeAngleThresholdDegrees: 2.5
   Edges: []
-  SupportsOneWay: 1
 --- !u!65 &2133423253
 BoxCollider:
   m_ObjectHideFlags: 0
