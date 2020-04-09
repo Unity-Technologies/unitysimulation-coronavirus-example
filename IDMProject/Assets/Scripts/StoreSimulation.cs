@@ -81,7 +81,7 @@ public class StoreSimulation : MonoBehaviour
         }
 
         var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
-        Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {exposureRate}%");
+        Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {100.0 * exposureRate}%");
 
     }
 
@@ -217,7 +217,7 @@ public class StoreSimulation : MonoBehaviour
         {
             if (!shopper.IsContagious())
             {
-                return;
+                continue;
             }
 
             // Find nearby shoppers
