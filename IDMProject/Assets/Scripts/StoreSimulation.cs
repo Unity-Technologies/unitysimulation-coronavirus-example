@@ -83,7 +83,7 @@ public class StoreSimulation : MonoBehaviour
 
     void OnDisable()
     {
-		OnSimulationFinished();
+		// OnSimulationFinished();
     }
 
     void OnSimulationFinished()
