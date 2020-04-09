@@ -34,6 +34,7 @@ public class StoreSimulation : MonoBehaviour
     WaypointNode[] waypoints;
     List<WaypointNode> entrances;
     List<WaypointNode> exits;
+    List<WaypointNode> regularNodes;
     HashSet<Shopper> allShoppers;
     float spawnCooldownCounter;
     int numContagious;
@@ -143,14 +144,26 @@ public class StoreSimulation : MonoBehaviour
     public void Spawn(Shopper s)
     {
         s.simulation = this;
-        // Pick a random entrance for the start position
-        var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count)];
+        if (s.Behavior == Shopper.BehaviorType.ShoppingList)
+        {
+            var path = GenerateRandomPath(6);
+            if(path != null)
+            {
+                s.SetPath(path);
+            }
+        }
+
+        if (s.path == null)
+        {
+            // Pick a random entrance for the start position
+            var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count)];
+            s.SetWaypoint(startWp);
+        }
 
         // Randomize the movement speed between [.75, 1.25] of the default speed
         var speedMult = UnityEngine.Random.Range(.75f, 1.25f);
         s.Speed *= speedMult;
 
-        s.SetWaypoint(startWp);
         if (numContagious < DesiredNumContagious)
         {
             s.InfectionStatus = Shopper.Status.Contagious;
@@ -185,6 +198,7 @@ public class StoreSimulation : MonoBehaviour
         waypoints = GetComponentsInChildren<WaypointNode>();
         entrances = new List<WaypointNode>();
         exits = new List<WaypointNode>();
+        regularNodes = new List<WaypointNode>();
         Debug.Log($"Found {waypoints.Length} waypoints");
 
         // Clear any existing edges
@@ -199,6 +213,10 @@ public class StoreSimulation : MonoBehaviour
             else if (wp.waypointType == WaypointNode.WaypointType.Exit)
             {
                 exits.Add(wp);
+            }
+            else
+            {
+                regularNodes.Add(wp);
             }
         }
 
@@ -251,7 +269,7 @@ public class StoreSimulation : MonoBehaviour
         {
             if (!shopper.IsContagious())
             {
-                return;
+                continue;
             }
 
             // Find nearby shoppers
@@ -305,5 +323,138 @@ public class StoreSimulation : MonoBehaviour
         // so
         var probPerFrame = 1.0f - Mathf.Pow(1.0f - prob, Time.deltaTime);
         return UnityEngine.Random.value < probPerFrame;
+    }
+
+    List<WaypointNode> GenerateRandomPath(int numGoals)
+    {
+        HashSet<WaypointNode> goals = new HashSet<WaypointNode>();
+
+        // Select numGoals regular waypoints without replacement
+        // TODO: Fisher-Yates shuffle instead?
+        while (goals.Count < numGoals)
+        {
+            var randomIndex = UnityEngine.Random.Range(0, regularNodes.Count);
+            if (regularNodes[randomIndex].Passthrough)
+            {
+                continue;
+            }
+            goals.Add(regularNodes[randomIndex]);
+        }
+
+        // Randomly pick from the available entrances and exits.
+        var entrance = entrances[UnityEngine.Random.Range(0, entrances.Count)];
+        var exit = exits[UnityEngine.Random.Range(0, exits.Count)];
+
+        // Order the goals.
+        // Just greedily pick the closest one to the most recent point (at least, that's how I go shopping).
+        List<WaypointNode> orderedGoals = new List<WaypointNode>();
+        orderedGoals.Add(entrance);
+        var current = entrance;
+        while (goals.Count > 0)
+        {
+            WaypointNode closestNode = null;
+            float closestDistance = float.MaxValue;
+            foreach (var g in goals)
+            {
+                var distance = Vector3.Distance(current.transform.position, g.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestNode = g;
+                }
+            }
+            orderedGoals.Add(closestNode);
+            goals.Remove(closestNode);
+        }
+        orderedGoals.Add(exit);
+
+        // Dijkstra Search
+        List<WaypointNode> path = new List<WaypointNode>();
+        for (var i = 0; i < orderedGoals.Count-1; i++)
+        {
+            var subPath = FindPath(orderedGoals[i], orderedGoals[i + 1]);
+            if (subPath == null)
+            {
+                // TODO this is either a bug in the Dijkstra implementation,
+                // or the graph isn't fully connected, need to debug further.
+                return null;
+            }
+
+            path.AddRange(subPath);
+            // The last point now will be the same as the first point in the next subpath, so pop it
+            path.RemoveAt(path.Count-1);
+        }
+        // And add the last goal back
+        path.Add(exit);
+        return path;
+    }
+
+    static List<WaypointNode> FindPath(WaypointNode startNode, WaypointNode endNode)
+    {
+        Dictionary<WaypointNode, float> pathCost = new Dictionary<WaypointNode, float>();
+        Dictionary<WaypointNode, WaypointNode> parents = new Dictionary<WaypointNode, WaypointNode>();
+        HashSet<WaypointNode> closed = new HashSet<WaypointNode>();
+
+        parents[startNode] = null;
+        pathCost[startNode] = 0.0f;
+
+        // TODO priority queue, we'll linear search for now
+        while (!closed.Contains(endNode))
+        {
+            if (pathCost.Count == 0)
+            {
+                // Unreachable
+                return null;
+            }
+            // "pop" the lowest cost node
+            var currentNode = FindLowestValue(pathCost);
+            var currentCost = pathCost[currentNode];
+            foreach (var neighbor in currentNode.Edges)
+            {
+                if (closed.Contains(neighbor))
+                {
+                    continue;
+                }
+
+                var costToNeighbor = Vector3.Distance(currentNode.transform.position, neighbor.transform.position);
+                if (!pathCost.ContainsKey(neighbor) || currentCost + costToNeighbor < pathCost[neighbor])
+                {
+                    // Update cost and parent for the neighbor
+                    pathCost[neighbor] = currentCost + costToNeighbor;
+                    parents[neighbor] = currentNode;
+                }
+            }
+
+            pathCost.Remove(currentNode);
+            closed.Add(currentNode);
+        }
+
+        // Walk backwards from the goal
+        List<WaypointNode> pathOut = new List<WaypointNode>();
+        var current = endNode;
+        while (current != null)
+        {
+            pathOut.Add(current);
+            current = parents[current];
+        }
+        pathOut.Reverse();
+        return pathOut;
+    }
+
+    // TODO replace with minheap/priority queue
+    static T FindLowestValue<T>(Dictionary<T, float> heap)
+    {
+        var lowestVal = float.MaxValue;
+        T lowestKey = default(T);
+        foreach (var entry in heap)
+        {
+            if (entry.Value < lowestVal)
+            {
+                lowestKey = entry.Key;
+                lowestVal = entry.Value;
+            }
+        }
+
+        return lowestKey;
     }
 }
