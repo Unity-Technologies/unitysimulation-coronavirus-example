@@ -179,6 +179,8 @@ public class Shopper : MonoBehaviour
         var t = Vector3.Dot(prevToCur, prevToNext) / Vector3.Dot(prevToNext, prevToNext);
         if (float.IsNaN(t))
         {
+            // This should be considered an error (chances are, the next and previous nodes are the same)
+            // But patch it up to prevent NaN transforms.
             t = 0.0f;
         }
 

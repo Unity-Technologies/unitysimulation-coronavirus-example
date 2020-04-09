@@ -278,7 +278,7 @@ public class StoreSimulation : MonoBehaviour
         HashSet<WaypointNode> goals = new HashSet<WaypointNode>();
 
         // Select numGoals regular waypoints without replacement
-        // Fisher-Yates shuffle instead
+        // TODO: Fisher-Yates shuffle instead?
         while (goals.Count < numGoals)
         {
             var randomIndex = UnityEngine.Random.Range(0, regularNodes.Count);
@@ -323,17 +323,11 @@ public class StoreSimulation : MonoBehaviour
             var subPath = FindPath(orderedGoals[i], orderedGoals[i + 1]);
             if (subPath == null)
             {
+                // TODO this is either a bug in the Dijkstra implementation,
+                // or the graph isn't fully connected, need to debug further.
                 return null;
             }
-//            if (subPath != null)
-//            {
-//                DrawPath(subPath, Color.green);
-//            }
-//            else
-//            {
-//                Gizmos.color = Color.red;
-//                Gizmos.DrawLine(orderedGoals[i].transform.position, orderedGoals[i + 1].transform.position);
-//            }
+
             path.AddRange(subPath);
             // The last point now will be the same as the first point in the next subpath, so pop it
             path.RemoveAt(path.Count-1);
@@ -395,6 +389,7 @@ public class StoreSimulation : MonoBehaviour
         return pathOut;
     }
 
+    // TODO replace with minheap/priority queue
     static T FindLowestValue<T>(Dictionary<T, float> heap)
     {
         var lowestVal = float.MaxValue;
