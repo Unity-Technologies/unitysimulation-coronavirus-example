@@ -13,14 +13,23 @@ public class Shopper : MonoBehaviour
         Exposed
     }
 
+    public enum BehaviorType
+    {
+        RandomWalk,
+        ShoppingList
+    }
+
     public float Speed = 15.0f;
     public Material HealthyMaterial;
     public Material ContagiousMaterial;
     public Material ExposedMaterial;
     Status m_InfectionStatus;
+    public BehaviorType Behavior = BehaviorType.ShoppingList;
 
     WaypointNode previousNode;
     WaypointNode nextNode;
+
+    internal List<WaypointNode> path;
 
     StoreSimulation m_Simulation;
     Vector3 m_PreviousPosition;
@@ -85,6 +94,18 @@ public class Shopper : MonoBehaviour
         transform.position = worldPos;
     }
 
+    public void SetPath(List<WaypointNode> _path)
+    {
+        path = _path;
+        // TODO convert to queue
+        previousNode = path[0];
+        path.RemoveAt(0);
+        nextNode = path[0];
+
+        var worldPos = previousNode.transform.position;
+        transform.position = worldPos;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -110,9 +131,37 @@ public class Shopper : MonoBehaviour
                 var previousPos = previousNode.transform.position;
                 var currentPos = nextNode.transform.position;
                 previousNode = nextNode;
-                nextNode = nextNode.GetRandomNeighborInDirection(previousPos, currentPos);
+                if (path != null)
+                {
+                    // TODO convert to queue
+                    path.RemoveAt(0);
+                    nextNode = path[0];
+                }
+                else
+                {
+                    nextNode = nextNode.GetRandomNeighborInDirection(previousPos, currentPos);
+                }
             }
         }
+    }
+
+    static void DrawPath(List<WaypointNode> path, Color color)
+    {
+        Gizmos.color = color;
+        for (var i = 0; i < path.Count - 1; i++)
+        {
+            var p1 = path[i].transform.position;
+            var p2 = path[i + 1].transform.position;
+            Gizmos.DrawLine(p1, p2);
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+//        if (path != null)
+//        {
+//            DrawPath(path, Color.green);
+//        }
     }
 
     bool UpdateInterpolation()
@@ -128,6 +177,10 @@ public class Shopper : MonoBehaviour
         var distancePrevToNext = prevToNext.magnitude;
         // Fraction from 0 to 1
         var t = Vector3.Dot(prevToCur, prevToNext) / Vector3.Dot(prevToNext, prevToNext);
+        if (float.IsNaN(t))
+        {
+            t = 0.0f;
+        }
 
         // Advance by speed * timestep units
         var distance = Speed * Time.deltaTime;
