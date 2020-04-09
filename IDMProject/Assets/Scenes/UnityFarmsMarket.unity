@@ -1365,7 +1365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DesiredNumShoppers: 35
-  DesiredNumContagious: 3
+  DesiredNumContagious: 5
   SpawnCooldown: 0.1
   OneWayAisles: 1
   ExposureProbabilityAtZeroDistance: 0.86
@@ -6344,8 +6344,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863031578}
-  m_LocalRotation: {x: -0, y: 0.5187305, z: -0, w: 0.85493785}
-  m_LocalPosition: {x: -18.31, y: 1.5, z: -23.49}
+  m_LocalRotation: {x: 0.7071067, y: 0.00000008940697, z: -0.000000059604645, w: 0.7071068}
+  m_LocalPosition: {x: 2.9712613, y: 86.64487, z: 2.451847}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
