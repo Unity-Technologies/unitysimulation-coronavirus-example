@@ -97,7 +97,7 @@ public class WaypointNode : MonoBehaviour
         drawColor.a = .75f;
         Gizmos.color = drawColor;
 
-        Gizmos.DrawCube(transform.position, new Vector3(1, 1, 1));
+        Gizmos.DrawCube(transform.position, transform.localScale);
     }
 
     public void DrawEdge(WaypointNode neighbor)
