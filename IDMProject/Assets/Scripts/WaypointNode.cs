@@ -125,6 +125,11 @@ public class WaypointNode : MonoBehaviour
         Gizmos.DrawLine(arrowStart, arrowSide2);
     }
 
+    public bool IsDefault()
+    {
+        return waypointType == WaypointType.Default;
+    }
+
     public bool IsExit()
     {
         return waypointType == WaypointType.Exit;

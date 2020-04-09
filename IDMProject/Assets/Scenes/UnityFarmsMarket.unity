@@ -1364,12 +1364,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a44c57401d6646d8bcc2afb9d576250, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DesiredNumShoppers: 50
-  DesiredNumContagious: 1
+  DesiredNumShoppers: 35
+  DesiredNumContagious: 5
   SpawnCooldown: 0.1
   OneWayAisles: 1
-  ExposureProbabilityAtZeroDistance: 0.5
-  ExposureProbabilityAtMaxDistance: 0
+  ExposureProbabilityAtZeroDistance: 0.86
+  ExposureProbabilityAtMaxDistance: 0.5
   ExposureDistanceMeters: 1.8288
   ShopperPrefab: {fileID: 1093406097863196325, guid: 9d4463172376846758133dcae19a097d,
     type: 3}
@@ -1400,7 +1400,7 @@ GameObject:
   - component: {fileID: 645986384}
   - component: {fileID: 645986383}
   m_Layer: 0
-  m_Name: Exit (16)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2675,7 +2675,7 @@ GameObject:
   - component: {fileID: 821930792}
   - component: {fileID: 821930791}
   m_Layer: 0
-  m_Name: Exit (10)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2980,7 +2980,7 @@ GameObject:
   - component: {fileID: 937405767}
   - component: {fileID: 937405766}
   m_Layer: 0
-  m_Name: Exit (11)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3194,7 +3194,7 @@ GameObject:
   - component: {fileID: 1073214560}
   - component: {fileID: 1073214559}
   m_Layer: 0
-  m_Name: Exit (9)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3499,7 +3499,7 @@ GameObject:
   - component: {fileID: 1179225601}
   - component: {fileID: 1179225600}
   m_Layer: 0
-  m_Name: Exit (15)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4441,7 +4441,7 @@ GameObject:
   - component: {fileID: 1577485350}
   - component: {fileID: 1577485349}
   m_Layer: 0
-  m_Name: Exit (14)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4563,7 +4563,7 @@ GameObject:
   - component: {fileID: 1596838134}
   - component: {fileID: 1596838133}
   m_Layer: 0
-  m_Name: Exit (12)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4668,7 +4668,7 @@ GameObject:
   - component: {fileID: 1620575659}
   - component: {fileID: 1620575658}
   m_Layer: 0
-  m_Name: Exit (13)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4790,7 +4790,7 @@ GameObject:
   - component: {fileID: 1734525260}
   - component: {fileID: 1734525259}
   m_Layer: 0
-  m_Name: Exit (17)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6344,8 +6344,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863031578}
-  m_LocalRotation: {x: -0, y: 0.5187305, z: -0, w: 0.85493785}
-  m_LocalPosition: {x: -18.31, y: 1.5, z: -23.49}
+  m_LocalRotation: {x: 0.7071067, y: 0.00000008940697, z: -0.000000059604645, w: 0.7071068}
+  m_LocalPosition: {x: 2.9712613, y: 86.64487, z: 2.451847}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -6638,7 +6638,7 @@ GameObject:
   - component: {fileID: 1979182313}
   - component: {fileID: 1979182312}
   m_Layer: 0
-  m_Name: Exit (18)
+  m_Name: Register
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
