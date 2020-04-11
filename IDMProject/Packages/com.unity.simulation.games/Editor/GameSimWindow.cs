@@ -362,7 +362,6 @@ namespace Unity.Simulation.Games.Editor
                 scrollPosition = GUI.BeginScrollView(scrollRect, scrollPosition, new Rect(0, 0, kScrollViewWidth, k_LineHeight * scenes.Length));
                 if(scenes != null && scenes.Length > 0)
                 {
-                    Array.Sort(scenes);
                     for (int i = 0; i < scenes.Length; i++)
                     {
                         var selected = false;
@@ -473,7 +472,9 @@ namespace Unity.Simulation.Games.Editor
             var countLoaded = SceneManager.sceneCountInBuildSettings;
             var loadedScenes = new string[countLoaded];
             for (int i = 0; i < countLoaded; i++)
-                loadedScenes[i] = SceneManager.GetSceneByBuildIndex(i).path;
+            {
+                loadedScenes[i] = SceneUtility.GetScenePathByBuildIndex(i);
+            }
             return loadedScenes;
         }
 
