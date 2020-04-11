@@ -14,8 +14,9 @@ public class WaypointNode : MonoBehaviour
     }
 
     public WaypointType waypointType = WaypointType.Default;
-    [Range(0, 180)]
+    [Range(0, 90)]
     public float EdgeAngleThresholdDegrees = 2.5f;
+    public bool Passthrough = false;
     public List<WaypointNode> Edges = new List<WaypointNode>();
 
     StoreSimulation m_Simulation;
@@ -90,6 +91,14 @@ public class WaypointNode : MonoBehaviour
         return Edges[edgeIndex];
     }
 
+    void OnDrawGizmos()
+    {
+        var drawColor = IsEntrance()? Color.green : IsExit() ? Color.red : Color.cyan;
+        drawColor.a = .75f;
+        Gizmos.color = drawColor;
+
+        Gizmos.DrawCube(transform.position, transform.localScale);
+    }
 
     public void DrawEdge(WaypointNode neighbor)
     {
@@ -114,6 +123,11 @@ public class WaypointNode : MonoBehaviour
         var arrowSide2 = arrowStart - drawMagnitude * dir - drawMagnitude * side;
         Gizmos.DrawLine(arrowStart, arrowSide1);
         Gizmos.DrawLine(arrowStart, arrowSide2);
+    }
+
+    public bool IsDefault()
+    {
+        return waypointType == WaypointType.Default;
     }
 
     public bool IsExit()
@@ -164,8 +178,9 @@ public class WaypointNode : MonoBehaviour
 
         var dirToWaypoint = (otherWaypoint.transform.position - transform.position).normalized;
 
-        // Don't consider backwards edges
-        var numDirections = (simulationIsOneWay) ? 3 : 4;
+        // Don't consider backwards edges if simulationIsOneWay
+        // Only consider forward edges if Passthrough
+        var numDirections = Passthrough ? 1 : simulationIsOneWay ? 3 : 4;
         for (var dirIndex = 0; dirIndex < numDirections; dirIndex++)
         {
             var dotProd = Vector3.Dot(directions[dirIndex], dirToWaypoint);
@@ -175,6 +190,7 @@ public class WaypointNode : MonoBehaviour
             }
 
             // Raycast check
+            // TODO clean up - we only need one raycast, not in the loop
             RaycastHit hitInfo;
             var didHit = Physics.Raycast(transform.position, dirToWaypoint, out hitInfo);
             if (!didHit)
