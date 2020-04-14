@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 1093406097863196328}
   - component: {fileID: 1093406097863196327}
   - component: {fileID: 1093406097863196326}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Shopper
-  m_TagString: Untagged
+  m_TagString: Shopper
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,4 +111,6 @@ MonoBehaviour:
   HealthyMaterial: {fileID: 2100000, guid: 782a90cc15da24955bf03e754172b271, type: 2}
   ContagiousMaterial: {fileID: 2100000, guid: 8ffc66ad0a59445e18599b2d69f42062, type: 2}
   ExposedMaterial: {fileID: 2100000, guid: afa646ae6b1084528b813ea4812a43a6, type: 2}
+  BillingTime: 0
   Behavior: 1
+  Regsiter: {fileID: 0}
