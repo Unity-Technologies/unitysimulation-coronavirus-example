@@ -119,7 +119,7 @@ public class StoreSimulation : MonoBehaviour
         }
     }
 
-    public void Despawn(Shopper s)
+    public void Despawn(Shopper s, bool removeShopper = true)
     {
         if (s.IsContagious())
         {
@@ -137,7 +137,10 @@ public class StoreSimulation : MonoBehaviour
             finalExposed++;
         }
 
-        allShoppers.Remove(s);
+        if (removeShopper)
+        {
+            allShoppers.Remove(s);
+        }
         Destroy(s.gameObject);
     }
 
@@ -404,5 +407,17 @@ public class StoreSimulation : MonoBehaviour
         }
 
         return lowestKey;
+    }
+
+    public void ResetSimulation()
+    {
+        foreach(var shopper in allShoppers)
+        {
+            Despawn(shopper, false);
+        }
+        allShoppers.Clear();
+        finalExposed = 0;
+        finalHealthy = 0;
+        numContagious = 0;
     }
 }
