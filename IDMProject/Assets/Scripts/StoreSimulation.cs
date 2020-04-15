@@ -12,7 +12,7 @@ public class StoreSimulation : MonoBehaviour
     [Header("Store Parameters")]
     public int DesiredNumShoppers = 10;
     public int DesiredNumContagious = 1;
-    public float SpawnCooldown= 1.0f;
+    public float SpawnCooldown = 1.0f;
     public bool OneWayAisles = true;
 
     // Exposure probability parameters.
@@ -95,7 +95,7 @@ public class StoreSimulation : MonoBehaviour
         if (s.Behavior == Shopper.BehaviorType.ShoppingList)
         {
             var path = GenerateRandomPath(6);
-            if(path != null)
+            if (path != null)
             {
                 s.SetPath(path);
             }
@@ -190,7 +190,7 @@ public class StoreSimulation : MonoBehaviour
             }
         }
         var endTicks = DateTime.Now.Ticks;
-        Debug.Log($"Raycasting between waypoints took {(endTicks-startTicks)*s_TicksToSeconds} seconds");
+        Debug.Log($"Raycasting between waypoints took {(endTicks - startTicks) * s_TicksToSeconds} seconds");
     }
 
     void OnDrawGizmos()
@@ -321,7 +321,7 @@ public class StoreSimulation : MonoBehaviour
 
         // Dijkstra Search
         List<WaypointNode> path = new List<WaypointNode>();
-        for (var i = 0; i < orderedGoals.Count-1; i++)
+        for (var i = 0; i < orderedGoals.Count - 1; i++)
         {
             var subPath = FindPath(orderedGoals[i], orderedGoals[i + 1]);
             if (subPath == null)
@@ -333,7 +333,7 @@ public class StoreSimulation : MonoBehaviour
 
             path.AddRange(subPath);
             // The last point now will be the same as the first point in the next subpath, so pop it
-            path.RemoveAt(path.Count-1);
+            path.RemoveAt(path.Count - 1);
         }
         // And add the last goal back
         path.Add(exit);
@@ -411,7 +411,7 @@ public class StoreSimulation : MonoBehaviour
 
     public void ResetSimulation()
     {
-        foreach(var shopper in allShoppers)
+        foreach (var shopper in allShoppers)
         {
             Despawn(shopper, false);
         }
