@@ -176,7 +176,7 @@ public class Shopper : MonoBehaviour
         else
         {
             
-            if (Behavior == BehaviorType.InQueue || nextNode.waypointType == WaypointNode.WaypointType.Register)
+            if (Behavior == BehaviorType.InQueue && nextNode.waypointType == WaypointNode.WaypointType.Register)
             {
                 RaycastHit hit;
                 //var layermask = ~(1 << 3);
