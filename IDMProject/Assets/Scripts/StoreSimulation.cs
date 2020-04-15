@@ -20,7 +20,6 @@ public class StoreSimulation : MonoBehaviour
     
     [Header("Billing Queue Parameters")]
     public int BillingQueueCapacity = 5;
-    public float MaxSafeDistance = 2.5f;
     public float MaxBlillingTime = 3.0f;
     public int NumberOfCountersOpen = 9;
     
@@ -74,9 +73,9 @@ public class StoreSimulation : MonoBehaviour
         {
             Registers[i].gameObject.SetActive(true);
             var queue = Registers[i].AddComponent<QueueingSystem>();
-            queue.m_MaxQueueCapacity = BillingQueueCapacity;
-            queue.m_MaxProcessingTime = MaxBlillingTime;
-            queue.m_ShoppersQueue = new Queue<Shopper>(BillingQueueCapacity);
+            queue.MaxQueueCapacity = BillingQueueCapacity;
+            queue.MaxProcessingTime = MaxBlillingTime;
+            queue.ShoppersQueue = new Queue<Shopper>(BillingQueueCapacity);
             queue.QueueState = QueueingSystem.State.Idle;
             registersQueues.Add(queue);
         }
@@ -157,7 +156,7 @@ public class StoreSimulation : MonoBehaviour
         }
     }
 
-    public void Despawn(Shopper s)
+    public void Despawn(Shopper s, bool removeShopper = true)
     {
         if (s.IsContagious())
         {
@@ -175,7 +174,10 @@ public class StoreSimulation : MonoBehaviour
             finalExposed++;
         }
 
-        allShoppers.Remove(s);
+        if (removeShopper)
+        {
+            allShoppers.Remove(s);
+        }
         Destroy(s.gameObject);
     }
 
@@ -443,12 +445,12 @@ public class StoreSimulation : MonoBehaviour
 
         return lowestKey;
     }
-
+    
     void MoveQueue()
     {
         foreach (var register in registersQueues)
         {
-            if (register.m_ShoppersQueue.Count > 0 && register.QueueState == QueueingSystem.State.Idle)
+            if (register.ShoppersQueue.Count > 0 && register.QueueState == QueueingSystem.State.Idle)
             {
                 var shopper = register.ExitQueue();
                 register.QueueState = QueueingSystem.State.Processing;
@@ -470,11 +472,11 @@ public class StoreSimulation : MonoBehaviour
 
         shopper.Regsiter.GetComponent<QueueingSystem>().QueueState = QueueingSystem.State.Idle;
     }
-    
+
     public WaypointNode EnterInAvailableQueue(Shopper shopper, WaypointNode currentNode)
     {
-        var registerNodesQueue = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register).ToArray();
-        //var nonRegsiterNodes = currentNode.Edges.Where(e => e.waypointType != WaypointNode.WaypointType.Register && e.waypointType != WaypointNode.WaypointType.Exit).ToArray();
+        var registerNodesQueue = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register)
+            .ToArray();
 
         for (int i = currentServingQueue; i < registerNodesQueue.Length;)
         {
@@ -491,5 +493,17 @@ public class StoreSimulation : MonoBehaviour
 
         shopper.SetWaypoint(currentNode, true);
         return currentNode.GetRandomNeighbor();
+    }
+
+    public void ResetSimulation()
+    {
+        foreach(var shopper in allShoppers)
+        {
+            Despawn(shopper, false);
+        }
+        allShoppers.Clear();
+        finalExposed = 0;
+        finalHealthy = 0;
+        numContagious = 0;
     }
 }

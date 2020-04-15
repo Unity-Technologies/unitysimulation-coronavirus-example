@@ -6,11 +6,9 @@ using Random = System.Random;
 
 public class QueueingSystem : MonoBehaviour
 {
-    public Queue<Shopper> m_ShoppersQueue;
-
-    public int m_MaxQueueCapacity;
-
-    public float m_MaxProcessingTime = 2.5f;
+    public Queue<Shopper> ShoppersQueue;
+    public int            MaxQueueCapacity;
+    public float          MaxProcessingTime = 2.5f;
 
 
     public struct RegisterInfo
@@ -19,10 +17,10 @@ public class QueueingSystem : MonoBehaviour
         public float maxProcessingTime;
     }
 
-    public void InitializeQueue(RegisterInfo info)
+    public void InitializeQueue(int queueCapacity, float processingTime)
     {
-        m_ShoppersQueue = new Queue<Shopper>(info.maxQueueCapacity);
-        m_MaxProcessingTime = info.maxProcessingTime;
+        ShoppersQueue = new Queue<Shopper>(queueCapacity);
+        MaxProcessingTime = processingTime;
         QueueState = State.Idle;
     }
 
@@ -39,19 +37,19 @@ public class QueueingSystem : MonoBehaviour
 
     public QueueingSystem(int capacity)
     {
-        m_MaxQueueCapacity = capacity;
-        m_ShoppersQueue = new Queue<Shopper>(m_MaxQueueCapacity);
+        MaxQueueCapacity = capacity;
+        ShoppersQueue = new Queue<Shopper>(MaxQueueCapacity);
     }
 
     private void Awake()
     {
-        m_ShoppersQueue = new Queue<Shopper>(m_MaxQueueCapacity);
+        ShoppersQueue = new Queue<Shopper>(MaxQueueCapacity);
     }
 
 
     private bool CanEnterQueue()
     {
-        return m_ShoppersQueue.Count != m_MaxQueueCapacity;
+        return ShoppersQueue.Count != MaxQueueCapacity;
     }
 
     public bool EnterTheQueue(Shopper shopper, Func<Queue<Shopper>, bool> func = null)
@@ -59,11 +57,11 @@ public class QueueingSystem : MonoBehaviour
         var condition = true;
         
         if (func != null)
-            condition = func(m_ShoppersQueue);
+            condition = func(ShoppersQueue);
         
         if (CanEnterQueue() && condition)
         {
-            m_ShoppersQueue.Enqueue(shopper);
+            ShoppersQueue.Enqueue(shopper);
             return true;
         }
 
@@ -72,6 +70,6 @@ public class QueueingSystem : MonoBehaviour
     
     public Tuple<Shopper, float> ExitQueue()
     {
-        return new Tuple<Shopper, float>(m_ShoppersQueue.Dequeue(), UnityEngine.Random.Range(1.0f, m_MaxProcessingTime));
+        return new Tuple<Shopper, float>(ShoppersQueue.Dequeue(), UnityEngine.Random.Range(1.0f, MaxProcessingTime));
     }
 }

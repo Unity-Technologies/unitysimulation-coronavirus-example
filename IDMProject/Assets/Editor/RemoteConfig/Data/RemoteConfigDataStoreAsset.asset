@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
+  m_Name: RemoteConfigDataStoreAsset
+  m_EditorClassIdentifier: 
+  configId: 7fc4254b-cbe5-424e-ad56-0c06bf1cba4c
+  currentEnvironment: GameSim
+  currentEnvironmentId: e3fbd3b3-5ae1-4ee7-bf52-229c191fc587
+  currentEnvironmentIsDefault: 1
+  addedRulesIDs: []
+  updatedRulesIDs: []
+  deletedRulesIDs: []
+  _rsKeyList: "[\n  {\n    \"metadata\": {\n      \"entityId\": \"bca3ba84-088c-4628-9255-1e4f69e09a5c\"\n   
+    },\n    \"rs\": {\n      \"key\": \"numShoppers\",\n      \"type\": \"int\",\n     
+    \"value\": 5\n    }\n  }\n]"
+  _rsLastCachedKeyList: "[\n  {\n    \"metadata\": {\n      \"entityId\": \"bca3ba84-088c-4628-9255-1e4f69e09a5c\"\n   
+    },\n    \"rs\": {\n      \"key\": \"numShoppers\",\n      \"type\": \"int\",\n     
+    \"value\": 5\n    }\n  }\n]"
+  _environments: "[\n  {\n    \"projectId\": \"4259b188-a6c8-4c16-8c98-50441c14fe19\",\n   
+    \"name\": \"GameSim\",\n    \"id\": \"e3fbd3b3-5ae1-4ee7-bf52-229c191fc587\",\n   
+    \"createdAt\": \"2020-04-07T00:34:29Z\",\n    \"updatedAt\": \"2020-04-07T00:34:29Z\",\n   
+    \"isDefault\": true\n  }\n]"
+  _rulesList: '[]'
+  _lastCachedRulesList: '[]'
