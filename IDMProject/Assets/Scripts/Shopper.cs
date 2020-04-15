@@ -35,7 +35,7 @@ public class Shopper : MonoBehaviour
     public float          BillingTime = 0.0f;
     
     public BehaviorType Behavior = BehaviorType.ShoppingList;
-    private QueueingSystem m_BillingQueue;
+    private StoreSimulationQueue m_BillingQueue;
     WaypointNode previousNode;
     WaypointNode nextNode;
 
@@ -133,7 +133,7 @@ public class Shopper : MonoBehaviour
     {
         m_PreviousPosition = transform.position;
         m_MaxNumberOfUniqueNodes = UnityEngine.Random.Range(3, m_Simulation.waypoints.Length);
-        m_BillingQueue = gameObject.GetComponent<QueueingSystem>();
+        m_BillingQueue = gameObject.GetComponent<StoreSimulationQueue>();
     }
 
     WaypointNode EnterInAvailableQueue(WaypointNode currentNode)
@@ -143,7 +143,7 @@ public class Shopper : MonoBehaviour
 
         foreach (var node in regsiterNodes)
         {
-            var queue = node.gameObject.GetComponent<QueueingSystem>();
+            var queue = node.gameObject.GetComponent<StoreSimulationQueue>();
             if (queue.EnterTheQueue(this))
             {
                 Behavior = BehaviorType.InQueue;
@@ -161,7 +161,7 @@ public class Shopper : MonoBehaviour
 
         if (Behavior == BehaviorType.Billing)
         {
-            if (BillingTime >= m_Simulation.MaxBlillingTime)
+            if (BillingTime >= m_Simulation.MaxPurchaseTime)
             {
                 Behavior = BehaviorType.Exiting;
                 if (Regsiter != null)

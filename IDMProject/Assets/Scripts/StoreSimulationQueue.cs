@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
-public class QueueingSystem : MonoBehaviour
+public class StoreSimulationQueue : MonoBehaviour
 {
     public Queue<Shopper> ShoppersQueue;
     public int            MaxQueueCapacity;
@@ -35,7 +35,7 @@ public class QueueingSystem : MonoBehaviour
 
     // Start is called before the first frame update
 
-    public QueueingSystem(int capacity)
+    public StoreSimulationQueue(int capacity)
     {
         MaxQueueCapacity = capacity;
         ShoppersQueue = new Queue<Shopper>(MaxQueueCapacity);

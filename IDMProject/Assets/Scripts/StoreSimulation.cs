@@ -18,9 +18,11 @@ public class StoreSimulation : MonoBehaviour
     public float SpawnCooldown= 1.0f;
     public bool OneWayAisles = true;
     
+    [HideInInspector]
+    public int BillingQueueCapacity = 4;
+    
     [Header("Billing Queue Parameters")]
-    public int BillingQueueCapacity = 5;
-    public float MaxBlillingTime = 3.0f;
+    public float MaxPurchaseTime = 3.0f;
     public int NumberOfCountersOpen = 9;
     
     // Exposure probability parameters.
@@ -46,7 +48,7 @@ public class StoreSimulation : MonoBehaviour
     HashSet<Shopper> allShoppers;
     float spawnCooldownCounter;
     int numContagious;
-    private List<QueueingSystem> registersQueues = new List<QueueingSystem>();
+    private List<StoreSimulationQueue> registersQueues = new List<StoreSimulationQueue>();
     private int currentServingQueue = 0;
 
     // Results
@@ -72,11 +74,11 @@ public class StoreSimulation : MonoBehaviour
         for (int i = 0; i < NumberOfCountersOpen; i++)
         {
             Registers[i].gameObject.SetActive(true);
-            var queue = Registers[i].AddComponent<QueueingSystem>();
+            var queue = Registers[i].AddComponent<StoreSimulationQueue>();
             queue.MaxQueueCapacity = BillingQueueCapacity;
-            queue.MaxProcessingTime = MaxBlillingTime;
+            queue.MaxProcessingTime = MaxPurchaseTime;
             queue.ShoppersQueue = new Queue<Shopper>(BillingQueueCapacity);
-            queue.QueueState = QueueingSystem.State.Idle;
+            queue.QueueState = StoreSimulationQueue.State.Idle;
             registersQueues.Add(queue);
         }
     }
@@ -450,16 +452,16 @@ public class StoreSimulation : MonoBehaviour
     {
         foreach (var register in registersQueues)
         {
-            if (register.ShoppersQueue.Count > 0 && register.QueueState == QueueingSystem.State.Idle)
+            if (register.ShoppersQueue.Count > 0 && register.QueueState == StoreSimulationQueue.State.Idle)
             {
                 var shopper = register.ExitQueue();
-                register.QueueState = QueueingSystem.State.Processing;
+                register.QueueState = StoreSimulationQueue.State.Processing;
                 StartCoroutine(ProcessShopper(register, shopper.Item1, shopper.Item2));
             }
         }
     }
 
-    IEnumerator ProcessShopper(QueueingSystem register, Shopper shopper, float waitTime)
+    IEnumerator ProcessShopper(StoreSimulationQueue register, Shopper shopper, float waitTime)
     {
         yield return new WaitUntil(() => shopper.Behavior == Shopper.BehaviorType.Billing);
         shopper.BillingTime = waitTime;
@@ -470,7 +472,7 @@ public class StoreSimulation : MonoBehaviour
     {
         Debug.Assert(shopper.Regsiter != null, "Shopper needs to have an assigned register counter");
 
-        shopper.Regsiter.GetComponent<QueueingSystem>().QueueState = QueueingSystem.State.Idle;
+        shopper.Regsiter.GetComponent<StoreSimulationQueue>().QueueState = StoreSimulationQueue.State.Idle;
     }
 
     public WaypointNode EnterInAvailableQueue(Shopper shopper, WaypointNode currentNode)
@@ -480,7 +482,7 @@ public class StoreSimulation : MonoBehaviour
 
         for (int i = currentServingQueue; i < registerNodesQueue.Length;)
         {
-            var queue = registerNodesQueue[i].gameObject.GetComponent<QueueingSystem>();
+            var queue = registerNodesQueue[i].gameObject.GetComponent<StoreSimulationQueue>();
             if (queue && queue.EnterTheQueue(shopper))
             {
                 shopper.Behavior = Shopper.BehaviorType.InQueue;
