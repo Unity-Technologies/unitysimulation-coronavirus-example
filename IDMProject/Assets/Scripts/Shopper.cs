@@ -23,8 +23,6 @@ public class Shopper : MonoBehaviour
         InQueue,
         Exiting
     }
-    
-    
 
     public float          Speed = 1.0f;
     public Material       HealthyMaterial;

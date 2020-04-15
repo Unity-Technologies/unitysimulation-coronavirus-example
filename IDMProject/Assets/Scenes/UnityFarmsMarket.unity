@@ -1370,8 +1370,8 @@ MonoBehaviour:
   OneWayAisles: 1
   BillingQueueCapacity: 4
   MaxSafeDistance: 1
-  MaxBlillingTime: 3
-  NumberOfCountersOpen: 9
+  MaxBlillingTime: 5
+  NumberOfCountersOpen: 4
   ExposureProbabilityAtZeroDistance: 0.86
   ExposureProbabilityAtMaxDistance: 0.5
   ExposureDistanceMeters: 1.8288
