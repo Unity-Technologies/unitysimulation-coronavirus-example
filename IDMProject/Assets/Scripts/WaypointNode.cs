@@ -11,6 +11,7 @@ public class WaypointNode : MonoBehaviour
         Default = 0,
         Entrance = 1,
         Exit = 2,
+        Register
     }
 
     public WaypointType waypointType = WaypointType.Default;
@@ -159,6 +160,9 @@ public class WaypointNode : MonoBehaviour
     /// <returns></returns>
     public bool ShouldConnect(bool simulationIsOneWay, WaypointNode otherWaypoint)
     {
+        if (otherWaypoint.IsExit() && waypointType != WaypointType.Register)
+            return false;
+        
         if (IsExit() || otherWaypoint.IsEntrance())
         {
             return false;

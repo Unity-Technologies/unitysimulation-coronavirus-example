@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Object = System.Object;
+using Random = UnityEngine.Random;
 
 public class StoreSimulation : MonoBehaviour
 {
@@ -14,7 +17,14 @@ public class StoreSimulation : MonoBehaviour
     public int DesiredNumContagious = 1;
     public float SpawnCooldown= 1.0f;
     public bool OneWayAisles = true;
-
+    
+    [HideInInspector]
+    public int BillingQueueCapacity = 4;
+    
+    [Header("Billing Queue Parameters")]
+    public float MaxPurchaseTime = 3.0f;
+    public int NumberOfCountersOpen = 9;
+    
     // Exposure probability parameters.
     // These are given as the probability of a healthy person converting to exposed over the course of one second.
     // During simulation, these probability are linearly interpolated based on distance to the contagious person
@@ -27,14 +37,19 @@ public class StoreSimulation : MonoBehaviour
 
     [Header("Graphics Parameters")]
     public GameObject ShopperPrefab;
-
-    WaypointNode[] waypoints;
+    public GameObject[] Registers;
+    
+    
+    [HideInInspector]
+    public WaypointNode[] waypoints;
     List<WaypointNode> entrances;
     List<WaypointNode> exits;
     List<WaypointNode> regularNodes;
     HashSet<Shopper> allShoppers;
     float spawnCooldownCounter;
     int numContagious;
+    private List<StoreSimulationQueue> registersQueues = new List<StoreSimulationQueue>();
+    private int currentServingQueue = 0;
 
     // Results
     int finalHealthy;
@@ -42,9 +57,32 @@ public class StoreSimulation : MonoBehaviour
 
     void Awake()
     {
+        Debug.Assert(NumberOfCountersOpen <= Registers.Length, "Number of counters to be left open needs to be less than equal to total number of counters");
+        InitializeRegisters();
         InitWaypoints();
         allShoppers = new HashSet<Shopper>();
     }
+
+
+    private void InitializeRegisters()
+    {
+        foreach (var register in Registers)
+        {
+            register.gameObject.SetActive(false);
+        }
+        
+        for (int i = 0; i < NumberOfCountersOpen; i++)
+        {
+            Registers[i].gameObject.SetActive(true);
+            var queue = Registers[i].AddComponent<StoreSimulationQueue>();
+            queue.MaxQueueCapacity = BillingQueueCapacity;
+            queue.MaxProcessingTime = MaxPurchaseTime;
+            queue.ShoppersQueue = new Queue<Shopper>(BillingQueueCapacity);
+            queue.QueueState = StoreSimulationQueue.State.Idle;
+            registersQueues.Add(queue);
+        }
+    }
+    
 
     // Update is called once per frame
     void Update()
@@ -60,7 +98,8 @@ public class StoreSimulation : MonoBehaviour
             allShoppers.Add(newShopper);
             spawnCooldownCounter = SpawnCooldown;
         }
-
+        
+        MoveQueue();
         UpdateExposure();
     }
 
@@ -109,7 +148,7 @@ public class StoreSimulation : MonoBehaviour
         }
 
         // Randomize the movement speed between [.75, 1.25] of the default speed
-        var speedMult = UnityEngine.Random.Range(.75f, 1.25f);
+        var speedMult = UnityEngine.Random.Range(.5f, 1f);
         s.Speed *= speedMult;
 
         if (numContagious < DesiredNumContagious)
@@ -407,6 +446,55 @@ public class StoreSimulation : MonoBehaviour
         }
 
         return lowestKey;
+    }
+    
+    void MoveQueue()
+    {
+        foreach (var register in registersQueues)
+        {
+            if (register.ShoppersQueue.Count > 0 && register.QueueState == StoreSimulationQueue.State.Idle)
+            {
+                var shopper = register.ExitQueue();
+                register.QueueState = StoreSimulationQueue.State.Processing;
+                StartCoroutine(ProcessShopper(register, shopper.Item1, shopper.Item2));
+            }
+        }
+    }
+
+    IEnumerator ProcessShopper(StoreSimulationQueue register, Shopper shopper, float waitTime)
+    {
+        yield return new WaitUntil(() => shopper.Behavior == Shopper.BehaviorType.Billing);
+        shopper.BillingTime = waitTime;
+        shopper.Regsiter = register.gameObject;
+    }
+
+    public void InformExit(Shopper shopper)
+    {
+        Debug.Assert(shopper.Regsiter != null, "Shopper needs to have an assigned register counter");
+
+        shopper.Regsiter.GetComponent<StoreSimulationQueue>().QueueState = StoreSimulationQueue.State.Idle;
+    }
+
+    public WaypointNode EnterInAvailableQueue(Shopper shopper, WaypointNode currentNode)
+    {
+        var registerNodesQueue = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register)
+            .ToArray();
+
+        for (int i = currentServingQueue; i < registerNodesQueue.Length;)
+        {
+            var queue = registerNodesQueue[i].gameObject.GetComponent<StoreSimulationQueue>();
+            if (queue && queue.EnterTheQueue(shopper))
+            {
+                shopper.Behavior = Shopper.BehaviorType.InQueue;
+                currentServingQueue = (currentServingQueue + 1) % registerNodesQueue.Length;
+                return registerNodesQueue[i];
+            }
+
+            i++;
+        }
+
+        shopper.SetWaypoint(currentNode, true);
+        return currentNode.GetRandomNeighbor();
     }
 
     public void ResetSimulation()

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using Random = System.Random;
 
 public class Shopper : MonoBehaviour
 {
@@ -16,16 +18,24 @@ public class Shopper : MonoBehaviour
     public enum BehaviorType
     {
         RandomWalk,
-        ShoppingList
+        ShoppingList,
+        Billing,
+        InQueue,
+        Exiting
     }
 
-    public float Speed = 15.0f;
-    public Material HealthyMaterial;
-    public Material ContagiousMaterial;
-    public Material ExposedMaterial;
-    Status m_InfectionStatus;
+    public float          Speed = 1.0f;
+    public Material       HealthyMaterial;
+    public Material       ContagiousMaterial;
+    public Material       ExposedMaterial;
+    Status                m_InfectionStatus;
+    HashSet<WaypointNode> m_VisistedNodes = new HashSet<WaypointNode>();
+    private int           m_MaxNumberOfUniqueNodes = 0;
+    private bool          m_WantsToExit = false;
+    public float          BillingTime = 0.0f;
+    
     public BehaviorType Behavior = BehaviorType.ShoppingList;
-
+    private StoreSimulationQueue m_BillingQueue;
     WaypointNode previousNode;
     WaypointNode nextNode;
 
@@ -33,6 +43,7 @@ public class Shopper : MonoBehaviour
 
     StoreSimulation m_Simulation;
     Vector3 m_PreviousPosition;
+    public GameObject Regsiter;
 
     public StoreSimulation simulation
     {
@@ -84,11 +95,22 @@ public class Shopper : MonoBehaviour
         return m_InfectionStatus == Status.Exposed;
     }
 
-    public void SetWaypoint(WaypointNode node)
+    public void SetWaypoint(WaypointNode node, bool reset = false)
     {
+        if (m_VisistedNodes.Count != m_MaxNumberOfUniqueNodes && !reset)
+            m_WantsToExit = true;
         previousNode = node;
-        // Pick the next node randomly
-        nextNode = node.GetRandomNeighbor();
+
+        if (m_WantsToExit && m_VisistedNodes.Contains(nextNode))
+        {
+            // Pick the next node randomly
+            nextNode = node.GetRandomNeighbor(previousNode);
+        }
+        else
+        {
+            nextNode = node.GetRandomNeighbor();
+            m_VisistedNodes.Add(nextNode);
+        }
 
         var worldPos = previousNode.transform.position;
         transform.position = worldPos;
@@ -110,6 +132,26 @@ public class Shopper : MonoBehaviour
     void Start()
     {
         m_PreviousPosition = transform.position;
+        m_MaxNumberOfUniqueNodes = UnityEngine.Random.Range(3, m_Simulation.waypoints.Length);
+        m_BillingQueue = gameObject.GetComponent<StoreSimulationQueue>();
+    }
+
+    WaypointNode EnterInAvailableQueue(WaypointNode currentNode)
+    {
+        var regsiterNodes = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register);
+        var nonRegsiterNodes = currentNode.Edges.Where(e => e.waypointType != WaypointNode.WaypointType.Register).ToArray();
+
+        foreach (var node in regsiterNodes)
+        {
+            var queue = node.gameObject.GetComponent<StoreSimulationQueue>();
+            if (queue.EnterTheQueue(this))
+            {
+                Behavior = BehaviorType.InQueue;
+                return node;
+            }
+        }
+
+        return nonRegsiterNodes[UnityEngine.Random.Range(0, nonRegsiterNodes.Length)];
     }
 
     // Update is called once per frame
@@ -117,32 +159,74 @@ public class Shopper : MonoBehaviour
     {
         m_PreviousPosition = transform.position;
 
-        var reachedEnd = UpdateInterpolation();
-        if (reachedEnd)
+        if (Behavior == BehaviorType.Billing)
         {
-            if (nextNode.IsExit() || nextNode.Edges.Count == 0)
+            if (BillingTime >= m_Simulation.MaxPurchaseTime)
             {
-                // Need a respawn
-                simulation.Despawn(this);
-                return;
+                Behavior = BehaviorType.Exiting;
+                if (Regsiter != null)
+                    simulation.InformExit(this);
+                nextNode = previousNode.Edges[0];
             }
             else
             {
-                var previousPos = previousNode.transform.position;
-                var currentPos = nextNode.transform.position;
-                previousNode = nextNode;
-                if (path != null)
+                BillingTime += Time.deltaTime;
+            }
+        }
+        else
+        {
+            
+            if (Behavior == BehaviorType.InQueue && nextNode.waypointType == WaypointNode.WaypointType.Register)
+            {
+                RaycastHit hit;
+                //var layermask = ~(1 << 3);
+                Debug.DrawRay(transform.position, (nextNode.transform.position - transform.position) * 20, Color.red);
+                if (Physics.Raycast(transform.position, (nextNode.transform.position - transform.position), out hit, 1.5f))
                 {
-                    // TODO convert to queue
-                    path.RemoveAt(0);
-                    nextNode = path[0];
+                    if (hit.collider.CompareTag("Shopper"))
+                    {
+                        return;
+                    }
+                }
+            }
+            
+            if (nextNode.waypointType == WaypointNode.WaypointType.Register && Behavior != BehaviorType.InQueue)
+            {
+                nextNode = simulation.EnterInAvailableQueue(this,previousNode);
+            }
+
+            var reachedEnd = UpdateInterpolation();
+            if (reachedEnd)
+            {
+
+                if (nextNode.waypointType == WaypointNode.WaypointType.Register && Behavior == BehaviorType.InQueue)
+                    Behavior = BehaviorType.Billing;
+                
+                if (nextNode.Edges.Count == 0)
+                {
+                    // Need a respawn
+                    simulation.Despawn(this);
                 }
                 else
                 {
-                    nextNode = nextNode.GetRandomNeighborInDirection(previousPos, currentPos);
+                    var previousPos = previousNode.transform.position;
+                    var currentPos = nextNode.transform.position;
+                    previousNode = nextNode;
+                    if (path != null)
+                    {
+                        // TODO convert to queue
+                        path.RemoveAt(0);
+                        nextNode = path[0];
+                    }
+                    else
+                    {
+                        nextNode = nextNode.GetRandomNeighborInDirection(previousPos, currentPos);
+                    }
                 }
             }
         }
+
+        
     }
 
     static void DrawPath(List<WaypointNode> path, Color color)

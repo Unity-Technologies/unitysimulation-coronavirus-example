@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Waypoint
   - Shopper
+  - Register
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - RegisterCounter
   - 
   - 
   - 

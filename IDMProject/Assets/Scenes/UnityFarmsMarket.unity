@@ -2014,11 +2014,25 @@ MonoBehaviour:
   DesiredNumContagious: 5
   SpawnCooldown: 0.1
   OneWayAisles: 1
+  BillingQueueCapacity: 4
+  MaxBlillingTime: 5
+  NumberOfCountersOpen: 5
   ExposureProbabilityAtZeroDistance: 0.86
   ExposureProbabilityAtMaxDistance: 0.5
   ExposureDistanceMeters: 1.8288
   ShopperPrefab: {fileID: 1093406097863196325, guid: 9d4463172376846758133dcae19a097d,
     type: 3}
+  Registers:
+  - {fileID: 1179225598}
+  - {fileID: 821930789}
+  - {fileID: 937405764}
+  - {fileID: 1596838131}
+  - {fileID: 1620575656}
+  - {fileID: 1577485347}
+  - {fileID: 645986381}
+  - {fileID: 1734525257}
+  - {fileID: 1979182310}
+  waypoints: []
 --- !u!4 &538755301
 Transform:
   m_ObjectHideFlags: 0
@@ -2045,9 +2059,9 @@ GameObject:
   - component: {fileID: 645986382}
   - component: {fileID: 645986384}
   - component: {fileID: 645986383}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2061,7 +2075,7 @@ Transform:
   m_GameObject: {fileID: 645986381}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.7, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 51
@@ -2091,7 +2105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9ba6be560b9405eabfc08eb2a2a3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointType: 0
+  waypointType: 3
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
@@ -3213,7 +3227,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 737983260}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.22, y: 1, z: 24.18}
+  m_LocalPosition: {x: 1, y: 1, z: 24.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 480675471}
@@ -3475,9 +3489,9 @@ GameObject:
   - component: {fileID: 821930790}
   - component: {fileID: 821930792}
   - component: {fileID: 821930791}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3491,7 +3505,7 @@ Transform:
   m_GameObject: {fileID: 821930789}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.39, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 45
@@ -3521,7 +3535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9ba6be560b9405eabfc08eb2a2a3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointType: 0
+  waypointType: 3
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
@@ -3971,9 +3985,9 @@ GameObject:
   - component: {fileID: 937405765}
   - component: {fileID: 937405767}
   - component: {fileID: 937405766}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3987,7 +4001,7 @@ Transform:
   m_GameObject: {fileID: 937405764}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.39, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 46
@@ -4340,9 +4354,9 @@ GameObject:
   - component: {fileID: 1073214558}
   - component: {fileID: 1073214560}
   - component: {fileID: 1073214559}
-  m_Layer: 0
-  m_Name: Register
-  m_TagString: Untagged
+  m_Layer: 8
+  m_Name: Exit (9)
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4645,9 +4659,9 @@ GameObject:
   - component: {fileID: 1179225599}
   - component: {fileID: 1179225601}
   - component: {fileID: 1179225600}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4661,7 +4675,7 @@ Transform:
   m_GameObject: {fileID: 1179225598}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 13.55, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 50
@@ -4691,7 +4705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9ba6be560b9405eabfc08eb2a2a3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointType: 0
+  waypointType: 3
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
@@ -5207,7 +5221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
-  EdgeAngleThresholdDegrees: 20
+  EdgeAngleThresholdDegrees: 18.6
   Passthrough: 0
   Edges: []
 --- !u!1 &1387942232
@@ -5888,9 +5902,9 @@ GameObject:
   - component: {fileID: 1577485348}
   - component: {fileID: 1577485350}
   - component: {fileID: 1577485349}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5904,7 +5918,7 @@ Transform:
   m_GameObject: {fileID: 1577485347}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 11.59, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 49
@@ -5934,7 +5948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9ba6be560b9405eabfc08eb2a2a3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointType: 0
+  waypointType: 3
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
@@ -6010,9 +6024,9 @@ GameObject:
   - component: {fileID: 1596838132}
   - component: {fileID: 1596838134}
   - component: {fileID: 1596838133}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6026,7 +6040,7 @@ Transform:
   m_GameObject: {fileID: 1596838131}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7.4, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 47
@@ -6056,7 +6070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9ba6be560b9405eabfc08eb2a2a3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointType: 0
+  waypointType: 3
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
@@ -6151,9 +6165,9 @@ GameObject:
   - component: {fileID: 1620575657}
   - component: {fileID: 1620575659}
   - component: {fileID: 1620575658}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6167,7 +6181,7 @@ Transform:
   m_GameObject: {fileID: 1620575656}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.51, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 48
@@ -6197,7 +6211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9ba6be560b9405eabfc08eb2a2a3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointType: 0
+  waypointType: 3
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
@@ -6273,9 +6287,9 @@ GameObject:
   - component: {fileID: 1734525258}
   - component: {fileID: 1734525260}
   - component: {fileID: 1734525259}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6289,7 +6303,7 @@ Transform:
   m_GameObject: {fileID: 1734525257}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 17.77, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 52
@@ -6319,7 +6333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9ba6be560b9405eabfc08eb2a2a3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointType: 0
+  waypointType: 3
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
@@ -7964,13 +7978,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863031578}
-  m_LocalRotation: {x: 0.7071067, y: 0.00000008940697, z: -0.000000059604645, w: 0.7071068}
-  m_LocalPosition: {x: 2.9712613, y: 86.64487, z: 2.451847}
+  m_LocalRotation: {x: 0.00034869832, y: -0.6968429, z: 0.71722364, w: 0.00032260522}
+  m_LocalPosition: {x: 2.2888312, y: 62, z: -3.8053808}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 62.494003, z: 0}
+  m_LocalEulerAnglesHint: {x: 91.651, y: 180.101, z: 0.04598999}
 --- !u!114 &1863031582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8182,7 +8196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
-  EdgeAngleThresholdDegrees: 20
+  EdgeAngleThresholdDegrees: 19.4
   Passthrough: 0
   Edges: []
 --- !u!1 &1967786281
@@ -8257,9 +8271,9 @@ GameObject:
   - component: {fileID: 1979182311}
   - component: {fileID: 1979182313}
   - component: {fileID: 1979182312}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Register
-  m_TagString: Untagged
+  m_TagString: Register
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8272,8 +8286,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1979182310}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.22, y: 1, z: 16.71}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 1, y: 1, z: 16.71}
+  m_LocalScale: {x: 1, y: 1, z: 0.47629}
   m_Children: []
   m_Father: {fileID: 480675471}
   m_RootOrder: 53
@@ -8303,7 +8317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9ba6be560b9405eabfc08eb2a2a3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointType: 0
+  waypointType: 3
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
