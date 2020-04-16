@@ -163,7 +163,7 @@ public class WaypointNode : MonoBehaviour
     {
         if (otherWaypoint.IsExit() && waypointType != WaypointType.Register)
             return false;
-        
+
         if (IsExit() || otherWaypoint.IsEntrance())
         {
             return false;
@@ -182,6 +182,7 @@ public class WaypointNode : MonoBehaviour
         var cosThetaThreshold = Mathf.Cos(Mathf.Deg2Rad * angleThreshold);
 
         var dirToWaypoint = (otherWaypoint.transform.position - transform.position).normalized;
+        int shopperLayer = LayerMask.NameToLayer("Shopper");
 
         // Don't consider backwards edges if simulationIsOneWay
         // Only consider forward edges if Passthrough
@@ -197,7 +198,8 @@ public class WaypointNode : MonoBehaviour
             // Raycast check
             // TODO clean up - we only need one raycast, not in the loop
             RaycastHit hitInfo;
-            var didHit = Physics.Raycast(transform.position, dirToWaypoint, out hitInfo);
+            LayerMask raycastLayer = Physics.DefaultRaycastLayers & ~(1 << shopperLayer);
+            var didHit = Physics.Raycast(transform.position, dirToWaypoint, out hitInfo,  Mathf.Infinity, raycastLayer);
             if (!didHit)
             {
                 continue;
