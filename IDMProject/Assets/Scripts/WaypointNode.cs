@@ -119,7 +119,8 @@ public class WaypointNode : MonoBehaviour
         Gizmos.DrawLine(start, end);
 
         // Draw an arrow head part-way along the line too (slightly closer to the end)
-        var arrowStart = .6f * end + .4f * start;
+        const float offsetFraction = .65f;
+        var arrowStart = offsetFraction * end + (1.0f - offsetFraction) * start;
         var arrowSide1 = arrowStart - drawMagnitude * dir + drawMagnitude * side;
         var arrowSide2 = arrowStart - drawMagnitude * dir - drawMagnitude * side;
         Gizmos.DrawLine(arrowStart, arrowSide1);
