@@ -382,6 +382,50 @@ MonoBehaviour:
   EdgeAngleThresholdDegrees: 20
   Passthrough: 0
   Edges: []
+--- !u!1 &18001173
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 18001174}
+  - component: {fileID: 18001175}
+  m_Layer: 0
+  m_Name: ProduceIsland_Raycast_Occluder02
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &18001174
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18001173}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 19.25, y: 1.4300001, z: -4.36}
+  m_LocalScale: {x: 0.0143949995, y: 0.01, z: 0.0112499995}
+  m_Children: []
+  m_Father: {fileID: 706959240}
+  m_RootOrder: 57
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!65 &18001175
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18001173}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.44, y: 91.44, z: 457.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &27407828
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,6 +653,50 @@ MonoBehaviour:
   EdgeAngleThresholdDegrees: 0.1
   Passthrough: 0
   Edges: []
+--- !u!1 &148689562
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 148689563}
+  - component: {fileID: 148689564}
+  m_Layer: 0
+  m_Name: Shelving _Raycast_Occluder (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &148689563
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148689562}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.93, y: 1.4300001, z: 0.65}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.021323}
+  m_Children: []
+  m_Father: {fileID: 706959240}
+  m_RootOrder: 62
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &148689564
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148689562}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.44, y: 91.44, z: 457.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &245044256
 GameObject:
   m_ObjectHideFlags: 0
@@ -1978,7 +2066,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointType: 0
-  EdgeAngleThresholdDegrees: 2.5
+  EdgeAngleThresholdDegrees: 1
   Passthrough: 0
   Edges: []
 --- !u!1 &538755299
@@ -2015,7 +2103,7 @@ MonoBehaviour:
   SpawnCooldown: 0.1
   OneWayAisles: 1
   BillingQueueCapacity: 4
-  MaxBlillingTime: 5
+  MaxPurchaseTime: 3
   NumberOfCountersOpen: 5
   ExposureProbabilityAtZeroDistance: 0.86
   ExposureProbabilityAtMaxDistance: 0.5
@@ -2170,6 +2258,94 @@ MonoBehaviour:
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 0
   Edges: []
+--- !u!1 &671859531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 671859532}
+  - component: {fileID: 671859533}
+  m_Layer: 0
+  m_Name: ProduceIsland_Raycast_Occluder03
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &671859532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671859531}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 19.25, y: 1.4300001, z: -8.62}
+  m_LocalScale: {x: 0.0143949995, y: 0.01, z: 0.0112499995}
+  m_Children: []
+  m_Father: {fileID: 706959240}
+  m_RootOrder: 58
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!65 &671859533
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671859531}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.44, y: 91.44, z: 457.2}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &687622568
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 687622569}
+  - component: {fileID: 687622570}
+  m_Layer: 0
+  m_Name: Shelving _Raycast_Occluder (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &687622569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687622568}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.88, y: 1.4300001, z: 0.65}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.021323}
+  m_Children: []
+  m_Father: {fileID: 706959240}
+  m_RootOrder: 63
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &687622570
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687622568}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.44, y: 91.44, z: 457.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &696381582
 GameObject:
   m_ObjectHideFlags: 0
@@ -2280,6 +2456,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DisplaysCases
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: e8a0f152b2d47864980619b30cc2f416,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8a0f152b2d47864980619b30cc2f416, type: 3}
@@ -5541,6 +5722,50 @@ MonoBehaviour:
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 0
   Edges: []
+--- !u!1 &1515662761
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1515662762}
+  - component: {fileID: 1515662763}
+  m_Layer: 0
+  m_Name: Shelving _Raycast_Occluder (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1515662762
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515662761}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 6.87, y: 1.4300001, z: 0.65}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.021323}
+  m_Children: []
+  m_Father: {fileID: 706959240}
+  m_RootOrder: 61
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1515662763
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515662761}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.44, y: 91.44, z: 457.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1523040022
 GameObject:
   m_ObjectHideFlags: 0
@@ -5891,6 +6116,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1535359506}
   m_CullTransparentMesh: 0
+--- !u!1 &1538508980
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1538508981}
+  - component: {fileID: 1538508982}
+  m_Layer: 0
+  m_Name: ProduceIsland_Raycast_Occluder01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1538508981
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538508980}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 19.25, y: 1.4300001, z: 0.01}
+  m_LocalScale: {x: 0.0143949995, y: 0.01, z: 0.0112499995}
+  m_Children: []
+  m_Father: {fileID: 706959240}
+  m_RootOrder: 56
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!65 &1538508982
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538508980}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.44, y: 91.44, z: 457.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1577485347
 GameObject:
   m_ObjectHideFlags: 0
@@ -6215,6 +6484,50 @@ MonoBehaviour:
   EdgeAngleThresholdDegrees: 2.5
   Passthrough: 1
   Edges: []
+--- !u!1 &1670490940
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1670490941}
+  - component: {fileID: 1670490942}
+  m_Layer: 0
+  m_Name: Shelving _Raycast_Occluder (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1670490941
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670490940}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 12.99, y: 1.4300001, z: 0.65}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.021323}
+  m_Children: []
+  m_Father: {fileID: 706959240}
+  m_RootOrder: 60
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1670490942
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670490940}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.44, y: 91.44, z: 457.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1712051026
 GameObject:
   m_ObjectHideFlags: 0
@@ -8199,6 +8512,50 @@ MonoBehaviour:
   EdgeAngleThresholdDegrees: 19.4
   Passthrough: 0
   Edges: []
+--- !u!1 &1957171470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1957171471}
+  - component: {fileID: 1957171472}
+  m_Layer: 0
+  m_Name: Shelving _Raycast_Occluder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1957171471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957171470}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 9.95, y: 1.4300001, z: 0.65}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.021323}
+  m_Children: []
+  m_Father: {fileID: 706959240}
+  m_RootOrder: 59
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1957171472
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957171470}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.44, y: 91.44, z: 457.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1967786281
 GameObject:
   m_ObjectHideFlags: 0
