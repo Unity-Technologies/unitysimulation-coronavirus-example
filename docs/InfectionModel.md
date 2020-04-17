@@ -1,6 +1,6 @@
-# Infection Model #
+# Infection Model
 
-## Configurable parameters ##
+## Configurable parameters
 - *Exposure Distance Meters* - controls the maximum distance (in meters) that healthy shoppers are potentially exposed; 
 exposure is only checked when they are within this distance of a contagious shopper. Defaults to 1.8288m (6 feet).
 - *Exposure Probability At Zero Distance* - controls the probability of a healthy shopper becoming exposed when they are 
@@ -11,7 +11,7 @@ exposure is only checked when they are within this distance of a contagious shop
 Note that the probability values are expressed as the probability of infection per second, instead of per step. This is
 to keep the overall chance of infection independent of the simulation frame rate.  
 
-## Exposure Updates ##
+## Exposure Updates
 During each `Update()` step of the simulation, we perform the following steps in `StoreSimulation.UpdateExposure()`:
 - For each contagious shopper, find the healthy shoppers within `Exposure Distance Meters` of them.
 - For each healthy shopper, determine the probability of infection. This is a function of the distance between

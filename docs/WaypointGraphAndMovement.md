@@ -1,4 +1,4 @@
-# Waypoint Graph #
+# Waypoint Graph
 
 Waypoints are used to represent nodes in a directed graph. The edges are determined procedurally; each pair of nodes
 is examined, and an edge is created based on a few criteria:
@@ -10,7 +10,7 @@ directions.
   * If a node is marked as `passthrough`, only its forward direction is considered.
 * A raycast between the nodes must not hit anything besides the destination node.  
 
-# Movement #
+# Movement
 When shoppers spawn, by default they pick a random (but plausible) path through the store:
 * Pick a certain number of intermediate goals, and a random entrance and exit.
 * Reorder the intermediate goals to try to reduce the total distance (although this might not actually be the best 

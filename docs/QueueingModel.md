@@ -1,7 +1,7 @@
-# Simulation Queuing Model# 
+# Simulation Queuing Model
 The queuing model allows you to simulate the checkout queue at the store. 
 
-## Configurable parameters ##
+## Configurable parameters
 - *Number of Open Counters* (In real world scenario, this might become a bottle neck if the number of counters open are 
 less as compared to the traffic of the shoppers).
 - *Max Purchasing Time*: This is variable and can range between 1 and max time set.
@@ -12,7 +12,7 @@ checkout, the queuing system checks if any open counter's queue, accessible from
 Shopper gets queued accordingly. In case if there are no queues available, the waypoint nodes for the shopper are 
 updated simulating the shopper roaming around until the queues become available.
 
-## Limitations/Improvements ##
+## Limitations/Improvements
 - The current size of the queue is fixed (set to 4) considering the distance between the register and the waypoint 
 access node. It can be configurable based upon the max safe distance set (Compute the max queue size based upon max 
 safe distance)
