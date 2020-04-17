@@ -11,6 +11,7 @@ public class WaypointNode : MonoBehaviour
         Default = 0,
         Entrance = 1,
         Exit = 2,
+        Register
     }
 
     public WaypointType waypointType = WaypointType.Default;
@@ -118,7 +119,8 @@ public class WaypointNode : MonoBehaviour
         Gizmos.DrawLine(start, end);
 
         // Draw an arrow head part-way along the line too (slightly closer to the end)
-        var arrowStart = .6f * end + .4f * start;
+        const float offsetFraction = .65f;
+        var arrowStart = offsetFraction * end + (1.0f - offsetFraction) * start;
         var arrowSide1 = arrowStart - drawMagnitude * dir + drawMagnitude * side;
         var arrowSide2 = arrowStart - drawMagnitude * dir - drawMagnitude * side;
         Gizmos.DrawLine(arrowStart, arrowSide1);
@@ -159,6 +161,9 @@ public class WaypointNode : MonoBehaviour
     /// <returns></returns>
     public bool ShouldConnect(bool simulationIsOneWay, WaypointNode otherWaypoint)
     {
+        if (otherWaypoint.IsExit() && waypointType != WaypointType.Register)
+            return false;
+
         if (IsExit() || otherWaypoint.IsEntrance())
         {
             return false;
@@ -177,6 +182,7 @@ public class WaypointNode : MonoBehaviour
         var cosThetaThreshold = Mathf.Cos(Mathf.Deg2Rad * angleThreshold);
 
         var dirToWaypoint = (otherWaypoint.transform.position - transform.position).normalized;
+        int shopperLayer = LayerMask.NameToLayer("Shopper");
 
         // Don't consider backwards edges if simulationIsOneWay
         // Only consider forward edges if Passthrough
@@ -192,7 +198,8 @@ public class WaypointNode : MonoBehaviour
             // Raycast check
             // TODO clean up - we only need one raycast, not in the loop
             RaycastHit hitInfo;
-            var didHit = Physics.Raycast(transform.position, dirToWaypoint, out hitInfo);
+            LayerMask raycastLayer = Physics.DefaultRaycastLayers & ~(1 << shopperLayer);
+            var didHit = Physics.Raycast(transform.position, dirToWaypoint, out hitInfo,  Mathf.Infinity, raycastLayer);
             if (!didHit)
             {
                 continue;
