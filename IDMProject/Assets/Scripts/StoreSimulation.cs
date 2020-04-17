@@ -17,29 +17,32 @@ public class StoreSimulation : MonoBehaviour
     public int DesiredNumContagious = 1;
     public float SpawnCooldown= 1.0f;
     public bool OneWayAisles = true;
-    
+
     [HideInInspector]
     public int BillingQueueCapacity = 4;
-    
+
     [Header("Billing Queue Parameters")]
     public float MaxPurchaseTime = 3.0f;
     public int NumberOfCountersOpen = 9;
-    
+
     // Exposure probability parameters.
     // These are given as the probability of a healthy person converting to exposed over the course of one second.
     // During simulation, these probability are linearly interpolated based on distance to the contagious person
     // and modified to account for the timestep.
     [Header("Exposure Parameters")]
+    [Range(0.0f, 1.0f)]
     public float ExposureProbabilityAtZeroDistance = 0.5f;
+    [Range(0.0f, 1.0f)]
     public float ExposureProbabilityAtMaxDistance = 0.0f;
+    [Range(0.0f, 10.0f)]
     public float ExposureDistanceMeters = 1.8288f; // Six feet in meters
 
 
     [Header("Graphics Parameters")]
     public GameObject ShopperPrefab;
     public GameObject[] Registers;
-    
-    
+
+
     [HideInInspector]
     public WaypointNode[] waypoints;
     List<WaypointNode> entrances;
@@ -70,7 +73,7 @@ public class StoreSimulation : MonoBehaviour
         {
             register.gameObject.SetActive(false);
         }
-        
+
         for (int i = 0; i < NumberOfCountersOpen; i++)
         {
             Registers[i].gameObject.SetActive(true);
@@ -82,7 +85,7 @@ public class StoreSimulation : MonoBehaviour
             registersQueues.Add(queue);
         }
     }
-    
+
 
     // Update is called once per frame
     void Update()
@@ -98,7 +101,7 @@ public class StoreSimulation : MonoBehaviour
             allShoppers.Add(newShopper);
             spawnCooldownCounter = SpawnCooldown;
         }
-        
+
         MoveQueue();
         UpdateExposure();
     }
@@ -365,8 +368,8 @@ public class StoreSimulation : MonoBehaviour
             var subPath = FindPath(orderedGoals[i], orderedGoals[i + 1]);
             if (subPath == null)
             {
-                // TODO this is either a bug in the Dijkstra implementation,
-                // or the graph isn't fully connected, need to debug further.
+                // In theory, it's possible for pathfinding to fail.
+                // That shouldn't happen with the current graph, though.
                 return null;
             }
 
@@ -447,7 +450,7 @@ public class StoreSimulation : MonoBehaviour
 
         return lowestKey;
     }
-    
+
     void MoveQueue()
     {
         foreach (var register in registersQueues)
