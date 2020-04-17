@@ -13,9 +13,7 @@ Shoppers are colored according to their health status:
 # Disclaimer
 Disclaimer! We want to be really clear that we are experts in 3D simulation, not epidemiology, and that this is just a 
 conceptual demonstration. In particular, the model for how the infection spreads is very simplistic and the movement 
-model for the shoppers is also highly simplified. We’ve partered with the
-[Institute for Disease Modeling (IDM)](https://www.idmod.org/), a  global leader in modeling of infections disease, to
- get some directional guidance on this project. 
+model for the shoppers is also highly simplified.
 
 # More Simulation Details 
 * [Infection Model](docs/InfectionModel.md)
