@@ -15,7 +15,7 @@ public class StoreSimulation : MonoBehaviour
     [Header("Store Parameters")]
     public int DesiredNumShoppers = 10;
     public int DesiredNumContagious = 1;
-    public float SpawnCooldown= 1.0f;
+    public float SpawnCooldown = 1.0f;
     public bool OneWayAisles = true;
 
     [HideInInspector]
@@ -222,7 +222,7 @@ public class StoreSimulation : MonoBehaviour
             }
         }
         var endTicks = DateTime.Now.Ticks;
-        Debug.Log($"Raycasting between waypoints took {(endTicks-startTicks)*s_TicksToSeconds} seconds");
+        Debug.Log($"Raycasting between waypoints took {(endTicks - startTicks) * s_TicksToSeconds} seconds");
     }
 
     void OnDrawGizmos()
