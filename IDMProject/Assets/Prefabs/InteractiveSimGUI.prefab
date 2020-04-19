@@ -1414,7 +1414,7 @@ GameObject:
   - component: {fileID: 8744079158738905110}
   - component: {fileID: 8744079158738905109}
   m_Layer: 5
-  m_Name: NumContagiousSlider
+  m_Name: NumInfectiousSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1493,7 +1493,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8744079159167730067}
-        m_MethodName: OnNumContagiousChanged
+        m_MethodName: OnNumInfectiousChanged
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2261,12 +2261,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storeSimulation: {fileID: 0}
   numShoppersSlider: {fileID: 8744079158483560196}
-  numContagiousSlider: {fileID: 8744079158738905109}
+  numInfectiousSlider: {fileID: 8744079158738905109}
   maxTransmissionDistanceSlider: {fileID: 8744079159011195031}
   transmissionProbAtZeroDistanceSlider: {fileID: 8744079158323097555}
   transmissionProbAtMaxDistanceSlider: {fileID: 8744079158185791200}
   numShoppersText: {fileID: 8744079159614510944}
-  numContagiousText: {fileID: 8744079159716670336}
+  numInfectiousText: {fileID: 8744079159716670336}
   maxTransmissionDistanceText: {fileID: 8744079159540892079}
   transmissionProbAtZeroDistanceText: {fileID: 8744079158045331958}
   transmissionProbAtMaxDistanceText: {fileID: 8744079159304014707}
@@ -3448,7 +3448,7 @@ GameObject:
   - component: {fileID: 8744079159716670351}
   - component: {fileID: 8744079159716670336}
   m_Layer: 5
-  m_Name: NumContagiousText
+  m_Name: NumInfectiousText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3785,7 +3785,7 @@ GameObject:
   - component: {fileID: 8744079159857475481}
   - component: {fileID: 8744079159857475482}
   m_Layer: 5
-  m_Name: NumContagiousLabel
+  m_Name: NumInfectiousLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3836,7 +3836,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Num Contagious
+  m_text: Num Infectious
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
