@@ -2589,7 +2589,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2554043053924157728}
-        m_MethodName: OnNumContagiousChanged
+        m_MethodName: OnNumInfectiousChanged
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

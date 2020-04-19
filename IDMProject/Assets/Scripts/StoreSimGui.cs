@@ -61,7 +61,7 @@ public class StoreSimGui : MonoBehaviour
         numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
     }
 
-    public void OnNumContagiousChanged()
+    public void OnNumInfectiousChanged()
     {
         storeSimulation.DesiredNumContagious = (int)numContagiousSlider.value;
         numContagiousText.text = storeSimulation.DesiredNumContagious.ToString();
