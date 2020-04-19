@@ -2261,12 +2261,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storeSimulation: {fileID: 0}
   numShoppersSlider: {fileID: 8744079158483560196}
-  numContagiousSlider: {fileID: 8744079158738905109}
+  numInfectiousSlider: {fileID: 8744079158738905109}
   maxTransmissionDistanceSlider: {fileID: 8744079159011195031}
   transmissionProbAtZeroDistanceSlider: {fileID: 8744079158323097555}
   transmissionProbAtMaxDistanceSlider: {fileID: 8744079158185791200}
   numShoppersText: {fileID: 8744079159614510944}
-  numContagiousText: {fileID: 8744079159716670336}
+  numInfectiousText: {fileID: 8744079159716670336}
   maxTransmissionDistanceText: {fileID: 8744079159540892079}
   transmissionProbAtZeroDistanceText: {fileID: 8744079158045331958}
   transmissionProbAtMaxDistanceText: {fileID: 8744079159304014707}

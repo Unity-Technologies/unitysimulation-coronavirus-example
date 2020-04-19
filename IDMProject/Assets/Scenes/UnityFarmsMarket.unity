@@ -1566,7 +1566,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DesiredNumShoppers: 35
-  DesiredNumContagious: 5
+  DesiredNumInfectious: 5
   SpawnCooldown: 0.1
   OneWayAisles: 1
   BillingQueueCapacity: 4

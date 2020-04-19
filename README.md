@@ -7,8 +7,8 @@
 
 Shoppers are colored according to their health status:
 * Blue shoppers are healthy (suceptible).
-* Red shoppers are contagious.
-* Yellow shoppers have been exposed by a contagious shopper, but are not themselves contagious.
+* Red shoppers are infectious.
+* Yellow shoppers have been exposed by a infectious shopper, but are not themselves infectious.
 
 # Disclaimer
 Disclaimer! We want to be really clear that we are experts in 3D simulation, not epidemiology, and that this is just a 
