@@ -109,7 +109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 25
   HealthyMaterial: {fileID: 2100000, guid: 782a90cc15da24955bf03e754172b271, type: 2}
-  ContagiousMaterial: {fileID: 2100000, guid: 8ffc66ad0a59445e18599b2d69f42062, type: 2}
+  InfectiousMaterial: {fileID: 2100000, guid: 8ffc66ad0a59445e18599b2d69f42062, type: 2}
   ExposedMaterial: {fileID: 2100000, guid: afa646ae6b1084528b813ea4812a43a6, type: 2}
   BillingTime: 0
   Behavior: 1

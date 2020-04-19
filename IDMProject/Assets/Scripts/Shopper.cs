@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = System.Random;
 
 public class Shopper : MonoBehaviour
@@ -26,14 +27,15 @@ public class Shopper : MonoBehaviour
 
     public float          Speed = 1.0f;
     public Material       HealthyMaterial;
-    public Material       ContagiousMaterial;
+    [FormerlySerializedAs("ContagiousMaterial")]
+    public Material       InfectiousMaterial;
     public Material       ExposedMaterial;
     Status                m_InfectionStatus;
     HashSet<WaypointNode> m_VisistedNodes = new HashSet<WaypointNode>();
     private int           m_MaxNumberOfUniqueNodes = 0;
     private bool          m_WantsToExit = false;
     public float          BillingTime = 0.0f;
-    
+
     public BehaviorType Behavior = BehaviorType.ShoppingList;
     private StoreSimulationQueue m_BillingQueue;
     WaypointNode previousNode;
@@ -68,7 +70,7 @@ public class Shopper : MonoBehaviour
                 m = HealthyMaterial;
                 break;
             case Status.Contagious:
-                m = ContagiousMaterial;
+                m = InfectiousMaterial;
                 break;
             case Status.Exposed:
                 m = ExposedMaterial;
@@ -175,7 +177,7 @@ public class Shopper : MonoBehaviour
         }
         else
         {
-            
+
             if (Behavior == BehaviorType.InQueue && nextNode.waypointType == WaypointNode.WaypointType.Register)
             {
                 RaycastHit hit;
@@ -189,7 +191,7 @@ public class Shopper : MonoBehaviour
                     }
                 }
             }
-            
+
             if (nextNode.waypointType == WaypointNode.WaypointType.Register && Behavior != BehaviorType.InQueue)
             {
                 nextNode = simulation.EnterInAvailableQueue(this,previousNode);
@@ -201,7 +203,7 @@ public class Shopper : MonoBehaviour
 
                 if (nextNode.waypointType == WaypointNode.WaypointType.Register && Behavior == BehaviorType.InQueue)
                     Behavior = BehaviorType.Billing;
-                
+
                 if (nextNode.Edges.Count == 0)
                 {
                     // Need a respawn
@@ -226,7 +228,7 @@ public class Shopper : MonoBehaviour
             }
         }
 
-        
+
     }
 
     static void DrawPath(List<WaypointNode> path, Color color)
