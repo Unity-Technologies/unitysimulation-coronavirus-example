@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 2554043053399352124}
   - component: {fileID: 2554043053399352115}
   m_Layer: 5
-  m_Name: NumContagiousText
+  m_Name: NumInfectiousText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -695,7 +695,7 @@ GameObject:
   - component: {fileID: 2554043053536028458}
   - component: {fileID: 2554043053536028457}
   m_Layer: 5
-  m_Name: NumContagiousLabel
+  m_Name: NumInfectiousLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -746,7 +746,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Num Contagious
+  m_text: Num Infectious
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2510,7 +2510,7 @@ GameObject:
   - component: {fileID: 2554043054569136293}
   - component: {fileID: 2554043054569136294}
   m_Layer: 5
-  m_Name: NumContagiousSlider
+  m_Name: NumInfectiousSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
