@@ -12,7 +12,7 @@ public class Shopper : MonoBehaviour
     public enum Status
     {
         Healthy,
-        Contagious,
+        Infectious,
         Exposed
     }
 
@@ -69,7 +69,7 @@ public class Shopper : MonoBehaviour
             case Status.Healthy:
                 m = HealthyMaterial;
                 break;
-            case Status.Contagious:
+            case Status.Infectious:
                 m = InfectiousMaterial;
                 break;
             case Status.Exposed:
@@ -87,9 +87,9 @@ public class Shopper : MonoBehaviour
         return m_InfectionStatus == Status.Healthy;
     }
 
-    public bool IsContagious()
+    public bool IsInfectious()
     {
-        return m_InfectionStatus == Status.Contagious;
+        return m_InfectionStatus == Status.Infectious;
     }
 
     public bool IsExposed()
