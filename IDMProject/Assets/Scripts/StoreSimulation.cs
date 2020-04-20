@@ -14,7 +14,8 @@ public class StoreSimulation : MonoBehaviour
     [FormerlySerializedAs("NumShoppers")]
     [Header("Store Parameters")]
     public int DesiredNumShoppers = 10;
-    public int DesiredNumContagious = 1;
+    [FormerlySerializedAs("DesiredNumContagious")]
+    public int DesiredNumInfectious = 1;
     public float SpawnCooldown = 1.0f;
     public bool OneWayAisles = true;
 
@@ -28,7 +29,7 @@ public class StoreSimulation : MonoBehaviour
 
     // Exposure probability parameters.
     // These are given as the probability of a healthy person converting to exposed over the course of one second.
-    // During simulation, these probability are linearly interpolated based on distance to the contagious person
+    // During simulation, these probability are linearly interpolated based on distance to the infectious person
     // and modified to account for the timestep.
     [Header("Exposure Parameters")]
     [Range(0.0f, 1.0f)]
@@ -52,7 +53,7 @@ public class StoreSimulation : MonoBehaviour
     WaypointGraph m_WaypointGraph;
     HashSet<Shopper> allShoppers;
     float spawnCooldownCounter;
-    int numContagious;
+    int numInfectious;
     private List<StoreSimulationQueue> registersQueues = new List<StoreSimulationQueue>();
     private int currentServingQueue = 0;
 
@@ -167,18 +168,18 @@ public class StoreSimulation : MonoBehaviour
         var speedMult = UnityEngine.Random.Range(.5f, 1f);
         s.Speed = ShopperSpeed * speedMult;
 
-        if (numContagious < DesiredNumContagious)
+        if (numInfectious < DesiredNumInfectious)
         {
-            s.InfectionStatus = Shopper.Status.Contagious;
-            numContagious++;
+            s.InfectionStatus = Shopper.Status.Infectious;
+            numInfectious++;
         }
     }
 
     public void Despawn(Shopper s, bool removeShopper = true)
     {
-        if (s.IsContagious())
+        if (s.IsInfectious())
         {
-            numContagious--;
+            numInfectious--;
         }
 
         // Update running totals of healthy and exposed.
@@ -266,7 +267,7 @@ public class StoreSimulation : MonoBehaviour
     {
         foreach (var shopper in allShoppers)
         {
-            if (!shopper.IsContagious())
+            if (!shopper.IsInfectious())
             {
                 continue;
             }
@@ -291,20 +292,20 @@ public class StoreSimulation : MonoBehaviour
     }
 
     /// <summary>
-    /// Determine whether the healthy shopper should get exposed by the contagious one.
+    /// Determine whether the healthy shopper should get exposed by the infectious one.
     /// </summary>
     /// <param name="healthy"></param>
-    /// <param name="contagious"></param>
+    /// <param name="infectious"></param>
     /// <returns></returns>
-    bool ShouldExposeHealthy(Shopper healthy, Shopper contagious)
+    bool ShouldExposeHealthy(Shopper healthy, Shopper infectious)
     {
         // Account for motion over the last frame by taking the min distance of the "swept" positions
         // TODO - compute actual min distance between the 2 segments
         // Cheap approximation for now
         var distance = Mathf.Min(
-            Vector3.Distance(healthy.transform.position, contagious.transform.position),
-            Vector3.Distance(healthy.transform.position, contagious.previousPosition),
-            Vector3.Distance(healthy.previousPosition, contagious.transform.position)
+            Vector3.Distance(healthy.transform.position, infectious.transform.position),
+            Vector3.Distance(healthy.transform.position, infectious.previousPosition),
+            Vector3.Distance(healthy.previousPosition, infectious.transform.position)
         );
         if (distance > ExposureDistanceMeters)
         {
@@ -384,7 +385,7 @@ public class StoreSimulation : MonoBehaviour
         finalHealthy = 0;
         NumHealthyChanged?.Invoke(finalHealthy);
         NumContagiousChanged?.Invoke(finalExposed);
-        numContagious = 0;
+        numInfectious = 0;
         registersQueues.Clear();
         InitializeRegisters();
         InitWaypoints();

@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -169,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &74898429
 BoxCollider:
@@ -264,6 +265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &85294731
 BoxCollider:
@@ -480,6 +482,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 1
   EdgeAngleThresholdDegrees: 35
+  Passthrough: 0
   Edges: []
 --- !u!65 &220513855
 BoxCollider:
@@ -589,6 +592,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &296151635
 BoxCollider:
@@ -698,6 +702,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &308392468
 BoxCollider:
@@ -807,6 +812,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &312274642
 BoxCollider:
@@ -916,6 +922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &408817749
 BoxCollider:
@@ -1011,6 +1018,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &477088512
 BoxCollider:
@@ -1134,6 +1142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &602412192
 BoxCollider:
@@ -1243,6 +1252,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &622606362
 BoxCollider:
@@ -1352,6 +1362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &626141706
 BoxCollider:
@@ -1461,6 +1472,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 2
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &698654234
 BoxCollider:
@@ -1662,6 +1674,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 2
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &776911848
 BoxCollider:
@@ -1771,6 +1784,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &864426399
 BoxCollider:
@@ -1880,6 +1894,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &919045279
 BoxCollider:
@@ -2043,6 +2058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &959081358
 BoxCollider:
@@ -2328,6 +2344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &1344512299
 BoxCollider:
@@ -2512,14 +2529,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DesiredNumShoppers: 20
-  DesiredNumContagious: 2
+  DesiredNumInfectious: 2
   SpawnCooldown: 0.75
   OneWayAisles: 1
+  BillingQueueCapacity: 4
+  MaxPurchaseTime: 3
+  NumberOfCountersOpen: 9
   ExposureProbabilityAtZeroDistance: 0.9
   ExposureProbabilityAtMaxDistance: 0.5
   ExposureDistanceMeters: 1.8288
   ShopperPrefab: {fileID: 1093406097863196325, guid: 9d4463172376846758133dcae19a097d,
     type: 3}
+  Registers: []
+  waypoints: []
 --- !u!4 &1381905398
 Transform:
   m_ObjectHideFlags: 0
@@ -2584,6 +2606,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &1392212895
 BoxCollider:
@@ -2679,6 +2702,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &1443640140
 BoxCollider:
@@ -2886,6 +2910,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &1555894344
 BoxCollider:
@@ -3009,6 +3034,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &1559547283
 BoxCollider:
@@ -3118,6 +3144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 1
   EdgeAngleThresholdDegrees: 45
+  Passthrough: 0
   Edges: []
 --- !u!65 &1621727567
 BoxCollider:
@@ -3320,6 +3347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &1977527625
 BoxCollider:
@@ -3522,6 +3550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointType: 0
   EdgeAngleThresholdDegrees: 2.5
+  Passthrough: 0
   Edges: []
 --- !u!65 &2133423253
 BoxCollider:

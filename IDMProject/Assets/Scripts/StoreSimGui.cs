@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class StoreSimGui : MonoBehaviour
@@ -10,7 +11,8 @@ public class StoreSimGui : MonoBehaviour
     public StoreSimulation storeSimulation;
 
     public Slider numShoppersSlider;
-    public Slider numContagiousSlider;
+    [FormerlySerializedAs("numContagiousSlider")]
+    public Slider numInfectiousSlider;
     public Slider maxTransmissionDistanceSlider;
     public Slider transmissionProbAtZeroDistanceSlider;
     public Slider transmissionProbAtMaxDistanceSlider;
@@ -20,7 +22,8 @@ public class StoreSimGui : MonoBehaviour
     public Slider maxTransactionTimeSlider;
 
     public TMP_Text numShoppersText;
-    public TMP_Text numContagiousText;
+    [FormerlySerializedAs("numContagiousText")]
+    public TMP_Text numInfectiousText;
     public TMP_Text maxTransmissionDistanceText;
     public TMP_Text transmissionProbAtZeroDistanceText;
     public TMP_Text transmissionProbAtMaxDistanceText;
@@ -88,14 +91,14 @@ public class StoreSimGui : MonoBehaviour
     public void OnNumShoppersChanged()
     {
         storeSimulation.DesiredNumShoppers = (int)numShoppersSlider.value;
-        numContagiousSlider.maxValue = storeSimulation.DesiredNumShoppers;
+        numInfectiousSlider.maxValue = storeSimulation.DesiredNumShoppers;
         numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
     }
 
-    public void OnNumContagiousChanged()
+    public void OnNumInfectiousChanged()
     {
-        storeSimulation.DesiredNumContagious = (int)numContagiousSlider.value;
-        numContagiousText.text = storeSimulation.DesiredNumContagious.ToString();
+        storeSimulation.DesiredNumInfectious = (int)numInfectiousSlider.value;
+        numInfectiousText.text = storeSimulation.DesiredNumInfectious.ToString();
     }
 
     public void OnMaxTransmissionDistanceChanged()
