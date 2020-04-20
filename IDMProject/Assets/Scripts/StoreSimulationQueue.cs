@@ -9,6 +9,7 @@ public class StoreSimulationQueue : MonoBehaviour
     public Queue<Shopper> ShoppersQueue;
     public int            MaxQueueCapacity;
     public float          MaxProcessingTime = 2.5f;
+    public float          MinProcessingTime = 1.0f;
 
 
     public struct RegisterInfo
@@ -55,10 +56,10 @@ public class StoreSimulationQueue : MonoBehaviour
     public bool EnterTheQueue(Shopper shopper, Func<Queue<Shopper>, bool> func = null)
     {
         var condition = true;
-        
+
         if (func != null)
             condition = func(ShoppersQueue);
-        
+
         if (CanEnterQueue() && condition)
         {
             ShoppersQueue.Enqueue(shopper);
@@ -67,9 +68,9 @@ public class StoreSimulationQueue : MonoBehaviour
 
         return false;
     }
-    
+
     public Tuple<Shopper, float> ExitQueue()
     {
-        return new Tuple<Shopper, float>(ShoppersQueue.Dequeue(), UnityEngine.Random.Range(1.0f, MaxProcessingTime));
+        return new Tuple<Shopper, float>(ShoppersQueue.Dequeue(), UnityEngine.Random.Range(MinProcessingTime, MaxProcessingTime));
     }
 }

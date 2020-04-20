@@ -24,6 +24,7 @@ public class StoreSimulation : MonoBehaviour
 
     [Header("Billing Queue Parameters")]
     public float MaxPurchaseTime = 3.0f;
+    public float MinPurchaseTime = 1.0f;
     public int NumberOfCountersOpen = 9;
 
     // Exposure probability parameters.
@@ -43,6 +44,8 @@ public class StoreSimulation : MonoBehaviour
     public GameObject ShopperPrefab;
     public GameObject[] Registers;
 
+    [Header("Shopper Parameters")]
+    public float ShopperSpeed = 1.0f;
 
     [HideInInspector]
     public WaypointNode[] waypoints;
@@ -58,6 +61,9 @@ public class StoreSimulation : MonoBehaviour
     int finalHealthy;
     int finalExposed;
 
+    public event Action<int> NumHealthyChanged;
+    public event Action<int> NumContagiousChanged;
+
     void Awake()
     {
         Debug.Assert(NumberOfCountersOpen <= Registers.Length, "Number of counters to be left open needs to be less than equal to total number of counters");
@@ -72,6 +78,11 @@ public class StoreSimulation : MonoBehaviour
         foreach (var register in Registers)
         {
             register.gameObject.SetActive(false);
+            var queueComponent = register.GetComponent<StoreSimulationQueue>();
+            if (queueComponent != null)
+            {
+                Destroy(queueComponent);
+            }
         }
 
         for (int i = 0; i < NumberOfCountersOpen; i++)
@@ -80,6 +91,7 @@ public class StoreSimulation : MonoBehaviour
             var queue = Registers[i].AddComponent<StoreSimulationQueue>();
             queue.MaxQueueCapacity = BillingQueueCapacity;
             queue.MaxProcessingTime = MaxPurchaseTime;
+            queue.MinProcessingTime = MinPurchaseTime;
             queue.ShoppersQueue = new Queue<Shopper>(BillingQueueCapacity);
             queue.QueueState = StoreSimulationQueue.State.Idle;
             registersQueues.Add(queue);
@@ -114,11 +126,13 @@ public class StoreSimulation : MonoBehaviour
             if (s.IsHealthy())
             {
                 finalHealthy++;
+                NumHealthyChanged?.Invoke(finalHealthy);
             }
 
             if (s.IsExposed())
             {
                 finalExposed++;
+                NumContagiousChanged?.Invoke(finalExposed);
             }
         }
 
@@ -137,7 +151,7 @@ public class StoreSimulation : MonoBehaviour
         if (s.Behavior == Shopper.BehaviorType.ShoppingList)
         {
             var path = m_WaypointGraph.GenerateRandomPath(6);
-            if(path != null)
+            if (path != null)
             {
                 s.SetPath(path);
             }
@@ -152,7 +166,7 @@ public class StoreSimulation : MonoBehaviour
 
         // Randomize the movement speed between [.75, 1.25] of the default speed
         var speedMult = UnityEngine.Random.Range(.5f, 1f);
-        s.Speed *= speedMult;
+        s.Speed = ShopperSpeed * speedMult;
 
         if (numInfectious < DesiredNumInfectious)
         {
@@ -172,11 +186,13 @@ public class StoreSimulation : MonoBehaviour
         if (s.IsHealthy())
         {
             finalHealthy++;
+            NumHealthyChanged?.Invoke(finalHealthy);
         }
 
         if (s.IsExposed())
         {
             finalExposed++;
+            NumContagiousChanged?.Invoke(finalExposed);
         }
 
         if (removeShopper)
@@ -360,13 +376,18 @@ public class StoreSimulation : MonoBehaviour
 
     public void ResetSimulation()
     {
-        foreach(var shopper in allShoppers)
+        foreach (var shopper in allShoppers)
         {
             Despawn(shopper, false);
         }
         allShoppers.Clear();
         finalExposed = 0;
         finalHealthy = 0;
+        NumHealthyChanged?.Invoke(finalHealthy);
+        NumContagiousChanged?.Invoke(finalExposed);
         numInfectious = 0;
+        registersQueues.Clear();
+        InitializeRegisters();
+        InitWaypoints();
     }
 }

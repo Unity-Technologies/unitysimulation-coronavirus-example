@@ -16,6 +16,10 @@ public class StoreSimGui : MonoBehaviour
     public Slider maxTransmissionDistanceSlider;
     public Slider transmissionProbAtZeroDistanceSlider;
     public Slider transmissionProbAtMaxDistanceSlider;
+    public Slider numberOfRegistersSlider;
+    public Slider shopperMovementSpeedSlider;
+    public Slider minTransactionTimeSlider;
+    public Slider maxTransactionTimeSlider;
 
     public TMP_Text numShoppersText;
     [FormerlySerializedAs("numContagiousText")]
@@ -24,14 +28,28 @@ public class StoreSimGui : MonoBehaviour
     public TMP_Text transmissionProbAtZeroDistanceText;
     public TMP_Text transmissionProbAtMaxDistanceText;
     public TMP_Text transmissionProbAtMaxDistanceLabel;
+    public TMP_Text numberOfRegistersText;
+    public TMP_Text shopperMovementSpeedText;
+    public TMP_Text minTransactionTimeText;
+    public TMP_Text maxTransactionTimeText;
+
+    public Toggle oneWayAislesToggle;
+
+    public TMP_Text healthyCustomersText;
+    public TMP_Text exposedCustomersText;
 
     float meterToFoot = 3.28084f;
     float footToMeter = 0.3048f;
     string transmissionProbAtMaxDistanceLabelText = "Transmission Chance at {0}ft";
+    string healthyCustomerCountLabelText = "Number of Healthy Shoppers: {0}";
+    string exposedCustomerCountLabelText = "Number of Exposed Shoppers: {0}";
 
     // Start is called before the first frame update
     void Start()
     {
+        storeSimulation.NumHealthyChanged += OnNumHealthyChanged;
+        storeSimulation.NumContagiousChanged += NumExposedChanged;
+
         numShoppersSlider.value = storeSimulation.DesiredNumShoppers;
         numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
         numInfectiousSlider.maxValue = numShoppersSlider.value;
@@ -44,6 +62,19 @@ public class StoreSimGui : MonoBehaviour
         transmissionProbAtMaxDistanceSlider.value = storeSimulation.ExposureProbabilityAtMaxDistance;
         transmissionProbAtMaxDistanceText.text = storeSimulation.ExposureProbabilityAtMaxDistance.ToString();
         transmissionProbAtMaxDistanceLabel.text = string.Format(transmissionProbAtMaxDistanceLabelText, maxTransmissionDistanceSlider.value);
+        numberOfRegistersSlider.value = storeSimulation.NumberOfCountersOpen;
+        numberOfRegistersText.text = storeSimulation.NumberOfCountersOpen.ToString();
+        oneWayAislesToggle.isOn = storeSimulation.OneWayAisles;
+        shopperMovementSpeedSlider.value = storeSimulation.ShopperSpeed;
+        shopperMovementSpeedText.text = storeSimulation.ShopperSpeed.ToString("0.00");
+        minTransactionTimeSlider.value = storeSimulation.MinPurchaseTime;
+        minTransactionTimeSlider.minValue = 0.01f;
+        minTransactionTimeSlider.maxValue = storeSimulation.MaxPurchaseTime;
+        minTransactionTimeText.text = storeSimulation.MinPurchaseTime.ToString("0.00");
+        maxTransactionTimeSlider.value = storeSimulation.MaxPurchaseTime;
+        maxTransactionTimeSlider.minValue = storeSimulation.MinPurchaseTime;
+        maxTransactionTimeSlider.maxValue = 10;
+        maxTransactionTimeText.text = storeSimulation.MaxPurchaseTime.ToString("0.00");
     }
 
     // Update is called once per frame
@@ -87,5 +118,54 @@ public class StoreSimGui : MonoBehaviour
     {
         storeSimulation.ExposureProbabilityAtMaxDistance = transmissionProbAtMaxDistanceSlider.value;
         transmissionProbAtMaxDistanceText.text = storeSimulation.ExposureProbabilityAtMaxDistance.ToString("0.00");
+    }
+
+    public void OnNumberOfRegistersChanged()
+    {
+        storeSimulation.NumberOfCountersOpen = (int)numberOfRegistersSlider.value;
+        numberOfRegistersText.text = ((int)numberOfRegistersSlider.value).ToString();
+    }
+
+    public void OnOneWayAislesToggleChanged(bool val)
+    {
+        storeSimulation.OneWayAisles = oneWayAislesToggle.isOn;
+    }
+
+    public void OnShopperMovementSpeedChanged()
+    {
+        storeSimulation.ShopperSpeed = shopperMovementSpeedSlider.value;
+        shopperMovementSpeedText.text = storeSimulation.ShopperSpeed.ToString("0.00");
+    }
+
+    public void OnMinTransactionTimeChanged()
+    {
+        storeSimulation.MinPurchaseTime = minTransactionTimeSlider.value;
+        minTransactionTimeText.text = storeSimulation.MinPurchaseTime.ToString("0.00");
+        maxTransactionTimeSlider.minValue = storeSimulation.MinPurchaseTime;
+        if(maxTransactionTimeSlider.value < storeSimulation.MinPurchaseTime)
+        {
+            maxTransactionTimeSlider.value = storeSimulation.MinPurchaseTime;
+        }
+    }
+
+    public void OnMaxTransactionTimeChanged()
+    {
+        storeSimulation.MaxPurchaseTime = maxTransactionTimeSlider.value;
+        maxTransactionTimeText.text = storeSimulation.MaxPurchaseTime.ToString("0.00");
+        minTransactionTimeSlider.maxValue = storeSimulation.MaxPurchaseTime;
+        if(minTransactionTimeSlider.value >= storeSimulation.MaxPurchaseTime)
+        {
+            minTransactionTimeSlider.value = storeSimulation.MaxPurchaseTime;
+        }
+    }
+
+    public void OnNumHealthyChanged(int count)
+    {
+        healthyCustomersText.text = string.Format(healthyCustomerCountLabelText, count);
+    }
+
+    public void NumExposedChanged(int count)
+    {
+        exposedCustomersText.text = string.Format(exposedCustomerCountLabelText, count);
     }
 }
