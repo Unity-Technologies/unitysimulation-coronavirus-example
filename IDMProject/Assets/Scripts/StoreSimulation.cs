@@ -1,9 +1,12 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Simulation.Games;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Unity.Simulation.Games;
+using Object = System.Object;
+using Random = UnityEngine.Random;
 
 public class StoreSimulation : MonoBehaviour
 {
@@ -12,39 +15,59 @@ public class StoreSimulation : MonoBehaviour
     [FormerlySerializedAs("NumShoppers")]
     [Header("Store Parameters")]
     public int DesiredNumShoppers = 10;
-    public int DesiredNumContagious = 1;
-    public float SpawnCooldown= 1.0f;
+    [FormerlySerializedAs("DesiredNumContagious")]
+    public int DesiredNumInfectious = 1;
+    public float SpawnCooldown = 1.0f;
     public bool OneWayAisles = true;
 
-	public float SimulationTimeInSeconds = 60f;
+    [HideInInspector]
+    public int BillingQueueCapacity = 4;
+
+    [Header("Billing Queue Parameters")]
+    public float MaxPurchaseTime = 3.0f;
+    public float MinPurchaseTime = 1.0f;
+    public int NumberOfCountersOpen = 9;
 
     // Exposure probability parameters.
     // These are given as the probability of a healthy person converting to exposed over the course of one second.
-    // During simulation, these probability are linearly interpolated based on distance to the contagious person
+    // During simulation, these probability are linearly interpolated based on distance to the infectious person
     // and modified to account for the timestep.
     [Header("Exposure Parameters")]
+    [Range(0.0f, 1.0f)]
     public float ExposureProbabilityAtZeroDistance = 0.5f;
+    [Range(0.0f, 1.0f)]
     public float ExposureProbabilityAtMaxDistance = 0.0f;
+    [Range(0.0f, 10.0f)]
     public float ExposureDistanceMeters = 1.8288f; // Six feet in meters
 
 
     [Header("Graphics Parameters")]
     public GameObject ShopperPrefab;
+    public GameObject[] Registers;
 
-    WaypointNode[] waypoints;
+    [Header("Shopper Parameters")]
+    public float ShopperSpeed = 1.0f;
+
+    [HideInInspector]
+    public WaypointNode[] waypoints;
     List<WaypointNode> entrances;
-    List<WaypointNode> exits;
-    List<WaypointNode> regularNodes;
+    WaypointGraph m_WaypointGraph;
     HashSet<Shopper> allShoppers;
     float spawnCooldownCounter;
-    int numContagious;
+    int numInfectious;
+    private List<StoreSimulationQueue> registersQueues = new List<StoreSimulationQueue>();
+    private int currentServingQueue = 0;
 
     bool simulationInited = false;
-	float simulationSecondsRunTime;
+    float simulationSecondsRunTime;
+    public float SimulationTimeInSeconds = 60f;
 
-	// Results
-	int finalHealthy;
+    // Results
+    int finalHealthy;
     int finalExposed;
+
+    public event Action<int> NumHealthyChanged;
+    public event Action<int> NumContagiousChanged;
 
     void Awake()
     {
@@ -54,24 +77,52 @@ public class StoreSimulation : MonoBehaviour
     void OnConfigFetched(GameSimConfigResponse configResponse)
     {
         DesiredNumShoppers = configResponse.GetInt("DesiredNumShoppers", DesiredNumShoppers);
-        DesiredNumContagious = configResponse.GetInt("DesiredNumContagious", DesiredNumContagious);
+        DesiredNumInfectious = configResponse.GetInt("DesiredNumContagious", DesiredNumInfectious);
         SpawnCooldown = configResponse.GetFloat("SpawnCooldown", SpawnCooldown);
         OneWayAisles = configResponse.GetBool("OneWayAisles", OneWayAisles);
-		SimulationTimeInSeconds = configResponse.GetFloat("SimulationTimeInSeconds", SimulationTimeInSeconds);
-		ExposureProbabilityAtZeroDistance = configResponse.GetFloat("ExposureProbabilityAtZeroDistance", ExposureProbabilityAtZeroDistance);
-		ExposureProbabilityAtMaxDistance = configResponse.GetFloat("ExposureProbabilityAtMaxDistance", ExposureProbabilityAtMaxDistance);
-		ExposureDistanceMeters = configResponse.GetFloat("ExposureDistanceMeters", ExposureDistanceMeters);
+        SimulationTimeInSeconds = configResponse.GetFloat("SimulationTimeInSeconds", SimulationTimeInSeconds);
+        ExposureProbabilityAtZeroDistance = configResponse.GetFloat("ExposureProbabilityAtZeroDistance", ExposureProbabilityAtZeroDistance);
+        ExposureProbabilityAtMaxDistance = configResponse.GetFloat("ExposureProbabilityAtMaxDistance", ExposureProbabilityAtMaxDistance);
+        ExposureDistanceMeters = configResponse.GetFloat("ExposureDistanceMeters", ExposureDistanceMeters);
+        NumberOfCountersOpen = configResponse.GetInt("NumberOfRegistersOpen", NumberOfCountersOpen);
 
-		InitSimulation();
+        InitSimulation();
     }
 
     void InitSimulation()
     {
+        InitializeRegisters();
         InitWaypoints();
         simulationInited = true;
-		simulationSecondsRunTime = SimulationTimeInSeconds;
+        simulationSecondsRunTime = SimulationTimeInSeconds;
         allShoppers = new HashSet<Shopper>();
     }
+
+    private void InitializeRegisters()
+    {
+        foreach (var register in Registers)
+        {
+            register.gameObject.SetActive(false);
+            var queueComponent = register.GetComponent<StoreSimulationQueue>();
+            if (queueComponent != null)
+            {
+                Destroy(queueComponent);
+            }
+        }
+
+        for (int i = 0; i < NumberOfCountersOpen; i++)
+        {
+            Registers[i].gameObject.SetActive(true);
+            var queue = Registers[i].AddComponent<StoreSimulationQueue>();
+            queue.MaxQueueCapacity = BillingQueueCapacity;
+            queue.MaxProcessingTime = MaxPurchaseTime;
+            queue.MinProcessingTime = MinPurchaseTime;
+            queue.ShoppersQueue = new Queue<Shopper>(BillingQueueCapacity);
+            queue.QueueState = StoreSimulationQueue.State.Idle;
+            registersQueues.Add(queue);
+        }
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -80,16 +131,17 @@ public class StoreSimulation : MonoBehaviour
         {
             return;
         }
-		simulationSecondsRunTime -= Time.deltaTime;
-        if(simulationSecondsRunTime <= 0)
-		{
-			OnSimulationFinished();
-			return;
-		}
-		// Cooldown on respawns - can only respawn when the counter is 0 (or negative).
-		// The counter resets to SpawnCooldown when a customer is spawned.
-		spawnCooldownCounter -= Time.deltaTime;
-		if (spawnCooldownCounter <= 0 && allShoppers.Count < DesiredNumShoppers)
+        simulationSecondsRunTime -= Time.deltaTime;
+        if (simulationSecondsRunTime <= 0)
+        {
+            OnSimulationFinished();
+            return;
+        }
+
+        // Cooldown on respawns - can only respawn when the counter is 0 (or negative).
+        // The counter resets to SpawnCooldown when a customer is spawned.
+        spawnCooldownCounter -= Time.deltaTime;
+        if (spawnCooldownCounter <= 0 && allShoppers.Count < DesiredNumShoppers)
         {
             var newShopperGameObject = Instantiate(ShopperPrefab);
             var newShopper = newShopperGameObject.GetComponent<Shopper>();
@@ -98,35 +150,54 @@ public class StoreSimulation : MonoBehaviour
             spawnCooldownCounter = SpawnCooldown;
         }
 
+        MoveQueue();
         UpdateExposure();
     }
 
     void OnDisable()
     {
-		// OnSimulationFinished();
+        // Update the final counts.
+        foreach (var s in allShoppers)
+        {
+            if (s.IsHealthy())
+            {
+                finalHealthy++;
+                NumHealthyChanged?.Invoke(finalHealthy);
+            }
+
+            if (s.IsExposed())
+            {
+                finalExposed++;
+                NumContagiousChanged?.Invoke(finalExposed);
+            }
+        }
+
+        var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
+        Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {100.0 * exposureRate}%");
+
     }
 
     void OnSimulationFinished()
-	{
-		// Update the final counts.
-		foreach (var s in allShoppers)
-		{
-			if (s.IsHealthy())
-			{
-				finalHealthy++;
-			}
+    {
+        // Update the final counts.
+        foreach (var s in allShoppers)
+        {
+            if (s.IsHealthy())
+            {
+                finalHealthy++;
+            }
 
-			if (s.IsExposed())
-			{
-				finalExposed++;
-			}
-		}
+            if (s.IsExposed())
+            {
+                finalExposed++;
+            }
+        }
 
-		var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
-		Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {exposureRate}%");
+        var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
+        Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {exposureRate}%");
 
-		SetCounters();
-	}
+        SetCounters();
+    }
 
     void SetCounters()
     {
@@ -146,8 +217,8 @@ public class StoreSimulation : MonoBehaviour
         s.simulation = this;
         if (s.Behavior == Shopper.BehaviorType.ShoppingList)
         {
-            var path = GenerateRandomPath(6);
-            if(path != null)
+            var path = m_WaypointGraph.GenerateRandomPath(6);
+            if (path != null)
             {
                 s.SetPath(path);
             }
@@ -161,35 +232,40 @@ public class StoreSimulation : MonoBehaviour
         }
 
         // Randomize the movement speed between [.75, 1.25] of the default speed
-        var speedMult = UnityEngine.Random.Range(.75f, 1.25f);
-        s.Speed *= speedMult;
+        var speedMult = UnityEngine.Random.Range(.5f, 1f);
+        s.Speed = ShopperSpeed * speedMult;
 
-        if (numContagious < DesiredNumContagious)
+        if (numInfectious < DesiredNumInfectious)
         {
-            s.InfectionStatus = Shopper.Status.Contagious;
-            numContagious++;
+            s.InfectionStatus = Shopper.Status.Infectious;
+            numInfectious++;
         }
     }
 
-    public void Despawn(Shopper s)
+    public void Despawn(Shopper s, bool removeShopper = true)
     {
-        if (s.IsContagious())
+        if (s.IsInfectious())
         {
-            numContagious--;
+            numInfectious--;
         }
 
         // Update running totals of healthy and exposed.
         if (s.IsHealthy())
         {
             finalHealthy++;
+            NumHealthyChanged?.Invoke(finalHealthy);
         }
 
         if (s.IsExposed())
         {
             finalExposed++;
+            NumContagiousChanged?.Invoke(finalExposed);
         }
 
-        allShoppers.Remove(s);
+        if (removeShopper)
+        {
+            allShoppers.Remove(s);
+        }
         Destroy(s.gameObject);
     }
 
@@ -197,8 +273,6 @@ public class StoreSimulation : MonoBehaviour
     {
         waypoints = GetComponentsInChildren<WaypointNode>();
         entrances = new List<WaypointNode>();
-        exits = new List<WaypointNode>();
-        regularNodes = new List<WaypointNode>();
         Debug.Log($"Found {waypoints.Length} waypoints");
 
         // Clear any existing edges
@@ -210,15 +284,8 @@ public class StoreSimulation : MonoBehaviour
             {
                 entrances.Add(wp);
             }
-            else if (wp.waypointType == WaypointNode.WaypointType.Exit)
-            {
-                exits.Add(wp);
-            }
-            else
-            {
-                regularNodes.Add(wp);
-            }
         }
+        m_WaypointGraph = new WaypointGraph(waypoints);
 
         var startTicks = DateTime.Now.Ticks;
         // TODO avoid duplication with the gizmos code by passing a delegate?
@@ -239,7 +306,7 @@ public class StoreSimulation : MonoBehaviour
             }
         }
         var endTicks = DateTime.Now.Ticks;
-        Debug.Log($"Raycasting between waypoints took {(endTicks-startTicks)*s_TicksToSeconds} seconds");
+        Debug.Log($"Raycasting between waypoints took {(endTicks - startTicks) * s_TicksToSeconds} seconds");
     }
 
     void OnDrawGizmos()
@@ -267,7 +334,7 @@ public class StoreSimulation : MonoBehaviour
     {
         foreach (var shopper in allShoppers)
         {
-            if (!shopper.IsContagious())
+            if (!shopper.IsInfectious())
             {
                 continue;
             }
@@ -292,20 +359,20 @@ public class StoreSimulation : MonoBehaviour
     }
 
     /// <summary>
-    /// Determine whether the healthy shopper should get exposed by the contagious one.
+    /// Determine whether the healthy shopper should get exposed by the infectious one.
     /// </summary>
     /// <param name="healthy"></param>
-    /// <param name="contagious"></param>
+    /// <param name="infectious"></param>
     /// <returns></returns>
-    bool ShouldExposeHealthy(Shopper healthy, Shopper contagious)
+    bool ShouldExposeHealthy(Shopper healthy, Shopper infectious)
     {
         // Account for motion over the last frame by taking the min distance of the "swept" positions
         // TODO - compute actual min distance between the 2 segments
         // Cheap approximation for now
         var distance = Mathf.Min(
-            Vector3.Distance(healthy.transform.position, contagious.transform.position),
-            Vector3.Distance(healthy.transform.position, contagious.previousPosition),
-            Vector3.Distance(healthy.previousPosition, contagious.transform.position)
+            Vector3.Distance(healthy.transform.position, infectious.transform.position),
+            Vector3.Distance(healthy.transform.position, infectious.previousPosition),
+            Vector3.Distance(healthy.previousPosition, infectious.transform.position)
         );
         if (distance > ExposureDistanceMeters)
         {
@@ -325,136 +392,69 @@ public class StoreSimulation : MonoBehaviour
         return UnityEngine.Random.value < probPerFrame;
     }
 
-    List<WaypointNode> GenerateRandomPath(int numGoals)
+    void MoveQueue()
     {
-        HashSet<WaypointNode> goals = new HashSet<WaypointNode>();
-
-        // Select numGoals regular waypoints without replacement
-        // TODO: Fisher-Yates shuffle instead?
-        while (goals.Count < numGoals)
+        foreach (var register in registersQueues)
         {
-            var randomIndex = UnityEngine.Random.Range(0, regularNodes.Count);
-            if (regularNodes[randomIndex].Passthrough)
+            if (register.ShoppersQueue.Count > 0 && register.QueueState == StoreSimulationQueue.State.Idle)
             {
-                continue;
+                var shopper = register.ExitQueue();
+                register.QueueState = StoreSimulationQueue.State.Processing;
+                StartCoroutine(ProcessShopper(register, shopper.Item1, shopper.Item2));
             }
-            goals.Add(regularNodes[randomIndex]);
         }
-
-        // Randomly pick from the available entrances and exits.
-        var entrance = entrances[UnityEngine.Random.Range(0, entrances.Count)];
-        var exit = exits[UnityEngine.Random.Range(0, exits.Count)];
-
-        // Order the goals.
-        // Just greedily pick the closest one to the most recent point (at least, that's how I go shopping).
-        List<WaypointNode> orderedGoals = new List<WaypointNode>();
-        orderedGoals.Add(entrance);
-        var current = entrance;
-        while (goals.Count > 0)
-        {
-            WaypointNode closestNode = null;
-            float closestDistance = float.MaxValue;
-            foreach (var g in goals)
-            {
-                var distance = Vector3.Distance(current.transform.position, g.transform.position);
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestNode = g;
-                }
-            }
-            orderedGoals.Add(closestNode);
-            goals.Remove(closestNode);
-        }
-        orderedGoals.Add(exit);
-
-        // Dijkstra Search
-        List<WaypointNode> path = new List<WaypointNode>();
-        for (var i = 0; i < orderedGoals.Count-1; i++)
-        {
-            var subPath = FindPath(orderedGoals[i], orderedGoals[i + 1]);
-            if (subPath == null)
-            {
-                // TODO this is either a bug in the Dijkstra implementation,
-                // or the graph isn't fully connected, need to debug further.
-                return null;
-            }
-
-            path.AddRange(subPath);
-            // The last point now will be the same as the first point in the next subpath, so pop it
-            path.RemoveAt(path.Count-1);
-        }
-        // And add the last goal back
-        path.Add(exit);
-        return path;
     }
 
-    static List<WaypointNode> FindPath(WaypointNode startNode, WaypointNode endNode)
+    IEnumerator ProcessShopper(StoreSimulationQueue register, Shopper shopper, float waitTime)
     {
-        Dictionary<WaypointNode, float> pathCost = new Dictionary<WaypointNode, float>();
-        Dictionary<WaypointNode, WaypointNode> parents = new Dictionary<WaypointNode, WaypointNode>();
-        HashSet<WaypointNode> closed = new HashSet<WaypointNode>();
-
-        parents[startNode] = null;
-        pathCost[startNode] = 0.0f;
-
-        // TODO priority queue, we'll linear search for now
-        while (!closed.Contains(endNode))
-        {
-            if (pathCost.Count == 0)
-            {
-                // Unreachable
-                return null;
-            }
-            // "pop" the lowest cost node
-            var currentNode = FindLowestValue(pathCost);
-            var currentCost = pathCost[currentNode];
-            foreach (var neighbor in currentNode.Edges)
-            {
-                if (closed.Contains(neighbor))
-                {
-                    continue;
-                }
-
-                var costToNeighbor = Vector3.Distance(currentNode.transform.position, neighbor.transform.position);
-                if (!pathCost.ContainsKey(neighbor) || currentCost + costToNeighbor < pathCost[neighbor])
-                {
-                    // Update cost and parent for the neighbor
-                    pathCost[neighbor] = currentCost + costToNeighbor;
-                    parents[neighbor] = currentNode;
-                }
-            }
-
-            pathCost.Remove(currentNode);
-            closed.Add(currentNode);
-        }
-
-        // Walk backwards from the goal
-        List<WaypointNode> pathOut = new List<WaypointNode>();
-        var current = endNode;
-        while (current != null)
-        {
-            pathOut.Add(current);
-            current = parents[current];
-        }
-        pathOut.Reverse();
-        return pathOut;
+        yield return new WaitUntil(() => shopper.Behavior == Shopper.BehaviorType.Billing);
+        shopper.BillingTime = waitTime;
+        shopper.Regsiter = register.gameObject;
     }
 
-    // TODO replace with minheap/priority queue
-    static T FindLowestValue<T>(Dictionary<T, float> heap)
+    public void InformExit(Shopper shopper)
     {
-        var lowestVal = float.MaxValue;
-        T lowestKey = default(T);
-        foreach (var entry in heap)
+        Debug.Assert(shopper.Regsiter != null, "Shopper needs to have an assigned register counter");
+
+        shopper.Regsiter.GetComponent<StoreSimulationQueue>().QueueState = StoreSimulationQueue.State.Idle;
+    }
+
+    public WaypointNode EnterInAvailableQueue(Shopper shopper, WaypointNode currentNode)
+    {
+        var registerNodesQueue = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register)
+            .ToArray();
+
+        for (int i = currentServingQueue; i < registerNodesQueue.Length;)
         {
-            if (entry.Value < lowestVal)
+            var queue = registerNodesQueue[i].gameObject.GetComponent<StoreSimulationQueue>();
+            if (queue && queue.EnterTheQueue(shopper))
             {
-                lowestKey = entry.Key;
-                lowestVal = entry.Value;
+                shopper.Behavior = Shopper.BehaviorType.InQueue;
+                currentServingQueue = (currentServingQueue + 1) % registerNodesQueue.Length;
+                return registerNodesQueue[i];
             }
+
+            i++;
         }
 
-        return lowestKey;
+        shopper.SetWaypoint(currentNode, true);
+        return currentNode.GetRandomNeighbor();
+    }
+
+    public void ResetSimulation()
+    {
+        foreach (var shopper in allShoppers)
+        {
+            Despawn(shopper, false);
+        }
+        allShoppers.Clear();
+        finalExposed = 0;
+        finalHealthy = 0;
+        NumHealthyChanged?.Invoke(finalHealthy);
+        NumContagiousChanged?.Invoke(finalExposed);
+        numInfectious = 0;
+        registersQueues.Clear();
+        InitializeRegisters();
+        InitWaypoints();
     }
 }

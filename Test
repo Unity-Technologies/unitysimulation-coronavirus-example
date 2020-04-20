@@ -1,0 +1,9 @@
+{
+    "extraPlayers": 29,
+    "scale": 8,
+    "numPickups": 25,
+    "extraCameras": 0,
+    "forceCrashAfterSeconds": -1,
+    "quitAfterSeconds": -1,
+    "screenCaptureInterval": 0
+}
