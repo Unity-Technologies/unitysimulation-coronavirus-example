@@ -195,7 +195,7 @@ public class StoreSimulation : MonoBehaviour
 
         var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
         Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {exposureRate}%");
-
+        simulationInited = false;
         SetCounters();
     }
 
