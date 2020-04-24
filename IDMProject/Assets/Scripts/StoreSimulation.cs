@@ -98,16 +98,6 @@ public class StoreSimulation : MonoBehaviour
         allShoppers = new HashSet<Shopper>();
     }
 
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        if (hasFocus)
-            Time.timeScale = 1;
-        else
-        {
-            Time.timeScale = 0;
-        }
-    }
-
     private void InitializeRegisters()
     {
         foreach (var register in Registers)
