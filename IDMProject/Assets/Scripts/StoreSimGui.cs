@@ -38,6 +38,7 @@ public class StoreSimGui : MonoBehaviour
     public TMP_Text healthyCustomersText;
     public TMP_Text exposedCustomersText;
     public TMP_Text exposedPercentageText;
+    public TMP_Text totalRuntimeText;
 
     float meterToFoot = 3.28084f;
     float footToMeter = 0.3048f;
@@ -45,9 +46,12 @@ public class StoreSimGui : MonoBehaviour
     string healthyCustomerCountLabelText = "Number of Healthy Shoppers: {0}";
     string exposedCustomerCountLabelText = "Number of Exposed Shoppers: {0}";
     string exposedPercentageLabelText = "Exposure Rate: {0}%";
+    string runtimeLabelText = "Running Time: {0} seconds";
 
     int healthyCount;
     int exposedCount;
+
+    float secondsSinceStart = 0.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -85,12 +89,19 @@ public class StoreSimGui : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        secondsSinceStart += Time.deltaTime;
+        UpdateTimeText();
     }
 
     public void ResetSim()
     {
-        SceneManager.LoadScene(0);
+        secondsSinceStart = 0;
+        healthyCount = 0;
+        exposedCount = 0;
+        UpdateExposurePercent();
+        UpdateTimeText();
+        //SceneManager.LoadScene(0);
+        
     }
 
     public void OnNumShoppersChanged()
@@ -180,6 +191,16 @@ public class StoreSimGui : MonoBehaviour
 
     public void UpdateExposurePercent()
     {
-        exposedPercentageText.text = string.Format(exposedPercentageLabelText, (((float)exposedCount / (float)(healthyCount + exposedCount)) * 100).ToString("0.00"));
+        var exposedPercent = ((float)exposedCount / (float)(healthyCount + exposedCount)) * 100;
+        if(exposedCount == 0 && healthyCount == 0)
+        {
+            exposedPercent = 0;
+        }
+        exposedPercentageText.text = string.Format(exposedPercentageLabelText, exposedPercent.ToString("0.00"));
+    }
+
+    public void UpdateTimeText()
+    {
+        totalRuntimeText.text = string.Format(runtimeLabelText, secondsSinceStart.ToString("0.00"));
     }
 }
