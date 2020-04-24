@@ -45,7 +45,7 @@ public class Shopper : MonoBehaviour
 
     StoreSimulation m_Simulation;
     Vector3 m_PreviousPosition;
-    public GameObject Regsiter;
+    public StoreSimulationQueue Regsiter;
 
     public StoreSimulation simulation
     {
@@ -204,7 +204,7 @@ public class Shopper : MonoBehaviour
                 if (nextNode.waypointType == WaypointNode.WaypointType.Register && Behavior == BehaviorType.InQueue)
                     Behavior = BehaviorType.Billing;
 
-                if (nextNode.Edges.Count == 0)
+                if (nextNode.waypointType == WaypointNode.WaypointType.Exit)
                 {
                     // Need a respawn
                     simulation.Despawn(this);
