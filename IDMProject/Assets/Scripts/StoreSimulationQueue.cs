@@ -50,6 +50,12 @@ public class StoreSimulationQueue : MonoBehaviour
 
     private bool CanEnterQueue()
     {
+        if (ShoppersQueue.Count == MaxQueueCapacity)
+        {
+            while (ShoppersQueue.Peek() == null)
+                ShoppersQueue.Dequeue();   
+        }
+
         return ShoppersQueue.Count != MaxQueueCapacity;
     }
 
