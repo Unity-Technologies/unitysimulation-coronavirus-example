@@ -20,6 +20,7 @@ public class StoreSimGui : MonoBehaviour
     public Slider shopperMovementSpeedSlider;
     public Slider minTransactionTimeSlider;
     public Slider maxTransactionTimeSlider;
+    public Slider timeScaleSlider;
 
     public TMP_Text numShoppersText;
     [FormerlySerializedAs("numContagiousText")]
@@ -32,6 +33,7 @@ public class StoreSimGui : MonoBehaviour
     public TMP_Text shopperMovementSpeedText;
     public TMP_Text minTransactionTimeText;
     public TMP_Text maxTransactionTimeText;
+    public TMP_Text timeScaleText;
 
     public Toggle oneWayAislesToggle;
 
@@ -84,6 +86,8 @@ public class StoreSimGui : MonoBehaviour
         maxTransactionTimeSlider.minValue = storeSimulation.MinPurchaseTime;
         maxTransactionTimeSlider.maxValue = 10;
         maxTransactionTimeText.text = storeSimulation.MaxPurchaseTime.ToString("0.00");
+        timeScaleSlider.value = Time.timeScale;
+        timeScaleText.text = Time.timeScale.ToString("0.00");
     }
 
     // Update is called once per frame
@@ -202,5 +206,11 @@ public class StoreSimGui : MonoBehaviour
     public void UpdateTimeText()
     {
         totalRuntimeText.text = string.Format(runtimeLabelText, secondsSinceStart.ToString("0.00"));
+    }
+
+    public void OnUpdateTimeScale(float newTimeScale)
+    {
+        Time.timeScale = timeScaleSlider.value;
+        timeScaleText.text = timeScaleSlider.value.ToString("0.00");
     }
 }
