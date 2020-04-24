@@ -91,7 +91,7 @@ public class StoreSimGui : MonoBehaviour
     public void OnNumShoppersChanged()
     {
         storeSimulation.DesiredNumShoppers = (int)numShoppersSlider.value;
-        numInfectiousSlider.maxValue = storeSimulation.DesiredNumShoppers;
+        numInfectiousSlider.maxValue = storeSimulation.DesiredNumShoppers > 20 ? 20 : storeSimulation.DesiredNumShoppers;
         numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
     }
 

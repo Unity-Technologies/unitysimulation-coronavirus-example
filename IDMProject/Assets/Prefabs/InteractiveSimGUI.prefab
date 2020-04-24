@@ -4809,7 +4809,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 8744079158990673144}
   m_HandleRect: {fileID: 8744079159840034131}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.3
   m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 0.62
@@ -5100,7 +5100,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 8744079159435886870}
   m_HandleRect: {fileID: 8744079158049538282}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.3
   m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 1
@@ -5429,7 +5429,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 8744079159473437935}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 200
+  m_MaxValue: 20
   m_WholeNumbers: 0
   m_Value: 2
   m_OnValueChanged:
@@ -5782,8 +5782,8 @@ MonoBehaviour:
   m_FillRect: {fileID: 8744079158950411291}
   m_HandleRect: {fileID: 8744079159192075759}
   m_Direction: 0
-  m_MinValue: 1
-  m_MaxValue: 100
+  m_MinValue: 3
+  m_MaxValue: 15
   m_WholeNumbers: 1
   m_Value: 3
   m_OnValueChanged:
@@ -7539,7 +7539,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 916712740, guid: 4230512f79b2140ccaec615fa9a29e50, type: 3}
       propertyPath: m_MaxValue
-      value: 200
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 916712740, guid: 4230512f79b2140ccaec615fa9a29e50, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -7548,6 +7548,14 @@ PrefabInstance:
     - target: {fileID: 916712740, guid: 4230512f79b2140ccaec615fa9a29e50, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnNumShoppersChanged
+      objectReference: {fileID: 0}
+    - target: {fileID: 916712740, guid: 4230512f79b2140ccaec615fa9a29e50, type: 3}
+      propertyPath: m_MinValue
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 916712740, guid: 4230512f79b2140ccaec615fa9a29e50, type: 3}
+      propertyPath: m_Value
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1586265385, guid: 4230512f79b2140ccaec615fa9a29e50, type: 3}
       propertyPath: m_Name
