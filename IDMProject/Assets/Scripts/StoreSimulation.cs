@@ -72,6 +72,16 @@ public class StoreSimulation : MonoBehaviour
         allShoppers = new HashSet<Shopper>();
     }
 
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+            Time.timeScale = 1;
+        else
+        {
+            Time.timeScale = 0;
+        }
+    }
+
 
     private void InitializeRegisters()
     {
@@ -342,14 +352,14 @@ public class StoreSimulation : MonoBehaviour
     {
         yield return new WaitUntil(() => shopper.Behavior == Shopper.BehaviorType.Billing);
         shopper.BillingTime = waitTime;
-        shopper.Regsiter = register.gameObject;
+        shopper.Regsiter = register;
     }
 
-    public void InformExit(Shopper shopper)
+    public void InformExit(Shopper shopper)// At this point shopper is not in the queue. Just Freeing the Register.
     {
         Debug.Assert(shopper.Regsiter != null, "Shopper needs to have an assigned register counter");
 
-        shopper.Regsiter.GetComponent<StoreSimulationQueue>().QueueState = StoreSimulationQueue.State.Idle;
+        shopper.Regsiter.QueueState = StoreSimulationQueue.State.Idle;
     }
 
     public WaypointNode EnterInAvailableQueue(Shopper shopper, WaypointNode currentNode)
