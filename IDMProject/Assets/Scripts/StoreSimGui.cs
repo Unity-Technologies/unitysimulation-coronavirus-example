@@ -37,12 +37,17 @@ public class StoreSimGui : MonoBehaviour
 
     public TMP_Text healthyCustomersText;
     public TMP_Text exposedCustomersText;
+    public TMP_Text exposedPercentageText;
 
     float meterToFoot = 3.28084f;
     float footToMeter = 0.3048f;
     string transmissionProbAtMaxDistanceLabelText = "Exposure Probability at {0} ft";
     string healthyCustomerCountLabelText = "Number of Healthy Shoppers: {0}";
     string exposedCustomerCountLabelText = "Number of Exposed Shoppers: {0}";
+    string exposedPercentageLabelText = "Exposure Rate: {0}%";
+
+    int healthyCount;
+    int exposedCount;
 
     // Start is called before the first frame update
     void Start()
@@ -162,10 +167,19 @@ public class StoreSimGui : MonoBehaviour
     public void OnNumHealthyChanged(int count)
     {
         healthyCustomersText.text = string.Format(healthyCustomerCountLabelText, count);
+        healthyCount = count;
+        UpdateExposurePercent();
     }
 
     public void NumExposedChanged(int count)
     {
         exposedCustomersText.text = string.Format(exposedCustomerCountLabelText, count);
+        exposedCount = count;
+        UpdateExposurePercent();
+    }
+
+    public void UpdateExposurePercent()
+    {
+        exposedPercentageText.text = string.Format(exposedPercentageLabelText, (((float)exposedCount / (float)(healthyCount + exposedCount)) * 100).ToString("0.00"));
     }
 }

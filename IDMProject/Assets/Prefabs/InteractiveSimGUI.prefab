@@ -750,7 +750,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Exposure Rate: X%'
+  m_text: 'Exposure Rate: 0%'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6762,6 +6762,7 @@ MonoBehaviour:
   oneWayAislesToggle: {fileID: 634570062}
   healthyCustomersText: {fileID: 95250707}
   exposedCustomersText: {fileID: 1622974157}
+  exposedPercentageText: {fileID: 705870118}
 --- !u!1 &8744079159192075744
 GameObject:
   m_ObjectHideFlags: 0
