@@ -52,7 +52,7 @@ public class StoreSimGui : MonoBehaviour
 
         numShoppersSlider.value = storeSimulation.DesiredNumShoppers;
         numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
-        numInfectiousSlider.maxValue = numShoppersSlider.value;
+        numInfectiousSlider.maxValue = storeSimulation.DesiredNumShoppers > 20 ? 20 : storeSimulation.DesiredNumShoppers;
         numInfectiousSlider.value = storeSimulation.DesiredNumInfectious;
         numInfectiousText.text = storeSimulation.DesiredNumInfectious.ToString();
         maxTransmissionDistanceSlider.value = storeSimulation.ExposureDistanceMeters * meterToFoot;
