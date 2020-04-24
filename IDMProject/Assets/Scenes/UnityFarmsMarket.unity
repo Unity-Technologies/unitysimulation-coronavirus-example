@@ -3977,6 +3977,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -2.0002
       objectReference: {fileID: 0}
+    - target: {fileID: 599806777, guid: d77e177d0bdd8439fbd7188cf99fb3ee, type: 3}
+      propertyPath: m_text
+      value: Output Measures
+      objectReference: {fileID: 0}
+    - target: {fileID: 599806777, guid: d77e177d0bdd8439fbd7188cf99fb3ee, type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 637665859, guid: d77e177d0bdd8439fbd7188cf99fb3ee, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
