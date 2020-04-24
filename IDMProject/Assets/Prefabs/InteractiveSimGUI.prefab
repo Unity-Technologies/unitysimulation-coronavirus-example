@@ -3543,8 +3543,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 730.6, y: 0}
-  m_SizeDelta: {x: -1461.1, y: 0}
+  m_AnchoredPosition: {x: 717.00024, y: 0}
+  m_SizeDelta: {x: -1433.9, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &434459665019838257
 CanvasRenderer:
@@ -6043,7 +6043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storeSimulation: {fileID: 0}
   numShoppersSlider: {fileID: 892380942849130825}
-  numContagiousSlider: {fileID: 8744079158738905109}
+  numInfectiousSlider: {fileID: 8744079158738905109}
   maxTransmissionDistanceSlider: {fileID: 8744079159011195031}
   transmissionProbAtZeroDistanceSlider: {fileID: 8744079158323097555}
   transmissionProbAtMaxDistanceSlider: {fileID: 8744079158185791200}
@@ -6052,7 +6052,7 @@ MonoBehaviour:
   minTransactionTimeSlider: {fileID: 2058009052}
   maxTransactionTimeSlider: {fileID: 1278819074}
   numShoppersText: {fileID: 892380942179914055}
-  numContagiousText: {fileID: 8744079159716670336}
+  numInfectiousText: {fileID: 8744079159716670336}
   maxTransmissionDistanceText: {fileID: 8744079159540892079}
   transmissionProbAtZeroDistanceText: {fileID: 8744079158045331958}
   transmissionProbAtMaxDistanceText: {fileID: 8744079159304014707}
@@ -6062,6 +6062,8 @@ MonoBehaviour:
   minTransactionTimeText: {fileID: 1424648022}
   maxTransactionTimeText: {fileID: 749657063}
   oneWayAislesToggle: {fileID: 634570062}
+  healthyCustomersText: {fileID: 95250707}
+  exposedCustomersText: {fileID: 1622974157}
 --- !u!1 &8744079159192075744
 GameObject:
   m_ObjectHideFlags: 0
