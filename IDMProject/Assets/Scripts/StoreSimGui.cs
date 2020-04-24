@@ -40,7 +40,7 @@ public class StoreSimGui : MonoBehaviour
 
     float meterToFoot = 3.28084f;
     float footToMeter = 0.3048f;
-    string transmissionProbAtMaxDistanceLabelText = "Transmission Chance at {0}ft";
+    string transmissionProbAtMaxDistanceLabelText = "Exposure Probability at {0} ft";
     string healthyCustomerCountLabelText = "Number of Healthy Shoppers: {0}";
     string exposedCustomerCountLabelText = "Number of Exposed Shoppers: {0}";
 
