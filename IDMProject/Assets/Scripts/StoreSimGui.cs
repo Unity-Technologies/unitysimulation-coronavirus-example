@@ -20,6 +20,7 @@ public class StoreSimGui : MonoBehaviour
     public Slider shopperMovementSpeedSlider;
     public Slider minTransactionTimeSlider;
     public Slider maxTransactionTimeSlider;
+    public Slider timeScaleSlider;
 
     public TMP_Text numShoppersText;
     [FormerlySerializedAs("numContagiousText")]
@@ -32,17 +33,27 @@ public class StoreSimGui : MonoBehaviour
     public TMP_Text shopperMovementSpeedText;
     public TMP_Text minTransactionTimeText;
     public TMP_Text maxTransactionTimeText;
+    public TMP_Text timeScaleText;
 
     public Toggle oneWayAislesToggle;
 
     public TMP_Text healthyCustomersText;
     public TMP_Text exposedCustomersText;
+    public TMP_Text exposedPercentageText;
+    public TMP_Text totalRuntimeText;
 
     float meterToFoot = 3.28084f;
     float footToMeter = 0.3048f;
-    string transmissionProbAtMaxDistanceLabelText = "Transmission Chance at {0}ft";
+    string transmissionProbAtMaxDistanceLabelText = "Exposure Probability at {0} ft";
     string healthyCustomerCountLabelText = "Number of Healthy Shoppers: {0}";
     string exposedCustomerCountLabelText = "Number of Exposed Shoppers: {0}";
+    string exposedPercentageLabelText = "Exposure Rate: {0}%";
+    string runtimeLabelText = "Running Time: {0} seconds";
+
+    int healthyCount;
+    int exposedCount;
+
+    float secondsSinceStart = 0.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -52,7 +63,7 @@ public class StoreSimGui : MonoBehaviour
 
         numShoppersSlider.value = storeSimulation.DesiredNumShoppers;
         numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
-        numInfectiousSlider.maxValue = numShoppersSlider.value;
+        numInfectiousSlider.maxValue = storeSimulation.DesiredNumShoppers > 20 ? 20 : storeSimulation.DesiredNumShoppers;
         numInfectiousSlider.value = storeSimulation.DesiredNumInfectious;
         numInfectiousText.text = storeSimulation.DesiredNumInfectious.ToString();
         maxTransmissionDistanceSlider.value = storeSimulation.ExposureDistanceMeters * meterToFoot;
@@ -75,23 +86,32 @@ public class StoreSimGui : MonoBehaviour
         maxTransactionTimeSlider.minValue = storeSimulation.MinPurchaseTime;
         maxTransactionTimeSlider.maxValue = 10;
         maxTransactionTimeText.text = storeSimulation.MaxPurchaseTime.ToString("0.00");
+        timeScaleSlider.value = Time.timeScale;
+        timeScaleText.text = Time.timeScale.ToString("0.00");
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        secondsSinceStart += Time.deltaTime;
+        UpdateTimeText();
     }
 
     public void ResetSim()
     {
-        SceneManager.LoadScene(0);
+        secondsSinceStart = 0;
+        healthyCount = 0;
+        exposedCount = 0;
+        UpdateExposurePercent();
+        UpdateTimeText();
+        //SceneManager.LoadScene(0);
+        
     }
 
     public void OnNumShoppersChanged()
     {
         storeSimulation.DesiredNumShoppers = (int)numShoppersSlider.value;
-        numInfectiousSlider.maxValue = storeSimulation.DesiredNumShoppers;
+        numInfectiousSlider.maxValue = storeSimulation.DesiredNumShoppers > 20 ? 20 : storeSimulation.DesiredNumShoppers;
         numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
     }
 
@@ -162,10 +182,40 @@ public class StoreSimGui : MonoBehaviour
     public void OnNumHealthyChanged(int count)
     {
         healthyCustomersText.text = string.Format(healthyCustomerCountLabelText, count);
+        healthyCount = count;
+        UpdateExposurePercent();
     }
 
     public void NumExposedChanged(int count)
     {
         exposedCustomersText.text = string.Format(exposedCustomerCountLabelText, count);
+        exposedCount = count;
+        UpdateExposurePercent();
+    }
+
+    public void UpdateExposurePercent()
+    {
+        var exposedPercent = ((float)exposedCount / (float)(healthyCount + exposedCount)) * 100;
+        if(exposedCount == 0 && healthyCount == 0)
+        {
+            exposedPercent = 0;
+        }
+        exposedPercentageText.text = string.Format(exposedPercentageLabelText, exposedPercent.ToString("0.00"));
+    }
+
+    public void UpdateTimeText()
+    {
+        totalRuntimeText.text = string.Format(runtimeLabelText, secondsSinceStart.ToString("0.00"));
+    }
+
+    public void OnUpdateTimeScale(float newTimeScale)
+    {
+        Time.timeScale = timeScaleSlider.value;
+        timeScaleText.text = timeScaleSlider.value.ToString("0.00");
+    }
+
+    public void OnMouseOverObject(string whichObj)
+    {
+        
     }
 }
