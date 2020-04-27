@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1093406097863196328}
   - component: {fileID: 1093406097863196327}
   - component: {fileID: 1093406097863196326}
+  - component: {fileID: -91806402832325636}
   m_Layer: 9
   m_Name: Shopper
   m_TagString: Shopper
@@ -112,5 +113,25 @@ MonoBehaviour:
   InfectiousMaterial: {fileID: 2100000, guid: 8ffc66ad0a59445e18599b2d69f42062, type: 2}
   ExposedMaterial: {fileID: 2100000, guid: afa646ae6b1084528b813ea4812a43a6, type: 2}
   BillingTime: 0
+  m_Animator: {fileID: 0}
   Behavior: 1
   Regsiter: {fileID: 0}
+--- !u!95 &-91806402832325636
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093406097863196325}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 282bec024180840d3b9b6f4bb756df66, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

@@ -1569,14 +1569,13 @@ MonoBehaviour:
   DesiredNumInfectious: 5
   SpawnCooldown: 0.1
   OneWayAisles: 1
-  BillingQueueCapacity: 4
   MaxPurchaseTime: 3
   MinPurchaseTime: 1
   NumberOfCountersOpen: 5
   ExposureProbabilityAtZeroDistance: 0.86
   ExposureProbabilityAtMaxDistance: 0.5
   ExposureDistanceMeters: 1.8288
-  ShopperPrefab: {fileID: 1093406097863196325, guid: 9d4463172376846758133dcae19a097d,
+  ShopperPrefab: {fileID: 6887419881335167475, guid: 43b12056384264be2b8170e98dda1e13,
     type: 3}
   Registers:
   - {fileID: 1179225598}
@@ -1589,7 +1588,8 @@ MonoBehaviour:
   - {fileID: 1734525257}
   - {fileID: 1979182310}
   ShopperSpeed: 15
-  waypoints: []
+  Waypoints: []
+  BillingQueueCapacity: 4
 --- !u!4 &538755301
 Transform:
   m_ObjectHideFlags: 0
