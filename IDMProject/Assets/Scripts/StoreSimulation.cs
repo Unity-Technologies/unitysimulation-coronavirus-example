@@ -85,6 +85,9 @@ public class StoreSimulation : MonoBehaviour
 
     private void InitializeRegisters()
     {
+        if (registersQueues.Count > 0)
+            registersQueues.Clear();
+        
         foreach (var register in Registers)
         {
             register.gameObject.SetActive(false);
