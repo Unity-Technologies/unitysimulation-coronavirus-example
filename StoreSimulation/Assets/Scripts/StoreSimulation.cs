@@ -288,8 +288,8 @@ public class StoreSimulation : MonoBehaviour
                 {
                     if (ShouldExposeHealthy(otherShopper, shopper))
                     {
-                        otherShopper.InfectionStatus = Shopper.Status.Exposed;
                         otherShopper.PlayRippleEffect();
+                        otherShopper.InfectionStatus = Shopper.Status.Exposed;
                     }
                 }
             }
