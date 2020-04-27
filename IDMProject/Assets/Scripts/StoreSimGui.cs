@@ -213,4 +213,9 @@ public class StoreSimGui : MonoBehaviour
         Time.timeScale = timeScaleSlider.value;
         timeScaleText.text = timeScaleSlider.value.ToString("0.00");
     }
+
+    public void OnMouseOverObject(string whichObj)
+    {
+        
+    }
 }
