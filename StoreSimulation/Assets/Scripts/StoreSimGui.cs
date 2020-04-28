@@ -59,7 +59,7 @@ public class StoreSimGui : MonoBehaviour
     int numInfectious;
     float maxTransmissionDistance;
     float exposureProbMinDistance;
-    float expsureProbMaxDistance;
+    float exposureProbMaxDistance;
     int numberOfRegisters;
     bool oneWayAisles;
     float shopperMoveSpeed;
@@ -76,7 +76,7 @@ public class StoreSimGui : MonoBehaviour
         numInfectious = storeSimulation.DesiredNumInfectious;
         maxTransmissionDistance = storeSimulation.ExposureDistanceMeters * meterToFoot;
         exposureProbMinDistance = storeSimulation.ExposureProbabilityAtZeroDistance;
-        expsureProbMaxDistance = storeSimulation.ExposureProbabilityAtMaxDistance;
+        exposureProbMaxDistance = storeSimulation.ExposureProbabilityAtMaxDistance;
         numberOfRegisters = storeSimulation.NumberOfCountersOpen;
         oneWayAisles = storeSimulation.OneWayAisles;
         shopperMoveSpeed = storeSimulation.ShopperSpeed;
@@ -128,7 +128,7 @@ public class StoreSimGui : MonoBehaviour
         storeSimulation.DesiredNumInfectious = numInfectious;
         storeSimulation.ExposureDistanceMeters = maxTransmissionDistance * footToMeter;
         storeSimulation.ExposureProbabilityAtZeroDistance = exposureProbMinDistance;
-        storeSimulation.ExposureProbabilityAtMaxDistance = expsureProbMaxDistance;
+        storeSimulation.ExposureProbabilityAtMaxDistance = exposureProbMaxDistance;
         storeSimulation.NumberOfCountersOpen = numberOfRegisters;
         storeSimulation.OneWayAisles = oneWayAisles;
         storeSimulation.ShopperSpeed = shopperMoveSpeed;
@@ -164,12 +164,17 @@ public class StoreSimGui : MonoBehaviour
     {
         exposureProbMinDistance = transmissionProbAtZeroDistanceSlider.value;
         transmissionProbAtZeroDistanceText.text = exposureProbMinDistance.ToString("0.00");
+        if(exposureProbMinDistance < transmissionProbAtMaxDistanceSlider.value)
+        {
+            transmissionProbAtMaxDistanceSlider.value = exposureProbMinDistance;
+        }
+        transmissionProbAtMaxDistanceSlider.maxValue = exposureProbMinDistance;
     }
 
     public void OnTransmissionProbablityAtMaxDistanceChanged()
     {
-        expsureProbMaxDistance = transmissionProbAtMaxDistanceSlider.value;
-        transmissionProbAtMaxDistanceText.text = expsureProbMaxDistance.ToString("0.00");
+        exposureProbMaxDistance = transmissionProbAtMaxDistanceSlider.value;
+        transmissionProbAtMaxDistanceText.text = exposureProbMaxDistance.ToString("0.00");
     }
 
     public void OnNumberOfRegistersChanged()
