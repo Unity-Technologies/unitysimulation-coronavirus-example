@@ -102,7 +102,7 @@ public class StoreSimGui : MonoBehaviour
         shopperMovementSpeedText.text = storeSimulation.ShopperSpeed.ToString("0.00");
         minTransactionTimeSlider.value = storeSimulation.MinPurchaseTime;
         minTransactionTimeSlider.minValue = 0.01f;
-        minTransactionTimeSlider.maxValue = storeSimulation.MaxPurchaseTime;
+        minTransactionTimeSlider.maxValue = storeSimulation.MaxPurchaseTime - 0.1f;
         minTransactionTimeText.text = storeSimulation.MinPurchaseTime.ToString("0.00");
         maxTransactionTimeSlider.value = storeSimulation.MaxPurchaseTime;
         maxTransactionTimeSlider.minValue = storeSimulation.MinPurchaseTime;
@@ -204,10 +204,10 @@ public class StoreSimGui : MonoBehaviour
     {
         maxTransactionTime = maxTransactionTimeSlider.value;
         maxTransactionTimeText.text = maxTransactionTime.ToString("0.00");
-        minTransactionTimeSlider.maxValue = maxTransactionTime;
+        minTransactionTimeSlider.maxValue = maxTransactionTime - 0.1f;
         if(minTransactionTimeSlider.value >= maxTransactionTime)
         {
-            minTransactionTimeSlider.value = maxTransactionTime;
+            minTransactionTimeSlider.value = maxTransactionTime - 0.1f;
         }
     }
 
