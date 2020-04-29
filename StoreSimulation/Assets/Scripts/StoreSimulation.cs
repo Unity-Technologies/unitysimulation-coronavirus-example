@@ -345,8 +345,8 @@ public class StoreSimulation : MonoBehaviour
 
     IEnumerator ProcessShopper(StoreSimulationQueue register, Shopper shopper, float waitTime)
     {
+        //shopper.BillingTime = waitTime;
         yield return new WaitUntil(() => shopper.Behavior == Shopper.BehaviorType.Billing);
-        shopper.BillingTime = waitTime;
         shopper.Regsiter = register;
     }
 
@@ -385,9 +385,15 @@ public class StoreSimulation : MonoBehaviour
         {
             Despawn(shopper, false);
         }
+
+        foreach (var register in Registers)
+        {
+            Destroy(register.GetComponent<StoreSimulationQueue>());
+        }
         m_AllShoppers.Clear();
         m_FinalExposed = 0;
         m_FinalHealthy = 0;
+        m_CurrentServingQueue = 0;
         NumHealthyChanged?.Invoke(m_FinalHealthy);
         NumContagiousChanged?.Invoke(m_FinalExposed);
         m_NumInfectious = 0;
