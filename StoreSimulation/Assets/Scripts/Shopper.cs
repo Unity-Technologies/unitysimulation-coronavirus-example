@@ -154,7 +154,7 @@ public class Shopper : MonoBehaviour
     WaypointNode EnterInAvailableQueue(WaypointNode currentNode)
     {
         var regsiterNodes = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register);
-        var nonRegsiterNodes = currentNode.Edges.Where(e => e.waypointType != WaypointNode.WaypointType.Register).ToArray();
+        var nonRegsiterNodes = currentNode.Edges.Where(e => e.waypointType != WaypointNode.WaypointType.Register && e.waypointType != WaypointNode.WaypointType.Exit).ToArray();
 
         foreach (var node in regsiterNodes)
         {

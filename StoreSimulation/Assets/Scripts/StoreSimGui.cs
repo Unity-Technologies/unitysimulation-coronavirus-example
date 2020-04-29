@@ -55,11 +55,33 @@ public class StoreSimGui : MonoBehaviour
 
     float secondsSinceStart = 0.0f;
 
+    int numShoppers;
+    int numInfectious;
+    float maxTransmissionDistance;
+    float exposureProbMinDistance;
+    float exposureProbMaxDistance;
+    int numberOfRegisters;
+    bool oneWayAisles;
+    float shopperMoveSpeed;
+    float minTransactionTime;
+    float maxTransactionTime;
+
     // Start is called before the first frame update
     void Start()
     {
         storeSimulation.NumHealthyChanged += OnNumHealthyChanged;
         storeSimulation.NumContagiousChanged += NumExposedChanged;
+
+        numShoppers = storeSimulation.DesiredNumShoppers;
+        numInfectious = storeSimulation.DesiredNumInfectious;
+        maxTransmissionDistance = storeSimulation.ExposureDistanceMeters * meterToFoot;
+        exposureProbMinDistance = storeSimulation.ExposureProbabilityAtZeroDistance;
+        exposureProbMaxDistance = storeSimulation.ExposureProbabilityAtMaxDistance;
+        numberOfRegisters = storeSimulation.NumberOfCountersOpen;
+        oneWayAisles = storeSimulation.OneWayAisles;
+        shopperMoveSpeed = storeSimulation.ShopperSpeed;
+        minTransactionTime = storeSimulation.MinPurchaseTime;
+        maxTransactionTime = storeSimulation.MaxPurchaseTime;
 
         numShoppersSlider.value = storeSimulation.DesiredNumShoppers;
         numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
@@ -80,7 +102,7 @@ public class StoreSimGui : MonoBehaviour
         shopperMovementSpeedText.text = storeSimulation.ShopperSpeed.ToString("0.00");
         minTransactionTimeSlider.value = storeSimulation.MinPurchaseTime;
         minTransactionTimeSlider.minValue = 0.01f;
-        minTransactionTimeSlider.maxValue = storeSimulation.MaxPurchaseTime;
+        minTransactionTimeSlider.maxValue = storeSimulation.MaxPurchaseTime - 0.1f;
         minTransactionTimeText.text = storeSimulation.MinPurchaseTime.ToString("0.00");
         maxTransactionTimeSlider.value = storeSimulation.MaxPurchaseTime;
         maxTransactionTimeSlider.minValue = storeSimulation.MinPurchaseTime;
@@ -102,6 +124,16 @@ public class StoreSimGui : MonoBehaviour
         secondsSinceStart = 0;
         healthyCount = 0;
         exposedCount = 0;
+        storeSimulation.DesiredNumShoppers = numShoppers;
+        storeSimulation.DesiredNumInfectious = numInfectious;
+        storeSimulation.ExposureDistanceMeters = maxTransmissionDistance * footToMeter;
+        storeSimulation.ExposureProbabilityAtZeroDistance = exposureProbMinDistance;
+        storeSimulation.ExposureProbabilityAtMaxDistance = exposureProbMaxDistance;
+        storeSimulation.NumberOfCountersOpen = numberOfRegisters;
+        storeSimulation.OneWayAisles = oneWayAisles;
+        storeSimulation.ShopperSpeed = shopperMoveSpeed;
+        storeSimulation.MinPurchaseTime = minTransactionTime;
+        storeSimulation.MaxPurchaseTime = maxTransactionTime;
         UpdateExposurePercent();
         UpdateTimeText();
         //SceneManager.LoadScene(0);
@@ -110,72 +142,77 @@ public class StoreSimGui : MonoBehaviour
 
     public void OnNumShoppersChanged()
     {
-        storeSimulation.DesiredNumShoppers = (int)numShoppersSlider.value;
-        numInfectiousSlider.maxValue = storeSimulation.DesiredNumShoppers > 20 ? 20 : storeSimulation.DesiredNumShoppers;
-        numShoppersText.text = storeSimulation.DesiredNumShoppers.ToString();
+        numShoppers = (int)numShoppersSlider.value;
+        numInfectiousSlider.maxValue = numShoppers > 20 ? 20 : numShoppers;
+        numShoppersText.text = numShoppers.ToString();
     }
 
     public void OnNumInfectiousChanged()
     {
-        storeSimulation.DesiredNumInfectious = (int)numInfectiousSlider.value;
-        numInfectiousText.text = storeSimulation.DesiredNumInfectious.ToString();
+        numInfectious = (int)numInfectiousSlider.value;
+        numInfectiousText.text = numInfectious.ToString();
     }
 
     public void OnMaxTransmissionDistanceChanged()
     {
-        storeSimulation.ExposureDistanceMeters = maxTransmissionDistanceSlider.value * footToMeter;
+        maxTransmissionDistance = maxTransmissionDistanceSlider.value;
         maxTransmissionDistanceText.text = maxTransmissionDistanceSlider.value.ToString("0.00");
         transmissionProbAtMaxDistanceLabel.text = string.Format(transmissionProbAtMaxDistanceLabelText, maxTransmissionDistanceSlider.value);
     }
 
     public void OnTransmissionProbablityAtMinDistanceChanged()
     {
-        storeSimulation.ExposureProbabilityAtZeroDistance = transmissionProbAtZeroDistanceSlider.value;
-        transmissionProbAtZeroDistanceText.text = storeSimulation.ExposureProbabilityAtZeroDistance.ToString("0.00");
+        exposureProbMinDistance = transmissionProbAtZeroDistanceSlider.value;
+        transmissionProbAtZeroDistanceText.text = exposureProbMinDistance.ToString("0.00");
+        if(exposureProbMinDistance < transmissionProbAtMaxDistanceSlider.value)
+        {
+            transmissionProbAtMaxDistanceSlider.value = exposureProbMinDistance;
+        }
+        transmissionProbAtMaxDistanceSlider.maxValue = exposureProbMinDistance;
     }
 
     public void OnTransmissionProbablityAtMaxDistanceChanged()
     {
-        storeSimulation.ExposureProbabilityAtMaxDistance = transmissionProbAtMaxDistanceSlider.value;
-        transmissionProbAtMaxDistanceText.text = storeSimulation.ExposureProbabilityAtMaxDistance.ToString("0.00");
+        exposureProbMaxDistance = transmissionProbAtMaxDistanceSlider.value;
+        transmissionProbAtMaxDistanceText.text = exposureProbMaxDistance.ToString("0.00");
     }
 
     public void OnNumberOfRegistersChanged()
     {
-        storeSimulation.NumberOfCountersOpen = (int)numberOfRegistersSlider.value;
-        numberOfRegistersText.text = ((int)numberOfRegistersSlider.value).ToString();
+        numberOfRegisters = (int)numberOfRegistersSlider.value;
+        numberOfRegistersText.text = numberOfRegisters.ToString();
     }
 
     public void OnOneWayAislesToggleChanged(bool val)
     {
-        storeSimulation.OneWayAisles = oneWayAislesToggle.isOn;
+        oneWayAisles = oneWayAislesToggle.isOn;
     }
 
     public void OnShopperMovementSpeedChanged()
     {
-        storeSimulation.ShopperSpeed = shopperMovementSpeedSlider.value;
-        shopperMovementSpeedText.text = storeSimulation.ShopperSpeed.ToString("0.00");
+        shopperMoveSpeed = shopperMovementSpeedSlider.value;
+        shopperMovementSpeedText.text = shopperMoveSpeed.ToString("0.00");
     }
 
     public void OnMinTransactionTimeChanged()
     {
-        storeSimulation.MinPurchaseTime = minTransactionTimeSlider.value;
-        minTransactionTimeText.text = storeSimulation.MinPurchaseTime.ToString("0.00");
-        maxTransactionTimeSlider.minValue = storeSimulation.MinPurchaseTime;
-        if(maxTransactionTimeSlider.value < storeSimulation.MinPurchaseTime)
+        minTransactionTime = minTransactionTimeSlider.value;
+        minTransactionTimeText.text = minTransactionTime.ToString("0.00");
+        maxTransactionTimeSlider.minValue = minTransactionTime;
+        if(maxTransactionTimeSlider.value < minTransactionTime)
         {
-            maxTransactionTimeSlider.value = storeSimulation.MinPurchaseTime;
+            maxTransactionTimeSlider.value = minTransactionTime;
         }
     }
 
     public void OnMaxTransactionTimeChanged()
     {
-        storeSimulation.MaxPurchaseTime = maxTransactionTimeSlider.value;
-        maxTransactionTimeText.text = storeSimulation.MaxPurchaseTime.ToString("0.00");
-        minTransactionTimeSlider.maxValue = storeSimulation.MaxPurchaseTime;
-        if(minTransactionTimeSlider.value >= storeSimulation.MaxPurchaseTime)
+        maxTransactionTime = maxTransactionTimeSlider.value;
+        maxTransactionTimeText.text = maxTransactionTime.ToString("0.00");
+        minTransactionTimeSlider.maxValue = maxTransactionTime - 0.1f;
+        if(minTransactionTimeSlider.value >= maxTransactionTime)
         {
-            minTransactionTimeSlider.value = storeSimulation.MaxPurchaseTime;
+            minTransactionTimeSlider.value = maxTransactionTime - 0.1f;
         }
     }
 

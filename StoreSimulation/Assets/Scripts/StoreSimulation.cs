@@ -74,17 +74,6 @@ public class StoreSimulation : MonoBehaviour
         m_AllShoppers = new HashSet<Shopper>();
     }
 
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        if (hasFocus)
-            Time.timeScale = 1;
-        else
-        {
-            Time.timeScale = 0;
-        }
-    }
-
-
     private void InitializeRegisters()
     {
         if (m_RegistersQueues.Count > 0)
@@ -299,8 +288,8 @@ public class StoreSimulation : MonoBehaviour
                 {
                     if (ShouldExposeHealthy(otherShopper, shopper))
                     {
-                        otherShopper.InfectionStatus = Shopper.Status.Exposed;
                         otherShopper.PlayRippleEffect();
+                        otherShopper.InfectionStatus = Shopper.Status.Exposed;
                     }
                 }
             }
