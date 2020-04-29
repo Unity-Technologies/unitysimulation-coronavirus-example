@@ -149,6 +149,7 @@ public class Shopper : MonoBehaviour
         m_MaxNumberOfUniqueNodes = UnityEngine.Random.Range(3, m_Simulation.Waypoints.Length);
         m_BillingQueue = gameObject.GetComponent<StoreSimulationQueue>();
         m_ParticleSystem.gameObject.SetActive(false);
+        BillingTime = UnityEngine.Random.Range(m_Simulation.MinPurchaseTime, m_Simulation.MaxPurchaseTime);
     }
 
     WaypointNode EnterInAvailableQueue(WaypointNode currentNode)
@@ -179,8 +180,6 @@ public class Shopper : MonoBehaviour
             if (BillingTime <= 0)
             {
                 Behavior = BehaviorType.Exiting;
-                if (Regsiter != null)
-                    simulation.InformExit(this);
                 m_NextNode = m_PreviousNode.Edges[0];
             }
             else
@@ -220,6 +219,8 @@ public class Shopper : MonoBehaviour
                 if (m_NextNode.waypointType == WaypointNode.WaypointType.Exit)
                 {
                     // Need a respawn
+                    if (Regsiter != null)
+                        simulation.InformExit(this);
                     simulation.Despawn(this);
                 }
                 else

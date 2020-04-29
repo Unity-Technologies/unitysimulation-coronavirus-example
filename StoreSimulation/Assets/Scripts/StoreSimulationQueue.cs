@@ -52,7 +52,7 @@ public class StoreSimulationQueue : MonoBehaviour
     {
         if (ShoppersQueue.Count == MaxQueueCapacity)
         {
-            while (ShoppersQueue.Peek() == null)
+            while (ShoppersQueue.Count > 0 && ShoppersQueue.Peek() == null)
                 ShoppersQueue.Dequeue();   
         }
 
