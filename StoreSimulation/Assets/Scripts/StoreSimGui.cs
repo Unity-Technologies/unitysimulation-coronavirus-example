@@ -47,7 +47,7 @@ public class StoreSimGui : MonoBehaviour
     string transmissionProbAtMaxDistanceLabelText = "Exposure Probability at {0} ft";
     string healthyCustomerCountLabelText = "Number of Healthy Shoppers: {0}";
     string exposedCustomerCountLabelText = "Number of Exposed Shoppers: {0}";
-    string exposedPercentageLabelText = "Exposure Rate: {0}%";
+    string exposedPercentageLabelText = "Percent Exposed: {0}%";
     string runtimeLabelText = "Running Time: {0} seconds";
 
     int healthyCount;
