@@ -1571,8 +1571,8 @@ MonoBehaviour:
   MaxPurchaseTime: 3
   MinPurchaseTime: 1
   NumberOfCountersOpen: 5
-  ExposureProbabilityAtZeroDistance: 0.6
-  ExposureProbabilityAtMaxDistance: 0.2
+  ExposureProbabilityAtZeroDistance: 0.2
+  ExposureProbabilityAtMaxDistance: 0.1
   ExposureDistanceMeters: 1.8288
   ShopperPrefab: {fileID: 6887419881335167475, guid: 43b12056384264be2b8170e98dda1e13,
     type: 3}
