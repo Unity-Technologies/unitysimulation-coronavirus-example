@@ -136,6 +136,7 @@ public class StoreSimGui : MonoBehaviour
         storeSimulation.MaxPurchaseTime = maxTransactionTime;
         UpdateExposurePercent();
         UpdateTimeText();
+        storeSimulation.ResetSimulation();
         //SceneManager.LoadScene(0);
         
     }

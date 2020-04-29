@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -84.20508, y: -0.6821289}
+  m_AnchoredPosition: {x: -84.20508, y: -0.6816406}
   m_SizeDelta: {x: -1387.5, y: -4.2878}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &24582160
@@ -5156,7 +5156,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 11.600586, y: 325.27002}
+  m_AnchoredPosition: {x: 11.599609, y: 325.26953}
   m_SizeDelta: {x: -40.5, y: -916.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5965114889001445778
@@ -5259,7 +5259,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 11.599609, y: 73.81885}
+  m_AnchoredPosition: {x: 11.599609, y: 73.81836}
   m_SizeDelta: {x: -40.5, y: -871.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6394739198873098280
@@ -8981,17 +8981,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: ResetSimulation
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 8744079159167730067}
         m_MethodName: ResetSim
         m_Mode: 1
