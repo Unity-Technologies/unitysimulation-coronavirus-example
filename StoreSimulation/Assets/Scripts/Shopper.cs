@@ -176,7 +176,7 @@ public class Shopper : MonoBehaviour
 
         if (Behavior == BehaviorType.Billing)
         {
-            if (BillingTime >= m_Simulation.MaxPurchaseTime)
+            if (BillingTime <= 0)
             {
                 Behavior = BehaviorType.Exiting;
                 if (Regsiter != null)
@@ -185,7 +185,7 @@ public class Shopper : MonoBehaviour
             }
             else
             {
-                BillingTime += Time.deltaTime;
+                BillingTime -= Time.deltaTime;
             }
         }
         else

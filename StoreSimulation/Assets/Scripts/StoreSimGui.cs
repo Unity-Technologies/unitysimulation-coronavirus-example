@@ -66,6 +66,9 @@ public class StoreSimGui : MonoBehaviour
     float minTransactionTime;
     float maxTransactionTime;
 
+    bool isPaused = false;
+    float timeScale = 0.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -134,8 +137,14 @@ public class StoreSimGui : MonoBehaviour
         storeSimulation.ShopperSpeed = shopperMoveSpeed;
         storeSimulation.MinPurchaseTime = minTransactionTime;
         storeSimulation.MaxPurchaseTime = maxTransactionTime;
+        if (isPaused)
+        {
+            isPaused = false;
+            Time.timeScale = timeScale;
+        }
         UpdateExposurePercent();
         UpdateTimeText();
+        storeSimulation.ResetSimulation();
         //SceneManager.LoadScene(0);
         
     }
@@ -254,5 +263,19 @@ public class StoreSimGui : MonoBehaviour
     public void OnMouseOverObject(string whichObj)
     {
         
+    }
+
+    public void Pause()
+    {
+        isPaused = !isPaused;
+        if (isPaused)
+        {
+            timeScale = Time.timeScale;
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = timeScale;
+        }
     }
 }
