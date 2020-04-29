@@ -340,20 +340,14 @@ public class StoreSimulation : MonoBehaviour
                 register.QueueState = StoreSimulationQueue.State.Processing;
                 StartCoroutine(ProcessShopper(register, shopper.Item1, shopper.Item2));
             }
-            else if(register.ShoppersQueue.Count > 0)
-            {
-                Debug.Log("Queue state = " + register.QueueState + " count in queue is " + register.ShoppersQueue.Count);
-            }
         }
     }
 
     IEnumerator ProcessShopper(StoreSimulationQueue register, Shopper shopper, float waitTime)
     {
-        Debug.Log("ProcessShopper starting");
         yield return new WaitUntil(() => shopper.Behavior == Shopper.BehaviorType.Billing);
         shopper.BillingTime = waitTime;
         shopper.Regsiter = register;
-        Debug.Log("ProcessShopper Done");
     }
 
     public void InformExit(Shopper shopper)// At this point shopper is not in the queue. Just Freeing the Register.
@@ -367,12 +361,9 @@ public class StoreSimulation : MonoBehaviour
         var registerNodesQueue = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register)
             .ToArray();
 
-        Debug.Log("m_CurrentServingQueue:" + m_CurrentServingQueue);
-
         for (int i = m_CurrentServingQueue; i < registerNodesQueue.Length;)
         {
             var queue = registerNodesQueue[i].gameObject.GetComponent<StoreSimulationQueue>();
-            Debug.Log("Trying to enter the " + i + "th queue. Queue has a status of " + queue.QueueState);
             if (queue && queue.EnterTheQueue(shopper))
             {
                 shopper.Behavior = Shopper.BehaviorType.InQueue;
