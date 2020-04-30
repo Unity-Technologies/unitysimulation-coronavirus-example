@@ -279,7 +279,7 @@ public class StoreSimulation : MonoBehaviour
             // Find nearby shoppers
             // TODO optimize - use filter layer and non-allocating methods
             // TODO consider the "swept" positions of this Shopper and others - more robust at high framerates
-            var radius = 2.0f; // roughly 6 feet
+            var radius = ExposureDistanceMeters;
             Collider[] hitColliders = Physics.OverlapSphere(shopper.transform.position, radius);
             foreach (var coll in hitColliders)
             {
@@ -353,7 +353,6 @@ public class StoreSimulation : MonoBehaviour
     public void InformExit(Shopper shopper)// At this point shopper is not in the queue. Just Freeing the Register.
     {
         Debug.Assert(shopper.Regsiter != null, "Shopper needs to have an assigned register counter");
-
         shopper.Regsiter.QueueState = StoreSimulationQueue.State.Idle;
     }
 
