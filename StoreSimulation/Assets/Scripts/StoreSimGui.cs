@@ -228,7 +228,7 @@ public class StoreSimGui : MonoBehaviour
         }
         else
         {
-            minTransactionTimeSlider.maxValue = 0.0f;
+            minTransactionTimeSlider.maxValue = 0.1f;
             maxTransactionTimeSlider.minValue = 0.1f;
         }
     }
