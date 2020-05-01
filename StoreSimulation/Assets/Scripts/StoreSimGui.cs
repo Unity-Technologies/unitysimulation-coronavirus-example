@@ -218,10 +218,18 @@ public class StoreSimGui : MonoBehaviour
     {
         maxTransactionTime = maxTransactionTimeSlider.value;
         maxTransactionTimeText.text = maxTransactionTime.ToString("0.00");
-        minTransactionTimeSlider.maxValue = maxTransactionTime - 0.1f;
-        if(minTransactionTimeSlider.value >= maxTransactionTime)
+        if (maxTransactionTime > 0.1f)
         {
-            minTransactionTimeSlider.value = maxTransactionTime - 0.1f;
+            minTransactionTimeSlider.maxValue = maxTransactionTime - 0.1f;
+            if(minTransactionTimeSlider.value >= maxTransactionTime)
+            {
+                minTransactionTimeSlider.value = maxTransactionTime;
+            }
+        }
+        else
+        {
+            minTransactionTimeSlider.maxValue = 0.1f;
+            maxTransactionTimeSlider.minValue = 0.1f;
         }
     }
 
