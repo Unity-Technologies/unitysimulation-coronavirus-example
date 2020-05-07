@@ -1,7 +1,7 @@
 # Grocery Store Simulation:
-![Grocery Simulation](docs/images/Grocery.png "Grocery Simulation")
+![Grocery Simulation](docs/images/SimulationRunning.png "Grocery Simulation")
 
-**Blog post coming soon**
+See the [blog post](https://blogs.unity3d.com/2020/05/08/exploring-new-ways-to-simulate-the-coronavirus-spread/) and [white paper](https://resources.unity.com/automotive-transportation-manufacturing/simulation-coronavirus-whitepaper) for more details.
 
 # Disclaimer
 THIS PROJECT (INCLUDING ALL INFORMATION AND DATA ASSOCIATED WITH IT) IS "AS IS" AND "AS AVAILABLE". YOU ARE SOLELY RESPONSIBLE FOR YOUR USE OF THE PROJECT AND UNITY TECHNOLOGIES AND ITS AFFILIATES MAKE NO REPRESENTATIONS OR WARRANTIES OF ANY KIND CONCERNING THE PROJECT OR ITS USE; SEE LICENSE TERMS FOR DETAILS. 
