@@ -7,6 +7,13 @@ FILENAME_IN = "aggregated.tsv"
 FILENAME_OUT = "aggregated.unjson.tsv"
 JSON_FIELD = "game_sim_settings"
 
+def json_loads(x):
+    while True:
+        if isinstance(x, str):
+            x = json.loads(x)
+        else:
+            return x
+
 def main():
     with open(FILENAME_IN) as f:
         lines = f.readlines()
@@ -17,7 +24,7 @@ def main():
 
     # Remove the old JSON column, and add the JSON keys as columns
     json_field_index = field_names.index(JSON_FIELD)
-    parsed_data0 = json.loads(json.loads(data0[json_field_index]))
+    parsed_data0 = json_loads(data0[json_field_index])
     field_names.remove(JSON_FIELD)
     field_names += list(parsed_data0.keys())
 
@@ -28,7 +35,7 @@ def main():
             continue
         line_data = l.strip().split("\t")
         # Remove the old JSON field, and add the JSON values as fields
-        parsed_data = json.loads(json.loads(line_data[json_field_index]))
+        parsed_data = json_loads(line_data[json_field_index])
         line_data.pop(json_field_index)
         line_data += parsed_data.values()
 

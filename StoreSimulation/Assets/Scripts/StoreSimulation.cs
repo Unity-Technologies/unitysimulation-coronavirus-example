@@ -14,19 +14,17 @@ public class StoreSimulation : MonoBehaviour
 
     [FormerlySerializedAs("NumShoppers")]
     [Header("Store Parameters")]
-    public int DesiredNumShoppers = 10;
+    public int               DesiredNumShoppers = 10;
+    
     [FormerlySerializedAs("DesiredNumContagious")]
-    public int DesiredNumInfectious = 1;
-    public float SpawnCooldown = 1.0f;
-    public bool OneWayAisles = true;
-
-    [HideInInspector]
-    public int BillingQueueCapacity = 4;
+    public int               DesiredNumInfectious = 1;
+    public float             SpawnCooldown = 1.0f;
+    public bool              OneWayAisles = true;
 
     [Header("Billing Queue Parameters")]
-    public float MaxPurchaseTime = 3.0f;
-    public float MinPurchaseTime = 1.0f;
-    public int NumberOfCountersOpen = 9;
+    public float             MaxPurchaseTime = 3.0f;
+    public float             MinPurchaseTime = 1.0f;
+    public int               NumberOfCountersOpen = 9;
 
     // Exposure probability parameters.
     // These are given as the probability of a healthy person converting to exposed over the course of one second.
@@ -34,37 +32,40 @@ public class StoreSimulation : MonoBehaviour
     // and modified to account for the timestep.
     [Header("Exposure Parameters")]
     [Range(0.0f, 1.0f)]
-    public float ExposureProbabilityAtZeroDistance = 0.5f;
+    public float     ExposureProbabilityAtZeroDistance = 0.5f;
     [Range(0.0f, 1.0f)]
-    public float ExposureProbabilityAtMaxDistance = 0.0f;
+    public float     ExposureProbabilityAtMaxDistance = 0.0f;
     [Range(0.0f, 10.0f)]
-    public float ExposureDistanceMeters = 1.8288f; // Six feet in meters
+    public float     ExposureDistanceMeters = 1.8288f; // Six feet in meters
 
 
     [Header("Graphics Parameters")]
-    public GameObject ShopperPrefab;
-    public GameObject[] Registers;
+    public GameObject        ShopperPrefab;
+    public GameObject[]      Registers;
 
     [Header("Shopper Parameters")]
-    public float ShopperSpeed = 1.0f;
+    public float             ShopperSpeed = 1.0f;
 
     [HideInInspector]
-    public WaypointNode[] waypoints;
-    List<WaypointNode> entrances;
-    WaypointGraph m_WaypointGraph;
-    HashSet<Shopper> allShoppers;
-    float spawnCooldownCounter;
-    int numInfectious;
-    private List<StoreSimulationQueue> registersQueues = new List<StoreSimulationQueue>();
-    private int currentServingQueue = 0;
+    public WaypointNode[]    Waypoints;
+    [HideInInspector]
+    public int               BillingQueueCapacity = 4;
+    
+    private List<WaypointNode>         m_Entrances;
+    private WaypointGraph              m_WaypointGraph;
+    private HashSet<Shopper>           m_AllShoppers;
+    private float                      m_SpawnCooldownCounter;
+    private int                        m_NumInfectious;
+    private List<StoreSimulationQueue> m_RegistersQueues = new List<StoreSimulationQueue>();
+    private int                        m_CurrentServingQueue = 0;
 
     bool simulationInited = false;
     float simulationSecondsRunTime;
     public float SimulationTimeInSeconds = 60f;
 
     // Results
-    int finalHealthy;
-    int finalExposed;
+    private int m_FinalHealthy;
+    private int m_FinalExposed;
 
     public event Action<int> NumHealthyChanged;
     public event Action<int> NumContagiousChanged;
@@ -91,15 +92,20 @@ public class StoreSimulation : MonoBehaviour
 
     void InitSimulation()
     {
+        Debug.Assert(NumberOfCountersOpen <= Registers.Length, 
+            "Number of counters to be left open needs to be less than equal to total number of counters");
         InitializeRegisters();
         InitWaypoints();
+        m_AllShoppers = new HashSet<Shopper>();
         simulationInited = true;
         simulationSecondsRunTime = SimulationTimeInSeconds;
-        allShoppers = new HashSet<Shopper>();
     }
 
     private void InitializeRegisters()
     {
+        if (m_RegistersQueues.Count > 0)
+            m_RegistersQueues.Clear();
+        
         foreach (var register in Registers)
         {
             register.gameObject.SetActive(false);
@@ -119,7 +125,7 @@ public class StoreSimulation : MonoBehaviour
             queue.MinProcessingTime = MinPurchaseTime;
             queue.ShoppersQueue = new Queue<Shopper>(BillingQueueCapacity);
             queue.QueueState = StoreSimulationQueue.State.Idle;
-            registersQueues.Add(queue);
+            m_RegistersQueues.Add(queue);
         }
     }
 
@@ -140,14 +146,14 @@ public class StoreSimulation : MonoBehaviour
 
         // Cooldown on respawns - can only respawn when the counter is 0 (or negative).
         // The counter resets to SpawnCooldown when a customer is spawned.
-        spawnCooldownCounter -= Time.deltaTime;
-        if (spawnCooldownCounter <= 0 && allShoppers.Count < DesiredNumShoppers)
+        m_SpawnCooldownCounter -= Time.deltaTime;
+        if (m_SpawnCooldownCounter <= 0 && m_AllShoppers.Count < DesiredNumShoppers)
         {
             var newShopperGameObject = Instantiate(ShopperPrefab);
             var newShopper = newShopperGameObject.GetComponent<Shopper>();
             Spawn(newShopper);
-            allShoppers.Add(newShopper);
-            spawnCooldownCounter = SpawnCooldown;
+            m_AllShoppers.Add(newShopper);
+            m_SpawnCooldownCounter = SpawnCooldown;
         }
 
         MoveQueue();
@@ -157,44 +163,44 @@ public class StoreSimulation : MonoBehaviour
     void OnDisable()
     {
         // Update the final counts.
-        foreach (var s in allShoppers)
+        foreach (var s in m_AllShoppers)
         {
             if (s.IsHealthy())
             {
-                finalHealthy++;
-                NumHealthyChanged?.Invoke(finalHealthy);
+                m_FinalHealthy++;
+                NumHealthyChanged?.Invoke(m_FinalHealthy);
             }
 
             if (s.IsExposed())
             {
-                finalExposed++;
-                NumContagiousChanged?.Invoke(finalExposed);
+                m_FinalExposed++;
+                NumContagiousChanged?.Invoke(m_FinalExposed);
             }
         }
 
-        var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
-        Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {100.0 * exposureRate}%");
+        var exposureRate = m_FinalExposed + m_FinalHealthy == 0 ? 0 : m_FinalExposed / (float)(m_FinalExposed + m_FinalHealthy);
+        Debug.Log($"total healthy: {m_FinalHealthy}  total exposed: {m_FinalExposed}  exposure rate: {100.0 * exposureRate}%");
 
     }
 
     void OnSimulationFinished()
     {
         // Update the final counts.
-        foreach (var s in allShoppers)
+        foreach (var s in m_AllShoppers)
         {
             if (s.IsHealthy())
             {
-                finalHealthy++;
+                m_FinalHealthy++;
             }
 
             if (s.IsExposed())
             {
-                finalExposed++;
+                m_FinalExposed++;
             }
         }
 
-        var exposureRate = finalExposed + finalHealthy == 0 ? 0 : finalExposed / (float)(finalExposed + finalHealthy);
-        Debug.Log($"total healthy: {finalHealthy}  total exposed: {finalExposed}  exposure rate: {exposureRate}%");
+        var exposureRate = m_FinalExposed + m_FinalHealthy == 0 ? 0 : m_FinalExposed / (float)(m_FinalExposed + m_FinalHealthy);
+        Debug.Log($"total healthy: {m_FinalHealthy}  total exposed: {m_FinalExposed}  exposure rate: {exposureRate}%");
         simulationInited = false;
         SetCounters();
     }
@@ -202,8 +208,8 @@ public class StoreSimulation : MonoBehaviour
     void SetCounters()
     {
         //Set game sim counters
-        GameSimManager.Instance.SetCounter("totalHealthy", finalHealthy);
-        GameSimManager.Instance.SetCounter("totalExposed", finalExposed);
+        GameSimManager.Instance.SetCounter("totalHealthy", m_FinalHealthy);
+        GameSimManager.Instance.SetCounter("totalExposed", m_FinalExposed);
         //quit the simulation
         Application.Quit();
     }
@@ -224,10 +230,10 @@ public class StoreSimulation : MonoBehaviour
             }
         }
 
-        if (s.path == null)
+        if (s.m_Path == null)
         {
             // Pick a random entrance for the start position
-            var startWp = entrances[UnityEngine.Random.Range(0, entrances.Count)];
+            var startWp = m_Entrances[UnityEngine.Random.Range(0, m_Entrances.Count)];
             s.SetWaypoint(startWp);
         }
 
@@ -235,10 +241,10 @@ public class StoreSimulation : MonoBehaviour
         var speedMult = UnityEngine.Random.Range(.5f, 1f);
         s.Speed = ShopperSpeed * speedMult;
 
-        if (numInfectious < DesiredNumInfectious)
+        if (m_NumInfectious < DesiredNumInfectious)
         {
             s.InfectionStatus = Shopper.Status.Infectious;
-            numInfectious++;
+            m_NumInfectious++;
         }
     }
 
@@ -246,52 +252,52 @@ public class StoreSimulation : MonoBehaviour
     {
         if (s.IsInfectious())
         {
-            numInfectious--;
+            m_NumInfectious--;
         }
 
         // Update running totals of healthy and exposed.
         if (s.IsHealthy())
         {
-            finalHealthy++;
-            NumHealthyChanged?.Invoke(finalHealthy);
+            m_FinalHealthy++;
+            NumHealthyChanged?.Invoke(m_FinalHealthy);
         }
 
         if (s.IsExposed())
         {
-            finalExposed++;
-            NumContagiousChanged?.Invoke(finalExposed);
+            m_FinalExposed++;
+            NumContagiousChanged?.Invoke(m_FinalExposed);
         }
 
         if (removeShopper)
         {
-            allShoppers.Remove(s);
+            m_AllShoppers.Remove(s);
         }
         Destroy(s.gameObject);
     }
 
     void InitWaypoints()
     {
-        waypoints = GetComponentsInChildren<WaypointNode>();
-        entrances = new List<WaypointNode>();
-        Debug.Log($"Found {waypoints.Length} waypoints");
+        Waypoints = GetComponentsInChildren<WaypointNode>();
+        m_Entrances = new List<WaypointNode>();
+        Debug.Log($"Found {Waypoints.Length} Waypoints");
 
         // Clear any existing edges
-        foreach (var wp in waypoints)
+        foreach (var wp in Waypoints)
         {
             wp.simulation = this;
             wp.Edges.Clear();
             if (wp.waypointType == WaypointNode.WaypointType.Entrance)
             {
-                entrances.Add(wp);
+                m_Entrances.Add(wp);
             }
         }
-        m_WaypointGraph = new WaypointGraph(waypoints);
+        m_WaypointGraph = new WaypointGraph(Waypoints);
 
         var startTicks = DateTime.Now.Ticks;
         // TODO avoid duplication with the gizmos code by passing a delegate?
-        foreach (var wp in waypoints)
+        foreach (var wp in Waypoints)
         {
-            foreach (var otherWaypoint in waypoints)
+            foreach (var otherWaypoint in Waypoints)
             {
                 if (wp == otherWaypoint)
                 {
@@ -306,7 +312,7 @@ public class StoreSimulation : MonoBehaviour
             }
         }
         var endTicks = DateTime.Now.Ticks;
-        Debug.Log($"Raycasting between waypoints took {(endTicks - startTicks) * s_TicksToSeconds} seconds");
+        Debug.Log($"Raycasting between Waypoints took {(endTicks - startTicks) * s_TicksToSeconds} seconds");
     }
 
     void OnDrawGizmos()
@@ -332,7 +338,7 @@ public class StoreSimulation : MonoBehaviour
 
     void UpdateExposure()
     {
-        foreach (var shopper in allShoppers)
+        foreach (var shopper in m_AllShoppers)
         {
             if (!shopper.IsInfectious())
             {
@@ -342,7 +348,7 @@ public class StoreSimulation : MonoBehaviour
             // Find nearby shoppers
             // TODO optimize - use filter layer and non-allocating methods
             // TODO consider the "swept" positions of this Shopper and others - more robust at high framerates
-            var radius = 2.0f; // roughly 6 feet
+            var radius = ExposureDistanceMeters;
             Collider[] hitColliders = Physics.OverlapSphere(shopper.transform.position, radius);
             foreach (var coll in hitColliders)
             {
@@ -351,6 +357,7 @@ public class StoreSimulation : MonoBehaviour
                 {
                     if (ShouldExposeHealthy(otherShopper, shopper))
                     {
+                        otherShopper.PlayRippleEffect();
                         otherShopper.InfectionStatus = Shopper.Status.Exposed;
                     }
                 }
@@ -371,8 +378,8 @@ public class StoreSimulation : MonoBehaviour
         // Cheap approximation for now
         var distance = Mathf.Min(
             Vector3.Distance(healthy.transform.position, infectious.transform.position),
-            Vector3.Distance(healthy.transform.position, infectious.previousPosition),
-            Vector3.Distance(healthy.previousPosition, infectious.transform.position)
+            Vector3.Distance(healthy.transform.position, infectious.PreviousPosition),
+            Vector3.Distance(healthy.PreviousPosition, infectious.transform.position)
         );
         if (distance > ExposureDistanceMeters)
         {
@@ -394,7 +401,7 @@ public class StoreSimulation : MonoBehaviour
 
     void MoveQueue()
     {
-        foreach (var register in registersQueues)
+        foreach (var register in m_RegistersQueues)
         {
             if (register.ShoppersQueue.Count > 0 && register.QueueState == StoreSimulationQueue.State.Idle)
             {
@@ -407,6 +414,7 @@ public class StoreSimulation : MonoBehaviour
 
     IEnumerator ProcessShopper(StoreSimulationQueue register, Shopper shopper, float waitTime)
     {
+        //shopper.BillingTime = waitTime;
         yield return new WaitUntil(() => shopper.Behavior == Shopper.BehaviorType.Billing);
         shopper.BillingTime = waitTime;
         shopper.Regsiter = register;
@@ -415,7 +423,6 @@ public class StoreSimulation : MonoBehaviour
     public void InformExit(Shopper shopper)// At this point shopper is not in the queue. Just Freeing the Register.
     {
         Debug.Assert(shopper.Regsiter != null, "Shopper needs to have an assigned register counter");
-
         shopper.Regsiter.QueueState = StoreSimulationQueue.State.Idle;
     }
 
@@ -424,13 +431,13 @@ public class StoreSimulation : MonoBehaviour
         var registerNodesQueue = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register)
             .ToArray();
 
-        for (int i = currentServingQueue; i < registerNodesQueue.Length;)
+        for (int i = m_CurrentServingQueue; i < registerNodesQueue.Length;)
         {
             var queue = registerNodesQueue[i].gameObject.GetComponent<StoreSimulationQueue>();
             if (queue && queue.EnterTheQueue(shopper))
             {
                 shopper.Behavior = Shopper.BehaviorType.InQueue;
-                currentServingQueue = (currentServingQueue + 1) % registerNodesQueue.Length;
+                m_CurrentServingQueue = (m_CurrentServingQueue + 1) % registerNodesQueue.Length;
                 return registerNodesQueue[i];
             }
 
@@ -443,17 +450,23 @@ public class StoreSimulation : MonoBehaviour
 
     public void ResetSimulation()
     {
-        foreach (var shopper in allShoppers)
+        foreach (var shopper in m_AllShoppers)
         {
             Despawn(shopper, false);
         }
-        allShoppers.Clear();
-        finalExposed = 0;
-        finalHealthy = 0;
-        NumHealthyChanged?.Invoke(finalHealthy);
-        NumContagiousChanged?.Invoke(finalExposed);
-        numInfectious = 0;
-        registersQueues.Clear();
+
+        foreach (var register in Registers)
+        {
+            Destroy(register.GetComponent<StoreSimulationQueue>());
+        }
+        m_AllShoppers.Clear();
+        m_FinalExposed = 0;
+        m_FinalHealthy = 0;
+        m_CurrentServingQueue = 0;
+        NumHealthyChanged?.Invoke(m_FinalHealthy);
+        NumContagiousChanged?.Invoke(m_FinalExposed);
+        m_NumInfectious = 0;
+        m_RegistersQueues.Clear();
         InitializeRegisters();
         InitWaypoints();
     }

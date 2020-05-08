@@ -25,27 +25,29 @@ public class Shopper : MonoBehaviour
         Exiting
     }
 
-    public float          Speed = 1.0f;
-    public Material       HealthyMaterial;
+    public float                Speed = 1.0f;
+    public Material             HealthyMaterial;
     [FormerlySerializedAs("ContagiousMaterial")]
-    public Material       InfectiousMaterial;
-    public Material       ExposedMaterial;
-    Status                m_InfectionStatus;
-    HashSet<WaypointNode> m_VisistedNodes = new HashSet<WaypointNode>();
-    private int           m_MaxNumberOfUniqueNodes = 0;
-    private bool          m_WantsToExit = false;
-    public float          BillingTime = 0.0f;
-
-    public BehaviorType Behavior = BehaviorType.ShoppingList;
-    private StoreSimulationQueue m_BillingQueue;
-    WaypointNode previousNode;
-    WaypointNode nextNode;
-
-    internal List<WaypointNode> path;
-
-    StoreSimulation m_Simulation;
-    Vector3 m_PreviousPosition;
+    public Material             InfectiousMaterial;
+    public Material             ExposedMaterial;
+    public float                BillingTime = 0.0f;
+    public BehaviorType         Behavior = BehaviorType.ShoppingList;
     public StoreSimulationQueue Regsiter;
+    
+    Status                       m_InfectionStatus;
+    HashSet<WaypointNode>        m_VisistedNodes = new HashSet<WaypointNode>();
+    private int                  m_MaxNumberOfUniqueNodes = 0;
+    private bool                 m_WantsToExit = false;
+    public ParticleSystem        m_ParticleSystem;
+    
+    private StoreSimulationQueue m_BillingQueue;
+    private WaypointNode         m_PreviousNode;
+    private WaypointNode         m_NextNode;
+
+    internal List<WaypointNode>  m_Path;
+
+    private StoreSimulation      m_Simulation;
+    private Vector3              m_PreviousPosition;
 
     public StoreSimulation simulation
     {
@@ -59,7 +61,7 @@ public class Shopper : MonoBehaviour
         set { SetStatus(value); }
     }
 
-    public Vector3 previousPosition => m_PreviousPosition;
+    public Vector3 PreviousPosition => m_PreviousPosition;
 
     void SetStatus(Status s)
     {
@@ -82,6 +84,16 @@ public class Shopper : MonoBehaviour
         renderer.material = m;
     }
 
+    public void PlayRippleEffect()
+    {
+        if (m_ParticleSystem != null)
+        {
+            m_ParticleSystem.gameObject.SetActive(true);
+            m_ParticleSystem.Play();
+        }
+
+    }
+
     public bool IsHealthy()
     {
         return m_InfectionStatus == Status.Healthy;
@@ -101,32 +113,32 @@ public class Shopper : MonoBehaviour
     {
         if (m_VisistedNodes.Count != m_MaxNumberOfUniqueNodes && !reset)
             m_WantsToExit = true;
-        previousNode = node;
+        m_PreviousNode = node;
 
-        if (m_WantsToExit && m_VisistedNodes.Contains(nextNode))
+        if (m_WantsToExit && m_VisistedNodes.Contains(m_NextNode))
         {
             // Pick the next node randomly
-            nextNode = node.GetRandomNeighbor(previousNode);
+            m_NextNode = node.GetRandomNeighbor(m_PreviousNode);
         }
         else
         {
-            nextNode = node.GetRandomNeighbor();
-            m_VisistedNodes.Add(nextNode);
+            m_NextNode = node.GetRandomNeighbor();
+            m_VisistedNodes.Add(m_NextNode);
         }
 
-        var worldPos = previousNode.transform.position;
+        var worldPos = m_PreviousNode.transform.position;
         transform.position = worldPos;
     }
 
     public void SetPath(List<WaypointNode> _path)
     {
-        path = _path;
+        m_Path = _path;
         // TODO convert to queue
-        previousNode = path[0];
-        path.RemoveAt(0);
-        nextNode = path[0];
+        m_PreviousNode = m_Path[0];
+        m_Path.RemoveAt(0);
+        m_NextNode = m_Path[0];
 
-        var worldPos = previousNode.transform.position;
+        var worldPos = m_PreviousNode.transform.position;
         transform.position = worldPos;
     }
 
@@ -134,14 +146,16 @@ public class Shopper : MonoBehaviour
     void Start()
     {
         m_PreviousPosition = transform.position;
-        m_MaxNumberOfUniqueNodes = UnityEngine.Random.Range(3, m_Simulation.waypoints.Length);
+        m_MaxNumberOfUniqueNodes = UnityEngine.Random.Range(3, m_Simulation.Waypoints.Length);
         m_BillingQueue = gameObject.GetComponent<StoreSimulationQueue>();
+        m_ParticleSystem.gameObject.SetActive(false);
+        BillingTime = UnityEngine.Random.Range(m_Simulation.MinPurchaseTime, m_Simulation.MaxPurchaseTime);
     }
 
     WaypointNode EnterInAvailableQueue(WaypointNode currentNode)
     {
         var regsiterNodes = currentNode.Edges.Where(e => e.waypointType == WaypointNode.WaypointType.Register);
-        var nonRegsiterNodes = currentNode.Edges.Where(e => e.waypointType != WaypointNode.WaypointType.Register).ToArray();
+        var nonRegsiterNodes = currentNode.Edges.Where(e => e.waypointType != WaypointNode.WaypointType.Register && e.waypointType != WaypointNode.WaypointType.Exit).ToArray();
 
         foreach (var node in regsiterNodes)
         {
@@ -163,27 +177,25 @@ public class Shopper : MonoBehaviour
 
         if (Behavior == BehaviorType.Billing)
         {
-            if (BillingTime >= m_Simulation.MaxPurchaseTime)
+            if (BillingTime <= 0)
             {
                 Behavior = BehaviorType.Exiting;
-                if (Regsiter != null)
-                    simulation.InformExit(this);
-                nextNode = previousNode.Edges[0];
+                m_NextNode = m_PreviousNode.Edges[0];
             }
             else
             {
-                BillingTime += Time.deltaTime;
+                BillingTime -= Time.deltaTime;
             }
         }
         else
         {
 
-            if (Behavior == BehaviorType.InQueue && nextNode.waypointType == WaypointNode.WaypointType.Register)
+            if (Behavior == BehaviorType.InQueue && m_NextNode.waypointType == WaypointNode.WaypointType.Register)
             {
                 RaycastHit hit;
                 //var layermask = ~(1 << 3);
-                Debug.DrawRay(transform.position, (nextNode.transform.position - transform.position) * 20, Color.red);
-                if (Physics.Raycast(transform.position, (nextNode.transform.position - transform.position), out hit, 1.5f))
+                Debug.DrawRay(transform.position, (m_NextNode.transform.position - transform.position) * 20, Color.red);
+                if (Physics.Raycast(transform.position, (m_NextNode.transform.position - transform.position), out hit, 1.5f))
                 {
                     if (hit.collider.CompareTag("Shopper"))
                     {
@@ -192,37 +204,39 @@ public class Shopper : MonoBehaviour
                 }
             }
 
-            if (nextNode.waypointType == WaypointNode.WaypointType.Register && Behavior != BehaviorType.InQueue)
+            if (m_NextNode.waypointType == WaypointNode.WaypointType.Register && Behavior != BehaviorType.InQueue)
             {
-                nextNode = simulation.EnterInAvailableQueue(this,previousNode);
+                m_NextNode = simulation.EnterInAvailableQueue(this,m_PreviousNode);
             }
 
             var reachedEnd = UpdateInterpolation();
             if (reachedEnd)
             {
 
-                if (nextNode.waypointType == WaypointNode.WaypointType.Register && Behavior == BehaviorType.InQueue)
+                if (m_NextNode.waypointType == WaypointNode.WaypointType.Register && Behavior == BehaviorType.InQueue)
                     Behavior = BehaviorType.Billing;
 
-                if (nextNode.waypointType == WaypointNode.WaypointType.Exit)
+                if (m_NextNode.waypointType == WaypointNode.WaypointType.Exit)
                 {
                     // Need a respawn
+                    if (Regsiter != null)
+                        simulation.InformExit(this);
                     simulation.Despawn(this);
                 }
                 else
                 {
-                    var previousPos = previousNode.transform.position;
-                    var currentPos = nextNode.transform.position;
-                    previousNode = nextNode;
-                    if (path != null)
+                    var previousPos = m_PreviousNode.transform.position;
+                    var currentPos = m_NextNode.transform.position;
+                    m_PreviousNode = m_NextNode;
+                    if (m_Path != null)
                     {
                         // TODO convert to queue
-                        path.RemoveAt(0);
-                        nextNode = path[0];
+                        m_Path.RemoveAt(0);
+                        m_NextNode = m_Path[0];
                     }
                     else
                     {
-                        nextNode = nextNode.GetRandomNeighborInDirection(previousPos, currentPos);
+                        m_NextNode = m_NextNode.GetRandomNeighborInDirection(previousPos, currentPos);
                     }
                 }
             }
@@ -242,23 +256,15 @@ public class Shopper : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
-    {
-//        if (path != null)
-//        {
-//            DrawPath(path, Color.green);
-//        }
-    }
-
     bool UpdateInterpolation()
     {
-        if (previousNode == null || nextNode == null)
+        if (m_PreviousNode == null || m_NextNode == null)
         {
             return false;
         }
         bool atEnd = false;
-        var prevToCur = transform.position - previousNode.transform.position;
-        var prevToNext = nextNode.transform.position - previousNode.transform.position;
+        var prevToCur = transform.position - m_PreviousNode.transform.position;
+        var prevToNext = m_NextNode.transform.position - m_PreviousNode.transform.position;
 
         var distancePrevToNext = prevToNext.magnitude;
         // Fraction from 0 to 1
@@ -282,7 +288,7 @@ public class Shopper : MonoBehaviour
         }
 
         // Interpolate
-        var newPostion = previousNode.transform.position + tNew * prevToNext;
+        var newPostion = m_PreviousNode.transform.position + tNew * prevToNext;
         transform.position = newPostion;
 
         return atEnd;
