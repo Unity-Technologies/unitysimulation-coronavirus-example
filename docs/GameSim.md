@@ -17,7 +17,7 @@ This branch includes code that integrates with the Game Simulation package, whic
 Normally, you would use the Game Simulation Editor Window to set up your simulation parameters, but for convenience, we've included a `.csv` file will the parameters we used to get you started.
 
 1. Open the Game Simulation window by going to **Window** -> **Game Simulation**. Click on the tab called **Parameter Set Up**. This will create the environment in Remote Config that Game Simulation will use when running in the cloud. Close the Game Simulation Editor window.
-2. Find the `.csv` [file](link to file) in the `sim-integration` branch.
+2. Find the `.csv` [file](https://github.com/Unity-Technologies/unitysimulation-coronavirus-example/blob/sim-integration/StoreSimulationParams.csv) in the `sim-integration` branch.
 3. Go to the [Remote Config Dashboard](https://app.remote-config.unity3d.com/).
 4. Find your project in the project list and click on it.
 5. You should see a table with your **GameSim** config. Click the **View** button.
