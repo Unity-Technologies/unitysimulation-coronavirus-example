@@ -19,3 +19,4 @@ Shoppers are colored according to their health status:
 * [Infection Model](docs/InfectionModel.md)
 * [Waypoint Graph and Shopper Movement](docs/WaypointGraphAndMovement.md)
 * [Queueing Model](docs/QueueingModel.md)
+* [Running on Unity Game Simulation](docs/GameSim.md)
