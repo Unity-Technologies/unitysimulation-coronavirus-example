@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Simulation.Games;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Object = System.Object;
@@ -58,6 +59,10 @@ public class StoreSimulation : MonoBehaviour
     private List<StoreSimulationQueue> m_RegistersQueues = new List<StoreSimulationQueue>();
     private int                        m_CurrentServingQueue = 0;
 
+    bool simulationInited = false;
+    float simulationSecondsRunTime;
+    public float SimulationTimeInSeconds = 60f;
+
     // Results
     private int m_FinalHealthy;
     private int m_FinalExposed;
@@ -67,11 +72,33 @@ public class StoreSimulation : MonoBehaviour
 
     void Awake()
     {
+        GameSimManager.Instance.FetchConfig(OnConfigFetched);
+    }
+
+    void OnConfigFetched(GameSimConfigResponse configResponse)
+    {
+        DesiredNumShoppers = configResponse.GetInt("DesiredNumShoppers", DesiredNumShoppers);
+        DesiredNumInfectious = configResponse.GetInt("DesiredNumContagious", DesiredNumInfectious);
+        SpawnCooldown = configResponse.GetFloat("SpawnCooldown", SpawnCooldown);
+        OneWayAisles = configResponse.GetBool("OneWayAisles", OneWayAisles);
+        SimulationTimeInSeconds = configResponse.GetFloat("SimulationTimeInSeconds", SimulationTimeInSeconds);
+        ExposureProbabilityAtZeroDistance = configResponse.GetFloat("ExposureProbabilityAtZeroDistance", ExposureProbabilityAtZeroDistance);
+        ExposureProbabilityAtMaxDistance = configResponse.GetFloat("ExposureProbabilityAtMaxDistance", ExposureProbabilityAtMaxDistance);
+        ExposureDistanceMeters = configResponse.GetFloat("ExposureDistanceMeters", ExposureDistanceMeters);
+        NumberOfCountersOpen = configResponse.GetInt("NumberOfRegistersOpen", NumberOfCountersOpen);
+
+        InitSimulation();
+    }
+
+    void InitSimulation()
+    {
         Debug.Assert(NumberOfCountersOpen <= Registers.Length, 
             "Number of counters to be left open needs to be less than equal to total number of counters");
         InitializeRegisters();
         InitWaypoints();
         m_AllShoppers = new HashSet<Shopper>();
+        simulationInited = true;
+        simulationSecondsRunTime = SimulationTimeInSeconds;
     }
 
     private void InitializeRegisters()
@@ -106,6 +133,17 @@ public class StoreSimulation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!simulationInited)
+        {
+            return;
+        }
+        simulationSecondsRunTime -= Time.deltaTime;
+        if (simulationSecondsRunTime <= 0)
+        {
+            OnSimulationFinished();
+            return;
+        }
+
         // Cooldown on respawns - can only respawn when the counter is 0 (or negative).
         // The counter resets to SpawnCooldown when a customer is spawned.
         m_SpawnCooldownCounter -= Time.deltaTime;
@@ -143,6 +181,37 @@ public class StoreSimulation : MonoBehaviour
         var exposureRate = m_FinalExposed + m_FinalHealthy == 0 ? 0 : m_FinalExposed / (float)(m_FinalExposed + m_FinalHealthy);
         Debug.Log($"total healthy: {m_FinalHealthy}  total exposed: {m_FinalExposed}  exposure rate: {100.0 * exposureRate}%");
 
+    }
+
+    void OnSimulationFinished()
+    {
+        // Update the final counts.
+        foreach (var s in m_AllShoppers)
+        {
+            if (s.IsHealthy())
+            {
+                m_FinalHealthy++;
+            }
+
+            if (s.IsExposed())
+            {
+                m_FinalExposed++;
+            }
+        }
+
+        var exposureRate = m_FinalExposed + m_FinalHealthy == 0 ? 0 : m_FinalExposed / (float)(m_FinalExposed + m_FinalHealthy);
+        Debug.Log($"total healthy: {m_FinalHealthy}  total exposed: {m_FinalExposed}  exposure rate: {exposureRate}%");
+        simulationInited = false;
+        SetCounters();
+    }
+
+    void SetCounters()
+    {
+        //Set game sim counters
+        GameSimManager.Instance.SetCounter("totalHealthy", m_FinalHealthy);
+        GameSimManager.Instance.SetCounter("totalExposed", m_FinalExposed);
+        //quit the simulation
+        Application.Quit();
     }
 
     /// <summary>
@@ -347,6 +416,7 @@ public class StoreSimulation : MonoBehaviour
     {
         //shopper.BillingTime = waitTime;
         yield return new WaitUntil(() => shopper.Behavior == Shopper.BehaviorType.Billing);
+        shopper.BillingTime = waitTime;
         shopper.Regsiter = register;
     }
 

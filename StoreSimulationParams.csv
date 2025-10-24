@@ -1,0 +1,10 @@
+key,type,value
+DesiredNumShoppers,int,40
+DesiredNumContagious,int,5
+SpawnCooldown,float,0.1
+OneWayAisles,bool,true
+SimulationTimeInSeconds,float,300
+ExposureProbabilityAtZeroDistance,float,0.4
+ExposureProbabilityAtMaxDistance,float,0.3
+ExposureDistanceMeters,float,1.8288
+NumberOfRegistersOpen,int,5

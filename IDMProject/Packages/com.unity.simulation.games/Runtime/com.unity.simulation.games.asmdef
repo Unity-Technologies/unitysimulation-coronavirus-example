@@ -1,0 +1,16 @@
+{
+    "name": "Unity.Simulation.Games",
+    "references": [
+        "Unity.RemoteConfig",
+        "Unity.Simulation.Core"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
